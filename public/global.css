@@ -1,0 +1,118 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, Roboto, BlinkMacSystemFont, "Segoe UI",
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+a {
+  color: #ff6f91;
+  text-decoration: none;
+  transition: all 300ms ease-in-out;
+  outline: none;
+}
+
+a:hover,
+a:focus {
+  color: #d8224d;
+}
+
+ul,
+li {
+  list-style: none;
+}
+
+.fancy-link {
+  color: #ff6f91;
+  text-decoration: none;
+  transition: all 300ms ease-in-out;
+  position: relative;
+}
+
+.fancy-link:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: #ff6f91;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: all 300ms ease-in-out;
+}
+
+.fancy-link:hover::after {
+  transform: scaleX(1);
+}
+
+label {
+  display: block;
+}
+
+input {
+  border: 0;
+  border-bottom: 1px solid #ff6f91;
+  margin: 20px 0;
+  padding: 1.2rem 0.8rem 0.2rem;
+}
+
+input:disabled {
+  background: #ccc;
+}
+
+input[type="range"] {
+  height: 0;
+}
+
+button,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0.4em;
+  margin: 0 0 0.5em 0;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}
+
+button {
+  outline: none;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+  border: 0;
+  text-transform: uppercase;
+  padding: 10px 5px;
+  background: #ff6f91;
+  color: white;
+  border-radius: 4px;
+}
+
+button:active {
+  background-color: #ddd;
+}
+
+button:focus,
+button:hover {
+  background: #ffc75f;
+  color: black;
+}
+
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
