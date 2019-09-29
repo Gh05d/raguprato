@@ -4,6 +4,7 @@
   import Main from "./Main.svelte";
   import Lessons from "./Lessons.svelte";
   import NewLesson from "./NewLesson.svelte";
+  import Lesson from "./Lesson.svelte";
 
   const socialIcons = [
     { link: "https://github.com/Gh05d", symbol: "github" },
@@ -113,16 +114,11 @@
   <Router {url}>
     <Navigation show={showNav} />
     <main>
-      <Route path="/">
-        <Main />
-      </Route>
-
-      <Route path="practice">
-        <Lessons />
-      </Route>
-
-      <Route path="practice/new">
-        <NewLesson />
+      <Route path="/" component={Main} />
+      <Route path="practice" component={Lessons} />
+      <Route path="practice/new" component={NewLesson} />
+      <Route path="practice/:id" let:params>
+        <Lesson id={params.id} />
       </Route>
     </main>
   </Router>
