@@ -1,6 +1,6 @@
 <script>
   import { onMount, afterUpdate } from "svelte";
-  import { createID, LESSONS } from "./helpers.js";
+  import { createID, LESSONS, ARROW_SRC } from "./helpers.js";
 
   export let id;
   let lesson;
@@ -69,6 +69,19 @@
     }
   }
 
+  async function handleDrop(e) {
+    e.preventDefault();
+    const direction = e.dataTransfer.getData("direction");
+
+    if (lesson.strumming) {
+      lesson.strumming = [...lesson.strumming, direction];
+    } else {
+      lesson.strumming = [direction];
+    }
+
+    await updateLesson();
+  }
+
   onMount(() => {
     try {
       const stringifiedLessons = localStorage.getItem(LESSONS);
@@ -81,6 +94,7 @@
     }
   });
 
+  // Needed so that the chord chart gets rerendered
   afterUpdate(async () => {
     if (chordToUpdate) {
       scales_chords_api_refresh(chordToUpdate);
@@ -145,6 +159,26 @@
     background: 0;
     color: black;
   }
+
+  .strumming {
+    position: relative;
+    height: 80px;
+    background: white;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+
+    ul {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      display: flex;
+    }
+  }
+
+  .arrow-up {
+    transform: rotate(180deg);
+  }
 </style>
 
 <section>
@@ -195,25 +229,67 @@
         <option value={chord}>{chord}</option>
       {/each}
     </select>
+
+    <h2>Strumming Pattern</h2>
+    <div
+      on:dragover|preventDefault
+      on:drop|preventDefault={handleDrop}
+      class="strumming">
+      {#each [...Array(6)] as i}
+        <hr />
+      {/each}
+
+      {#if lesson && lesson.strumming}
+        <ul>
+          {#each lesson.strumming as strum}
+            <li>
+              <img
+                width={60}
+                height={80}
+                class={`arrow-${strum}`}
+                src={ARROW_SRC} />
+            </li>
+          {/each}
+        </ul>
+      {/if}
+    </div>
+    <div>Drag and Drop the Arrows to create a Strumming Pattern</div>
+    <div>
+      <img
+        draggable={true}
+        class="arrow-down"
+        on:dragstart={e => e.dataTransfer.setData('direction', 'down')}
+        src={ARROW_SRC} />
+      <img
+        class="arrow-up"
+        on:dragstart={e => e.dataTransfer.setData('direction', 'up')}
+        src={ARROW_SRC} />
+    </div>
+
+    <label for="notes">Notes about the Song</label>
+    {#if lesson && lesson.notes && !editNotes}
+      <div class="notes" on:click={() => (editNotes = true)}>
+        {lesson.notes}
+      </div>
+    {:else}
+      <form on:submit|preventDefault={addNote}>
+        <textarea
+          bind:value={notes}
+          id="notes"
+          defaultalue
+          rows={5}
+          placeholder="Your notes for the song" />
+        <button disabled={!notes}>Add notes</button>
+        <button
+          class="cancel"
+          type="button"
+          on:click={() => (editNotes = false)}>
+          Cancel
+        </button>
+      </form>
+    {/if}
   {:else}
     <div>Sorry, could not load lesson</div>
   {/if}
 
-  <label for="notes">Notes about the Song</label>
-  {#if lesson && lesson.notes && !editNotes}
-    <div class="notes" on:click={() => (editNotes = true)}>{lesson.notes}</div>
-  {:else}
-    <form on:submit|preventDefault={addNote}>
-      <textarea
-        bind:value={notes}
-        id="notes"
-        defaultalue
-        rows={5}
-        placeholder="Your notes for the song" />
-      <button disabled={!notes}>Add notes</button>
-      <button class="cancel" type="button" on:click={() => (editNotes = false)}>
-        Cancel
-      </button>
-    </form>
-  {/if}
 </section>

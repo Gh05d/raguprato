@@ -90,6 +90,14 @@
       align-items: center;
       justify-content: space-between;
 
+      div {
+        display: flex;
+        flex-flow: column;
+
+        & > a {
+          font-size: 0.6rem;
+        }
+      }
       a {
         margin-left: 3px;
 
@@ -124,10 +132,15 @@
   </Router>
 
   <footer>
-    <span>
-      Created by
-      <a class="fancy-link" href="http://gh05d.de">Gh05d</a>
-    </span>
+    <div>
+      <span>
+        Created by
+        <a class="fancy-link" href="http://gh05d.de">Gh05d</a>
+      </span>
+      <a href="https://icons8.com/icon/45289/down-arrow">
+        Down Arrow icon by Icons8
+      </a>
+    </div>
     <ul>
       {#each socialIcons as { link, symbol }}
         <a target="_blank" href={link} key={symbol}>
