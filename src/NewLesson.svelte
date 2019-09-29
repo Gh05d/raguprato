@@ -2,7 +2,7 @@
   import { navigate } from "svelte-routing";
   import VideoSnippet from "./VideoSnippet.svelte";
   import { YOUTUBE_API } from "../apiKeys.js";
-  import { debounce, apiCall, LESSONS } from "./helpers.js";
+  import { debounce, apiCall, createID, LESSONS } from "./helpers.js";
 
   let values = {
     title: null,
@@ -100,9 +100,7 @@
 
   const handleSubmit = async () => {
     try {
-      values.id = `${values.title}-${Math.random()
-        .toString(36)
-        .substring(7)}`;
+      values.id = `${values.title}-${createID}`;
       let lessons;
       const stringifiedLessons = await localStorage.getItem(LESSONS);
 

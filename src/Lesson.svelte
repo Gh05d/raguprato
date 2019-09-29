@@ -1,6 +1,6 @@
 <script>
-  import { onMount } from "svelte";
-  import { LESSONS } from "./helpers.js";
+  import { onMount, afterUpdate } from "svelte";
+  import { createID, LESSONS } from "./helpers.js";
 
   export let id;
   let lesson;
@@ -8,6 +8,7 @@
   let selectedChord = "";
   let notes = "";
   let editNotes = false;
+  let chordToUpdate = "";
   const chords = ["A", "B", "C", "D", "E", "F", "G"];
 
   async function updateLesson() {
@@ -28,12 +29,15 @@
     }
 
     try {
+      const newChord = { id: createID, chord };
+
       if (lesson.chords) {
-        lesson.chords = [...lesson.chords, chord];
+        lesson.chords = [...lesson.chords, newChord];
       } else {
-        lesson.chords = [chord];
+        lesson.chords = [newChord];
       }
 
+      chordToUpdate = newChord.id;
       await updateLesson();
     } catch (error) {
       console.error(error);
@@ -74,6 +78,13 @@
       notes = lesson.notes;
     } catch (error) {
       console.error(error);
+    }
+  });
+
+  afterUpdate(async () => {
+    if (chordToUpdate) {
+      scales_chords_api_refresh(chordToUpdate);
+      chordToUpdate = "";
     }
   });
 
@@ -165,12 +176,12 @@
 
     <h2>Chords</h2>
     {#if lesson.chords && lesson.chords.length > 0}
-      {#each lesson.chords as chord, i}
+      {#each lesson.chords as { id, chord }, i}
         <div class="chord-holder">
           <button class="naked-button" on:click={() => deleteChord(i)}>
             <i class="fa fa-times" />
           </button>
-          <ins class="scales_chords_api" {chord} />
+          <ins customid={id} class="scales_chords_api" {chord} />
         </div>
       {/each}
     {:else}Select your first chord for the Song{/if}

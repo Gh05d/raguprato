@@ -35,4 +35,8 @@ export const apiCall = async (url, params) => {
   }
 };
 
+export const createID = Math.random()
+  .toString(36)
+  .substring(7);
+
 export const LESSONS = "lessons";
