@@ -19,6 +19,7 @@
 
   let url = "";
   let showNav = false;
+  let windowSize;
 </script>
 
 <style lang="scss">
@@ -44,10 +45,10 @@
       "footer";
 
     header {
+      padding: 0 10px;
       position: relative;
       grid-area: header;
       display: flex;
-      flex-flow: column;
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 2px rgba($color: #000000, $alpha: 0.2);
@@ -55,17 +56,26 @@
       background-size: 400%;
       animation: color-change 20s infinite alternate;
 
-      h1 {
-        text-transform: uppercase;
-        color: black;
-        font-weight: 900;
-        font-style: italic;
-        cursor: pointer;
-      }
+      .slogan {
+        display: flex;
+        align-items: center;
 
-      h2 {
-        font-size: 0.7rem;
-        font-style: italic;
+        i {
+          font-size: 1.3rem;
+        }
+        h1 {
+          text-transform: uppercase;
+          color: black;
+          font-weight: 900;
+          font-style: italic;
+          cursor: pointer;
+        }
+
+        h2 {
+          margin-left: 10px;
+          font-size: 0.7rem;
+          font-style: italic;
+        }
       }
 
       @keyframes color-change {
@@ -128,6 +138,14 @@
     transform: translateX(0);
   }
 
+  @media screen and (min-width: 480px) {
+    .wrapper {
+      header {
+        justify-content: space-between;
+      }
+    }
+  }
+
   @media screen and (min-width: 1200px) {
     .wrapper {
       max-width: 1100px;
@@ -136,14 +154,23 @@
   }
 </style>
 
+<svelte:window bind:innerWidth={windowSize} />
+
 <div class="wrapper">
   <header>
-    <h1 role="button" on:click={() => navigate('/')}>raguprato</h1>
-    <h2>
+    <div class="slogan">
       <i class="fa fa-guitar" />
-      Rad Guitar Practice Tool
-    </h2>
-    <Navigation show={showNav} toggle={() => (showNav = !showNav)} />
+      <h1 role="button" on:click={() => navigate('/')}>raguprato</h1>
+      {#if windowSize > 830}
+        <h2>Rad Guitar Practice Tool</h2>
+      {/if}
+
+    </div>
+    {#if windowSize > 750}
+      <NavItems header={true} />
+    {:else}
+      <Navigation show={showNav} toggle={() => (showNav = !showNav)} />
+    {/if}
   </header>
 
   <Router {url}>

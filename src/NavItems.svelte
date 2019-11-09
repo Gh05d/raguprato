@@ -7,16 +7,27 @@
     { name: "Create new Practice", link: "/practice/new", icon: "plus" }
   ];
 
+  export let header;
   export let close;
 </script>
 
-<style>
+<style lang="scss">
   ul {
     display: flex;
     flex-flow: column;
     justify-content: space-around;
     align-items: center;
     height: 100%;
+  }
+
+  .header {
+    flex-flow: row;
+    justify-content: start;
+
+    button {
+      color: black;
+      margin-bottom: 0;
+    }
   }
 
   button {
@@ -28,11 +39,11 @@
   }
 </style>
 
-<ul>
+<ul class={header ? 'header' : ''}>
   {#each links as { name, link, icon }}
     <li>
       <button
-        class={`fancy-link ${close ? 'modal-nav' : ''}`}
+        class={`${header ? '' : 'fancy-link'} ${close ? 'modal-nav' : ''}`}
         on:click={() => {
           navigate(link);
           if (close) {
