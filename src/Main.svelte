@@ -17,7 +17,7 @@
 <section>
   <p>
     Welcome dear Friend. Click on Practice to train the songs in your library.
-    Or create a new practice lessons. Or if you feel like it, indulge in your
+    Or create a new practice lesson. Or if you feel like it, indulge in your
     victories a.k.a. the songs you have mastered. Have fun.
   </p>
   <NavItems />

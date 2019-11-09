@@ -1,5 +1,6 @@
 <script>
   import { onMount, afterUpdate } from "svelte";
+  import { navigate } from "svelte-routing";
   import { createID, LESSONS, ARROW_SRC } from "./helpers.js";
 
   export let id;
@@ -9,7 +10,13 @@
   let notes = "";
   let editNotes = false;
   let chordToUpdate = "";
-  const chords = ["A", "B", "C", "D", "E", "F", "G"];
+  const basicChords = ["A", "B", "C", "D", "E", "F", "G"];
+  let chords = [];
+  basicChords.forEach(chord => {
+    chords.push(`${chord}b`);
+    chords.push(chord);
+    chords.push(`${chord}#`);
+  });
 
   async function updateLesson() {
     try {
@@ -80,6 +87,28 @@
     }
 
     await updateLesson();
+    e.stopPropagation();
+  }
+
+  async function removeStrum(e) {
+    e.preventDefault();
+    const position = e.dataTransfer.getData("position");
+
+    if (position && lesson.strumming) {
+      lesson.strumming = [
+        ...lesson.strumming.slice(0, position),
+        ...lesson.strumming.slice(parseInt(position) + 1)
+      ];
+    }
+
+    await updateLesson();
+  }
+
+  async function finish() {
+    lesson.finished = true;
+
+    await updateLesson();
+    navigate("/practice");
   }
 
   onMount(() => {
@@ -101,8 +130,6 @@
       chordToUpdate = "";
     }
   });
-
-  $: console.log(lesson);
 </script>
 
 <style lang="scss">
@@ -122,17 +149,37 @@
     font-size: 1.1rem;
   }
 
+  .iframe-wrapper {
+    height: 200px;
+    width: 100%;
+    resize: both;
+    overflow: auto;
+
+    iframe {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .songsterr {
+    margin: 20px 0;
+  }
   .naked-button {
     background: 0;
   }
 
+  .re-open {
+    background-color: orange;
+  }
+
   .chord-holder {
     position: relative;
+    display: inline-block;
 
     .naked-button {
       position: absolute;
       top: -18px;
-      right: 17px;
+      right: -10px;
       color: black;
       cursor: pointer;
       opacity: 0;
@@ -179,20 +226,61 @@
   .arrow-up {
     transform: rotate(180deg);
   }
+
+  form {
+    display: grid;
+    grid-template-areas:
+      "text text text"
+      "button1 button2 .";
+
+    textarea {
+      grid-area: text;
+    }
+
+    button {
+      grid-area: button2;
+
+      &:first-of-type {
+        grid-area: button1;
+      }
+    }
+  }
+
+  button {
+    background: green;
+
+    &:hover {
+      color: #ff6f91;
+    }
+  }
+
+  @media screen and (min-width: 760px) {
+    .iframe-wrapper {
+      height: 300px;
+    }
+
+    .chord-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
 </style>
 
-<section>
+<section on:dragover|preventDefault on:drop|preventDefault={removeStrum}>
   {#if lesson}
     <h1>{lesson.title}</h1>
     {#if lesson.video}
-      <iframe
-        title={lesson.video.kind}
-        class="video"
-        src={`https://www.youtube.com/embed/${lesson.video.videoId}`} />
+      <div class="iframe-wrapper">
+        <iframe
+          allowfullscreen
+          title={lesson.video.kind}
+          class="video"
+          src={`https://www.youtube.com/embed/${lesson.video.videoId}`} />
+      </div>
     {/if}
 
     {#if lesson.tab}
-      <span>
+      <span class="songsterr">
         Go to Songsterr for a tab of
         <a
           target="_blank"
@@ -210,14 +298,16 @@
 
     <h2>Chords</h2>
     {#if lesson.chords && lesson.chords.length > 0}
-      {#each lesson.chords as { id, chord }, i}
-        <div class="chord-holder">
-          <button class="naked-button" on:click={() => deleteChord(i)}>
-            <i class="fa fa-times" />
-          </button>
-          <ins customid={id} class="scales_chords_api" {chord} />
-        </div>
-      {/each}
+      <div class="chord-wrapper">
+        {#each lesson.chords as { id, chord }, i}
+          <div class="chord-holder">
+            <button class="naked-button" on:click={() => deleteChord(i)}>
+              <i class="fa fa-times" />
+            </button>
+            <ins customid={id} class="scales_chords_api" {chord} />
+          </div>
+        {/each}
+      </div>
     {:else}Select your first chord for the Song{/if}
 
     <select
@@ -241,9 +331,11 @@
 
       {#if lesson && lesson.strumming}
         <ul>
-          {#each lesson.strumming as strum}
+          {#each lesson.strumming as strum, i}
             <li>
               <img
+                alt="Arrow"
+                on:dragstart={e => e.dataTransfer.setData('text/plain', i)}
                 width={60}
                 height={80}
                 class={`arrow-${strum}`}
@@ -256,12 +348,13 @@
     <div>Drag and Drop the Arrows to create a Strumming Pattern</div>
     <div>
       <img
-        draggable={true}
+        alt="Arrow down"
         class="arrow-down"
         on:dragstart={e => e.dataTransfer.setData('direction', 'down')}
         src={ARROW_SRC} />
       <img
         class="arrow-up"
+        alt="Arrow down"
         on:dragstart={e => e.dataTransfer.setData('direction', 'up')}
         src={ARROW_SRC} />
     </div>
@@ -288,6 +381,9 @@
         </button>
       </form>
     {/if}
+    <button on:click={finish} class={lesson.finished ? 're-open' : ''}>
+      {#if lesson.finished}Open Lesson{:else}Finish Lesson{/if}
+    </button>
   {:else}
     <div>Sorry, could not load lesson</div>
   {/if}

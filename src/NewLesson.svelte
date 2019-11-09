@@ -225,7 +225,7 @@
       {#if videos}
         {#each videos as video}
           <button
-            text={`Click to ${values.video == video.id ? 'un' : ''}select`}
+            title={`Click to ${values.video == video.id ? 'un' : ''}select`}
             type="button"
             on:click={() => {
               if (values.video) {
@@ -245,10 +245,10 @@
       {#if tabs}
         {#each tabs as tab}
           <button
-            text={`Click to ${values.tab == tab ? 'un' : ''}select`}
+            title={`Click to ${values.tab == tab ? 'un' : ''}select`}
             type="button"
             on:click={() => {
-              if (values.tab) {
+              if (values.tab == tab) {
                 values.tab = null;
               } else {
                 values.tab = tab;

@@ -13,6 +13,7 @@ body {
 body {
   margin: 0;
   padding: 0;
+  background: #f5f5f5;
   box-sizing: border-box;
   font-family: -apple-system, Roboto, BlinkMacSystemFont, "Segoe UI",
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -115,4 +116,8 @@ button:hover {
 button:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+button::-moz-focus-inner {
+  border: 0;
 }

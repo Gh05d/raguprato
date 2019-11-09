@@ -1,11 +1,10 @@
 <script>
-  import { Link } from "svelte-routing";
+  import { Link, navigate } from "svelte-routing";
 
   const links = [
     { name: "Home", link: "/", icon: "home" },
-    { name: "Practice", link: "practice", icon: "guitar" },
-    { name: "Create new Practice", link: "practice/new", icon: "plus" },
-    { name: "Successes", link: "successes", icon: "trophy" }
+    { name: "Practice", link: "/practice", icon: "guitar" },
+    { name: "Create new Practice", link: "/practice/new", icon: "plus" }
   ];
 
   export let close;
@@ -32,18 +31,17 @@
 <ul>
   {#each links as { name, link, icon }}
     <li>
-      <Link to={link}>
-        <button
-          class={`fancy-link ${close ? 'modal-nav' : ''}`}
-          on:click={() => {
-            if (close) {
-              close();
-            }
-          }}>
-          <i class={`fa fa-${icon}`} />
-          {name}
-        </button>
-      </Link>
+      <button
+        class={`fancy-link ${close ? 'modal-nav' : ''}`}
+        on:click={() => {
+          navigate(link);
+          if (close) {
+            close();
+          }
+        }}>
+        <i class={`fa fa-${icon}`} />
+        {name}
+      </button>
     </li>
   {/each}
 </ul>

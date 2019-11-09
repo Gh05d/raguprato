@@ -1,26 +1,9 @@
 <script>
-  import NavItems from "./NavItems.svelte";
-  let show = false;
+  export let show;
+  export let toggle;
 </script>
 
 <style lang="scss">
-  nav {
-    position: fixed;
-    height: 100vh;
-    width: 100vw;
-    visibility: hidden;
-    background: black;
-    opacity: 0.8;
-    transform: translateX(400px);
-    transition: all 300ms ease-in-out;
-    z-index: 2;
-  }
-
-  .show {
-    visibility: visible;
-    transform: translateX(0);
-  }
-
   .nav-button {
     position: absolute;
     background: transparent;
@@ -67,7 +50,7 @@
   }
 </style>
 
-<button on:click={() => (show = !show)} class="nav-button">
+<button on:click={toggle} class="nav-button">
   <div class={show ? 'close' : ''}>
     <div class="nav-button-line" />
     {#if !show}
@@ -76,10 +59,3 @@
     <div class="nav-button-line" />
   </div>
 </button>
-
-<nav class={show ? 'show' : ''}>
-  <NavItems
-    close={() => {
-      show = false;
-    }} />
-</nav>
