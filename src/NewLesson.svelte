@@ -126,9 +126,6 @@
   #container {
     height: 100%;
   }
-  h1 {
-    text-align: center;
-  }
 
   form {
     height: 100%;
@@ -176,14 +173,12 @@
     height: 150px;
     overflow: auto;
     margin-bottom: 10px;
-    display: flex;
-    flex-flow: column;
-    align-items: start;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-gap: 15px;
   }
 
   .empty-button {
-    text-transform: unset;
-
     .tab-preview {
       div {
         text-align: left;
@@ -201,8 +196,9 @@
       font-family: "FontAwesome";
       color: #845ec2;
       position: absolute;
-      top: 8px;
-      right: 6px;
+      top: -1px;
+      right: 58px;
+      background: rgba(0, 0, 0, 0.3);
     }
   }
 </style>
@@ -221,12 +217,12 @@
       </div>
     {/each}
 
-    <div class={`search-result ${videos ? 'show' : ''}`}>
+    <ul class={`search-result ${videos ? 'show' : ''}`}>
       {#if videos}
         {#each videos as video}
-          <button
+          <li
             title={`Click to ${values.video == video.id ? 'un' : ''}select`}
-            type="button"
+            role="button"
             on:click={() => {
               if (values.video) {
                 values.video = null;
@@ -236,10 +232,10 @@
             }}
             class={`empty-button ${values.video == video.id ? 'selected' : ''}`}>
             <VideoSnippet snippet={video.snippet} />
-          </button>
+          </li>
         {/each}
       {/if}
-    </div>
+    </ul>
 
     <div class="search-result">
       {#if tabs}

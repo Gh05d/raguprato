@@ -27,6 +27,10 @@
     button {
       color: black;
       margin-bottom: 0;
+
+      &:focus {
+        outline: 3px solid black;
+      }
     }
   }
 
