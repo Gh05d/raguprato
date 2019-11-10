@@ -3,18 +3,44 @@
   let seconds = 0;
   let running = false;
   let time;
+  var audio = new Audio(
+    "https://interactive-examples.mdn.mozilla.net/media/examples/t-rex-roar.mp3"
+  );
 
   function run() {
+    if (running) {
+      return;
+    }
+    running = true;
+
     if (minutes > 0 || (minutes == 0 && seconds > 0)) {
-      setInterval(() => {
-        minutes--;
-        seconds--;
+      time = setInterval(() => {
+        if (minutes == 0 && seconds == 0) {
+          return stop();
+        }
+
+        if (seconds > 0) {
+          return seconds--;
+        } else if (minutes != 0 && seconds == 0) {
+          seconds = 59;
+        }
+
+        if (minutes > 0) {
+          minutes--;
+        }
       }, 1000);
     }
   }
 
   function stop() {
     clearInterval(time);
+    if (minutes == 0 && seconds == 0) {
+      audio.play();
+    }
+
+    running = false;
+    minutes = 10;
+    seconds = 0;
   }
 </script>
 
@@ -55,6 +81,16 @@
       padding: 0;
     }
 
+    .time {
+      background: #ff6f91;
+      width: $width;
+      height: $height;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     span {
       margin: auto;
       font-size: 1.5rem;
@@ -63,10 +99,9 @@
 </style>
 
 <section>
-  <h1>Click to Start</h1>
-  <form on:submit={() => console.log('fire')}>
+  <form on:submit|preventDefault={() => run()}>
     <div class="controls">
-      <button type="button" on:click={run}>
+      <button on:click={run}>
         <i class="fa fa-play-circle" />
       </button>
       <button type="button" on:click={stop}>
@@ -74,12 +109,13 @@
       </button>
     </div>
     {#if running}
-      <div class="minutes">{minutes > 9 ? minutes : `0${minutes}`}</div>
-      <div class="seconds">{seconds > 9 ? seconds : `0${seconds}`}</div>
-    {:else}
-      <input type="number" bind:value={minutes} class="minutes" />
+      <div class="time">{minutes > 9 ? minutes : `0${minutes}`}</div>
       <span>:</span>
-      <input type="number" bind:value={seconds} class="seconds" />
+      <div class="time">{seconds > 9 ? seconds : `0${seconds}`}</div>
+    {:else}
+      <input min={0} max={60} type="number" bind:value={minutes} />
+      <span>:</span>
+      <input min={0} max={60} type="number" bind:value={seconds} />
     {/if}
   </form>
 </section>
