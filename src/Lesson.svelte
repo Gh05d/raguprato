@@ -1,6 +1,7 @@
 <script>
   import { onMount, afterUpdate } from "svelte";
   import { navigate } from "svelte-routing";
+  import Stopwatch from "./Stopwatch.svelte";
   import { createID, LESSONS, ARROW_SRC } from "./helpers.js";
 
   export let id;
@@ -91,7 +92,6 @@
   }
 
   async function removeStrum(e) {
-    e.preventDefault();
     const position = e.dataTransfer.getData("position");
 
     if (position && lesson.strumming) {
@@ -296,6 +296,8 @@
         src={`http://www.songsterr.com/a/wa/song?id=${lesson.tab.id}`} /> -->
     {/if}
 
+    <Stopwatch />
+
     <h2>Chords</h2>
     {#if lesson.chords && lesson.chords.length > 0}
       <div class="chord-wrapper">
@@ -335,7 +337,7 @@
             <li>
               <img
                 alt="Arrow"
-                on:dragstart={e => e.dataTransfer.setData('text/plain', i)}
+                on:dragstart={e => e.dataTransfer.setData('position', i)}
                 width={60}
                 height={80}
                 class={`arrow-${strum}`}
