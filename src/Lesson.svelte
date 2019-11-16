@@ -1,10 +1,15 @@
 <script>
   import { onMount, afterUpdate } from "svelte";
   import { navigate } from "svelte-routing";
+  import { createID, apiCall, LESSONS, ARROW_SRC } from "./helpers.js";
+  import { YOUTUBE_API } from "../apiKeys.js";
+  import VideoSnippet from "./VideoSnippet.svelte";
   import Stopwatch from "./Stopwatch.svelte";
-  import { createID, LESSONS, ARROW_SRC } from "./helpers.js";
 
   export let id;
+  let videoSearch;
+  let addVideos;
+  let videoError;
   let lesson;
   let lessons;
   let selectedChord = "";
@@ -21,7 +26,7 @@
 
   async function updateLesson() {
     try {
-      const newLessons = lessons.filter(item => item.id == !lesson.id);
+      const newLessons = lessons.filter(item => item.id != lesson.id);
       await localStorage.setItem(
         LESSONS,
         JSON.stringify([...newLessons, lesson])
@@ -111,6 +116,35 @@
     navigate("/practice");
   }
 
+  async function searchYoutube() {
+    if (videoSearch && videoSearch.length > 3) {
+      try {
+        const res = await apiCall(
+          "https://www.googleapis.com/youtube/v3/search",
+          {
+            q: videoSearch,
+            type: "video",
+            key: YOUTUBE_API,
+            part: "snippet",
+            maxResults: 7,
+            topicId: "/m/04rlf"
+          }
+        );
+
+        addVideos = res.items;
+        videoError = null;
+      } catch (error) {
+        videoError = "Oops, couldn't get data from youtube. Sorry :-(";
+      }
+    }
+  }
+
+  function addVideo() {
+    if (lesson.videos) {
+      lesson.videos = [];
+    }
+  }
+
   onMount(() => {
     try {
       const stringifiedLessons = localStorage.getItem(LESSONS);
@@ -166,6 +200,16 @@
   }
   .naked-button {
     background: 0;
+  }
+
+  .video-container {
+    display: flex;
+    max-width: 93vw;
+    overflow: auto;
+
+    li:not(:last-of-type) {
+      margin-right: 50px;
+    }
   }
 
   .re-open {
@@ -269,14 +313,32 @@
 <section on:dragover|preventDefault on:drop|preventDefault={removeStrum}>
   {#if lesson}
     <h1>{lesson.title}</h1>
-    {#if lesson.video}
-      <div class="iframe-wrapper">
-        <iframe
-          allowfullscreen
-          title={lesson.video.kind}
-          class="video"
-          src={`https://www.youtube.com/embed/${lesson.video.videoId}`} />
-      </div>
+    {#if lesson.videos}
+      {#each lesson.videos as video}
+        <div class="iframe-wrapper">
+          <iframe
+            allowfullscreen
+            class="video"
+            src={`https://www.youtube.com/embed/${video}`} />
+        </div>
+      {/each}
+    {:else}
+      <input
+        placeholder="Search another Video"
+        on:input={searchYoutube}
+        bind:value={videoSearch} />
+      <!-- <label class={videoSearch ? 'flying-label' : ''}>
+        Search another Video
+      </label> -->
+      {#if addVideos}
+        <ul class="video-container">
+          {#each addVideos as video}
+            <li role="button" on:click={addVideo}>
+              <VideoSnippet snippet={video.snippet} />
+            </li>
+          {/each}
+        </ul>
+      {/if}
     {/if}
 
     {#if lesson.tab}

@@ -6,7 +6,7 @@
 
   let values = {
     title: null,
-    video: null,
+    videos: [],
     tab: null
   };
 
@@ -58,8 +58,6 @@
 
   async function searchYoutube() {
     if (videoSearch && videoSearch.length > 3) {
-      values.video = null;
-
       try {
         const res = await apiCall(
           "https://www.googleapis.com/youtube/v3/search",
@@ -221,16 +219,21 @@
       {#if videos}
         {#each videos as video}
           <li
-            title={`Click to ${values.video == video.id ? 'un' : ''}select`}
+            title={`Click to ${values.videos.length > 0 && values.videos.find(videoID => videoID == video.id.videoId) ? 'un' : ''}select`}
+            class={`empty-button ${values.videos.length > 0 ? 'selected' : ''}`}
             role="button"
             on:click={() => {
-              if (values.video) {
-                values.video = null;
+              if (values.videos.length > 0) {
+                const alreadyIn = values.videos.find(vid => vid == video.id.videoId);
+                if (alreadyIn) {
+                  values.videos = values.videos.filter(vid => vid != alreadyIn);
+                } else {
+                  values.videos = [...values.videos, video.id.videoId];
+                }
               } else {
-                values.video = video.id;
+                values.videos = [video.id.videoId];
               }
-            }}
-            class={`empty-button ${values.video == video.id ? 'selected' : ''}`}>
+            }}>
             <VideoSnippet snippet={video.snippet} />
           </li>
         {/each}

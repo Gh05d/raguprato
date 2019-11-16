@@ -3,6 +3,7 @@
   let seconds = 0;
   let running = false;
   let time;
+  let alarm;
   var audio = new Audio(
     "https://interactive-examples.mdn.mozilla.net/media/examples/t-rex-roar.mp3"
   );
@@ -12,6 +13,7 @@
       return;
     }
     running = true;
+    clearInterval(alarm);
 
     if (minutes > 0 || (minutes == 0 && seconds > 0)) {
       time = setInterval(() => {
@@ -34,13 +36,21 @@
 
   function stop() {
     clearInterval(time);
+    clearInterval(alarm);
+
     if (minutes == 0 && seconds == 0) {
-      audio.play();
+      alarm = setInterval(() => audio.play(), 1000);
     }
 
     running = false;
     minutes = 10;
     seconds = 0;
+  }
+
+  function stopAlarm() {
+    console.log("FIRE");
+
+    minutes = 10;
   }
 </script>
 
@@ -101,10 +111,10 @@
 <section>
   <form on:submit|preventDefault={() => run()}>
     <div class="controls">
-      <button on:click={run}>
+      <button on:click={alarm ? stopAlarm : run}>
         <i class="fa fa-play-circle" />
       </button>
-      <button type="button" on:click={stop}>
+      <button type="button" on:click={alarm ? stopAlarm : stop}>
         <i class="fa fa-stop-circle" />
       </button>
     </div>
