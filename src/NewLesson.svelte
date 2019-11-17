@@ -7,7 +7,15 @@
   let values = {
     title: null,
     videos: [],
-    tab: null
+    tab: null,
+    coordinates: {
+      0: {},
+      1: {},
+      2: {},
+      3: {},
+      4: {},
+      5: {}
+    }
   };
 
   let videoSearch;
@@ -195,7 +203,7 @@
       color: #845ec2;
       position: absolute;
       top: -1px;
-      right: 58px;
+      left: 225px;
       background: rgba(0, 0, 0, 0.3);
     }
   }
@@ -215,12 +223,13 @@
       </div>
     {/each}
 
-    <ul class={`search-result ${videos ? 'show' : ''}`}>
+    <ul class="search-result">
       {#if videos}
         {#each videos as video}
           <li
             title={`Click to ${values.videos.length > 0 && values.videos.find(videoID => videoID == video.id.videoId) ? 'un' : ''}select`}
-            class={`empty-button ${values.videos.length > 0 ? 'selected' : ''}`}
+            class="empty-button"
+            class:selected={values.videos.length > 0 && values.videos.find(videoID => videoID == video.id.videoId)}
             role="button"
             on:click={() => {
               if (values.videos.length > 0) {

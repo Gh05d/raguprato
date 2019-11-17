@@ -3,6 +3,7 @@
   import { navigate } from "svelte-routing";
   import { createID, apiCall, LESSONS, ARROW_SRC } from "./helpers.js";
   import { YOUTUBE_API } from "../apiKeys.js";
+  import ChordGrid from "./ChordGrid.svelte";
   import VideoSnippet from "./VideoSnippet.svelte";
   import Stopwatch from "./Stopwatch.svelte";
 
@@ -12,6 +13,7 @@
   let videoError;
   let lesson;
   let lessons;
+  let showVideo = 0;
   let selectedChord = "";
   let notes = "";
   let editNotes = false;
@@ -139,9 +141,21 @@
     }
   }
 
-  function addVideo() {
-    if (lesson.videos) {
-      lesson.videos = [];
+  async function addVideo(videoID) {
+    lesson.videos = [...lesson.videos, videoID];
+    addVideos = null;
+    await updateLesson();
+  }
+
+  function changeVideo(count) {
+    if (lesson.videos.length > 1) {
+      if (showVideo + count < 0) {
+        showVideo = lesson.videos.length - 1;
+      } else if (showVideo + count > lesson.videos.length - 1) {
+        showVideo = 0;
+      } else {
+        showVideo += count;
+      }
     }
   }
 
@@ -188,6 +202,16 @@
     width: 100%;
     resize: both;
     overflow: auto;
+    display: flex;
+
+    button {
+      font-size: 2rem;
+      color: black;
+
+      &:hover {
+        color: #ff6f91;
+      }
+    }
 
     iframe {
       width: 100%;
@@ -198,6 +222,7 @@
   .songsterr {
     margin: 20px 0;
   }
+
   .naked-button {
     background: 0;
   }
@@ -313,33 +338,38 @@
 <section on:dragover|preventDefault on:drop|preventDefault={removeStrum}>
   {#if lesson}
     <h1>{lesson.title}</h1>
-    {#if lesson.videos}
-      {#each lesson.videos as video}
-        <div class="iframe-wrapper">
-          <iframe
-            allowfullscreen
-            class="video"
-            src={`https://www.youtube.com/embed/${video}`} />
-        </div>
-      {/each}
-    {:else}
-      <input
-        placeholder="Search another Video"
-        on:input={searchYoutube}
-        bind:value={videoSearch} />
+    {#if lesson.videos.length > 0}
+      <div class="iframe-wrapper">
+        <button on:click={() => changeVideo(-1)} class="naked-button">
+          <i class="fa fa-caret-left" />
+        </button>
+        <iframe
+          allowfullscreen
+          class="video"
+          src={`https://www.youtube.com/embed/${lesson.videos[showVideo]}`} />
+        <button on:click={() => changeVideo(1)} class="naked-button">
+          <i class="fa fa-caret-right" />
+        </button>
+      </div>
+
       <!-- <label class={videoSearch ? 'flying-label' : ''}>
         Search another Video
       </label> -->
       {#if addVideos}
         <ul class="video-container">
           {#each addVideos as video}
-            <li role="button" on:click={addVideo}>
+            <li role="button" on:click={() => addVideo(video.id.videoId)}>
               <VideoSnippet snippet={video.snippet} />
             </li>
           {/each}
         </ul>
       {/if}
     {/if}
+
+    <input
+      placeholder="Search for another Video"
+      on:input={searchYoutube}
+      bind:value={videoSearch} />
 
     {#if lesson.tab}
       <span class="songsterr">
@@ -384,11 +414,13 @@
       {/each}
     </select>
 
+    <ChordGrid {lesson} {updateLesson} />
+
     <h2>Strumming Pattern</h2>
     <div
+      class="strumming"
       on:dragover|preventDefault
-      on:drop|preventDefault={handleDrop}
-      class="strumming">
+      on:drop|preventDefault={handleDrop}>
       {#each [...Array(6)] as i}
         <hr />
       {/each}
