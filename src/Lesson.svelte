@@ -24,6 +24,7 @@
     chords.push(`${chord}b`);
     chords.push(chord);
     chords.push(`${chord}#`);
+    chords.push(`${chord}m`);
   });
 
   async function updateLesson() {
@@ -157,6 +158,30 @@
         showVideo += count;
       }
     }
+  }
+
+  async function addTab() {
+    lesson.coordinates = [
+      ...lesson.coordinates,
+      {
+        0: {},
+        1: {},
+        2: {},
+        3: {},
+        4: {},
+        5: {}
+      }
+    ];
+
+    await updateLesson();
+  }
+
+  async function deleteTab(position) {
+    lesson.coordinates = [
+      ...lesson.coordinates.slice(0, position),
+      ...lesson.coordinates.slice(position + 1)
+    ];
+    await updateLesson();
   }
 
   onMount(() => {
@@ -315,14 +340,6 @@
     }
   }
 
-  button {
-    background: green;
-
-    &:hover {
-      color: #ff6f91;
-    }
-  }
-
   @media screen and (min-width: 760px) {
     .iframe-wrapper {
       height: 300px;
@@ -414,7 +431,11 @@
       {/each}
     </select>
 
-    <ChordGrid {lesson} {updateLesson} />
+    <h2>Tab</h2>
+    {#each lesson.coordinates as coordinates, i}
+      <ChordGrid {coordinates} {updateLesson} {deleteTab} position={i} />
+    {/each}
+    <button on:click={addTab}>add another tab</button>
 
     <h2>Strumming Pattern</h2>
     <div

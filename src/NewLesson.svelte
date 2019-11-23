@@ -8,14 +8,16 @@
     title: null,
     videos: [],
     tab: null,
-    coordinates: {
-      0: {},
-      1: {},
-      2: {},
-      3: {},
-      4: {},
-      5: {}
-    }
+    coordinates: [
+      {
+        0: {},
+        1: {},
+        2: {},
+        3: {},
+        4: {},
+        5: {}
+      }
+    ]
   };
 
   let videoSearch;
@@ -176,12 +178,17 @@
   }
 
   .search-result {
-    height: 150px;
+    height: 0;
     overflow: auto;
     margin-bottom: 10px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 15px;
+    transition: all 300ms ease-in-out;
+
+    &-show {
+      height: 300px;
+    }
   }
 
   .empty-button {
@@ -223,7 +230,7 @@
       </div>
     {/each}
 
-    <ul class="search-result">
+    <ul class={`search-result ${videos ? 'search-result-show' : ''}`}>
       {#if videos}
         {#each videos as video}
           <li

@@ -1,25 +1,27 @@
 <script>
-  export let lesson;
+  export let coordinates;
   export let updateLesson;
-  let { coordinates } = lesson;
+  export let deleteTab;
+  export let position;
 
-  let tabOptions = [1, 2, 3, 4, 5, 6, "x", "p", "h"];
-
+  let tabOptions = [...Array(...Array(17)).map((_, i) => i), "x", "p", "h"];
   let edit = false;
   let showSelection = { x: null, y: null };
 </script>
 
 <style lang="scss">
-  h2 {
-    font-size: 1.1rem;
-  }
-
   .chord-grid {
+    position: relative;
     height: 120px;
     position: relative;
     display: grid;
+    cursor: pointer;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(6, 1fr);
+
+    &:hover .delete {
+      opacity: 1;
+    }
 
     .cell {
       position: relative;
@@ -27,7 +29,7 @@
 
       i {
         position: absolute;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         top: 12px;
         left: 12px;
         opacity: 0;
@@ -37,7 +39,11 @@
         position: absolute;
         color: white;
         top: 12px;
-        left: 16px;
+        left: 18px;
+      }
+
+      .more-space {
+        left: 12px;
       }
 
       .show {
@@ -62,7 +68,11 @@
         left: -44px;
         border: 1px solid black;
         box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-        display: flex;
+        width: 100px;
+        padding: 2px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(15px, 1fr));
+        grid-column-gap: 5px;
         z-index: 1;
         transform-origin: center 60px;
         animation: come-in 500ms ease-in-out forwards;
@@ -83,15 +93,32 @@
         &:after {
           content: "";
           position: absolute;
-          top: 20px;
-          left: 59px;
+          bottom: -16px;
+          left: 49px;
           width: 0;
           height: 0;
-          border-left: 5px solid transparent;
-          border-right: 5px solid transparent;
-          border-top: 10px solid black;
+          border-left: 15px solid transparent;
+          border-right: 15px solid transparent;
+          border-top: 16px solid black;
+        }
+
+        &-start {
+          left: -15px;
+
+          &:after {
+            left: 20px;
+          }
         }
       }
+    }
+
+    .delete {
+      opacity: 0;
+      background: 0;
+      position: absolute;
+      color: black;
+      top: -12px;
+      right: -8px;
     }
   }
 
@@ -116,14 +143,19 @@
   }
 </style>
 
-<h2>Tab</h2>
-
-<div class="chord-grid">
+<div
+  role="button"
+  tabindex="1"
+  class="chord-grid"
+  on:click={() => {
+    edit = !edit;
+    showSelection = { x: null, y: null };
+  }}>
   {#each [...Array(6)] as lineX, x}
     {#each [...Array(10)] as lineY, y}
       <div class="cell">
         <div
-          on:click={() => {
+          on:click|stopPropagation={() => {
             if (edit) {
               showSelection = { x, y };
             }
@@ -133,11 +165,13 @@
           class:edit>
           <i
             class={`fa fa-circle ${edit && showSelection.x == x && showSelection.y == y ? 'selected' : ''} ${coordinates[x][y] || edit ? 'show' : ''}`} />
-          <span>{coordinates[x][y] || ''}</span>
+          <span class={coordinates[x][y] > 9 ? 'more-space' : ''}>
+            {coordinates[x][y] || ''}
+          </span>
         </div>
 
         {#if edit && showSelection.x == x && showSelection.y == y}
-          <ul style={y == 0 ? 'left: -15px' : ''} class="selection">
+          <ul class={`selection ${y == 0 ? 'selection-start' : ''}`}>
             {#each tabOptions as option}
               <li
                 on:click={() => {
@@ -165,12 +199,8 @@
       </div>
     {/each}
   {/each}
-</div>
 
-<button
-  on:click={() => {
-    edit = !edit;
-    showSelection = { x: null, y: null };
-  }}>
-  {edit ? 'confirm' : 'Edit tab'}
-</button>
+  <button on:click={() => deleteTab(position)} class="naked-button delete">
+    <i class="fa fa-trash-alt" />
+  </button>
+</div>
