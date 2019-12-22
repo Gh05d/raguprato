@@ -15,6 +15,10 @@
     running = true;
     clearInterval(alarm);
 
+    timer();
+  }
+
+  function timer() {
     if (minutes > 0 || (minutes == 0 && seconds > 0)) {
       time = setInterval(() => {
         if (minutes == 0 && seconds == 0) {
@@ -47,9 +51,17 @@
     seconds = 0;
   }
 
-  function stopAlarm() {
-    console.log("FIRE");
+  function pauseAlarm() {
+    if (running) {
+      clearInterval(time);
+      running = false;
+    } else {
+      running = true;
+      timer();
+    }
+  }
 
+  function stopAlarm() {
     minutes = 10;
   }
 </script>
@@ -61,15 +73,14 @@
   form {
     position: relative;
     display: inline-flex;
-    border: 1px solid black;
-    border-radius: 50%;
+    box-shadow: 5px 5px 2px rgba(0, 0, 0, 0.6);
     overflow: hidden;
     background: #ff6f91;
 
     .controls {
       position: absolute;
       top: 15px;
-      left: 45px;
+      left: 35px;
 
       button {
         padding: 0;
@@ -113,6 +124,9 @@
     <div class="controls">
       <button on:click={alarm ? stopAlarm : run}>
         <i class="fa fa-play-circle" />
+      </button>
+      <button type="button" on:click={pauseAlarm}>
+        <i class="fa fa-pause-circle" />
       </button>
       <button type="button" on:click={alarm ? stopAlarm : stop}>
         <i class="fa fa-stop-circle" />

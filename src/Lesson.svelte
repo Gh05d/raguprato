@@ -15,17 +15,8 @@
   let lessons;
   let showVideo = 0;
   let selectedChord = "";
-  let notes = "";
-  let editNotes = false;
   let chordToUpdate = "";
-  const basicChords = ["A", "B", "C", "D", "E", "F", "G"];
-  let chords = [];
-  basicChords.forEach(chord => {
-    chords.push(`${chord}b`);
-    chords.push(chord);
-    chords.push(`${chord}#`);
-    chords.push(`${chord}m`);
-  });
+  let notes = "";
 
   async function updateLesson() {
     try {
@@ -54,6 +45,7 @@
       }
 
       chordToUpdate = newChord.id;
+      selectedChord = "";
       await updateLesson();
     } catch (error) {
       console.error(error);
@@ -74,10 +66,9 @@
     }
   }
 
-  async function addNote() {
+  async function addNotes(notes) {
     try {
       lesson.notes = notes;
-      editNotes = false;
 
       await updateLesson();
     } catch (error) {
@@ -182,6 +173,10 @@
       ...lesson.coordinates.slice(position + 1)
     ];
     await updateLesson();
+  }
+
+  async function showPreview() {
+    scales_chords_api_refresh("chord-preview");
   }
 
   onMount(() => {
@@ -340,6 +335,19 @@
     }
   }
 
+  #chord-preview-input {
+    margin: 0;
+  }
+
+  .chord-preview-button {
+    background: 0;
+    text-align: left;
+
+    &:hover {
+      box-shadow: unset;
+    }
+  }
+
   @media screen and (min-width: 760px) {
     .iframe-wrapper {
       height: 300px;
@@ -421,17 +429,27 @@
       </div>
     {:else}Select your first chord for the Song{/if}
 
-    <select
+    <label for="chord-preview-input">
+      Search for a chord and click on it to add it
+    </label>
+    <input
+      id="chord-preview-input"
       bind:value={selectedChord}
-      id="chords"
-      on:change={e => addChord(e.target.value)}>
-      <option value="">Add a chord</option>
-      {#each chords as chord}
-        <option value={chord}>{chord}</option>
-      {/each}
-    </select>
+      placeholder="D#m(maj9)"
+      on:change={e => showPreview(e.target.value)} />
 
-    <h2>Tab</h2>
+    {#if selectedChord}
+      <button
+        class="chord-preview-button"
+        on:click={() => addChord(selectedChord)}>
+        <ins
+          customid="chord-preview"
+          class="scales_chords_api"
+          chord={selectedChord} />
+      </button>
+    {/if}
+
+    <h2 style="margin-top: 20px;">Tab</h2>
     {#each lesson.coordinates as coordinates, i}
       <ChordGrid {coordinates} {updateLesson} {deleteTab} position={i} />
     {/each}
@@ -477,27 +495,13 @@
     </div>
 
     <label for="notes">Notes about the Song</label>
-    {#if lesson && lesson.notes && !editNotes}
-      <div class="notes" on:click={() => (editNotes = true)}>
-        {lesson.notes}
-      </div>
-    {:else}
-      <form on:submit|preventDefault={addNote}>
-        <textarea
-          bind:value={notes}
-          id="notes"
-          defaultalue
-          rows={5}
-          placeholder="Your notes for the song" />
-        <button disabled={!notes}>Add notes</button>
-        <button
-          class="cancel"
-          type="button"
-          on:click={() => (editNotes = false)}>
-          Cancel
-        </button>
-      </form>
-    {/if}
+    <textarea
+      bind:value={notes}
+      on:change={e => addNotes(e.target.value)}
+      id="notes"
+      rows={5}
+      placeholder="Your notes for the song" />
+
     <button on:click={finish} class={lesson.finished ? 're-open' : ''}>
       {#if lesson.finished}Open Lesson{:else}Finish Lesson{/if}
     </button>

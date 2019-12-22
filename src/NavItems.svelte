@@ -27,15 +27,12 @@
     button {
       color: black;
       margin-bottom: 0;
-
-      &:focus {
-        outline: 3px solid black;
-      }
     }
   }
 
   button {
     background: 0;
+    position: relative;
   }
 
   .modal-nav:hover {

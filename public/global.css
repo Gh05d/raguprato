@@ -99,7 +99,6 @@ button {
   text-transform: uppercase;
   padding: 10px 5px;
   background: #ff6f91;
-  color: white;
   border-radius: 4px;
 }
 
@@ -109,8 +108,8 @@ button:active {
 
 button:focus,
 button:hover {
-  background: #ffc75f;
   color: black;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 button:disabled {
