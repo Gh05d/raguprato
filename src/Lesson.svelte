@@ -104,7 +104,11 @@
   }
 
   async function finish() {
-    lesson.finished = true;
+    if ("finished" in lesson) {
+      lesson.finished = !lesson.finished;
+    } else {
+      lesson.finished = true;
+    }
 
     await updateLesson();
     navigate("/practice");
@@ -436,7 +440,7 @@
       id="chord-preview-input"
       bind:value={selectedChord}
       placeholder="D#m(maj9)"
-      on:change={e => showPreview(e.target.value)} />
+      on:change={showPreview} />
 
     {#if selectedChord}
       <button

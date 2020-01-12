@@ -1,4 +1,6 @@
 <script>
+  import { onDestroy } from "svelte";
+
   let minutes = 10;
   let seconds = 0;
   let running = false;
@@ -64,6 +66,8 @@
   function stopAlarm() {
     minutes = 10;
   }
+
+  onDestroy(() => clearInterval(time));
 </script>
 
 <style lang="scss">
