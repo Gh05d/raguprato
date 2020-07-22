@@ -1,6 +1,10 @@
 {
   "name": "raguprato",
   "version": "1.4.0",
+  "author": {
+    "name": "Gh05d",
+    "email": "clap@mailbox.org"
+  },
   "devDependencies": {
     "node-sass": "^4.12.0",
     "npm-run-all": "^4.1.5",
@@ -15,8 +19,7 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
-    "sirv-cli": "^0.4.4",
-    "svelte-routing": "^1.4.0"
+    "sirv-cli": "^0.4.4"
   },
   "scripts": {
     "build": "rollup -c",

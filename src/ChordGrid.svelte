@@ -37,7 +37,7 @@
 
       span {
         position: absolute;
-        color: white;
+        color: black;
         top: 12px;
         left: 18px;
       }
@@ -63,6 +63,7 @@
       }
 
       .selection {
+        color: black;
         position: absolute;
         bottom: 20px;
         left: -44px;

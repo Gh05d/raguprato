@@ -1,6 +1,5 @@
 <script>
   import { onMount, afterUpdate } from "svelte";
-  import { navigate } from "svelte-routing";
   import { createID, apiCall, LESSONS, ARROW_SRC } from "./helpers.js";
   import { YOUTUBE_API } from "../apiKeys.js";
   import ChordGrid from "./ChordGrid.svelte";
@@ -56,7 +55,7 @@
     try {
       const newChords = [
         ...lesson.chords.slice(0, chordPosition),
-        ...lesson.chords.slice(chordPosition + 1)
+        ...lesson.chords.slice(chordPosition + 1),
       ];
       lesson.chords = [...newChords];
 
@@ -96,7 +95,7 @@
     if (position && lesson.strumming) {
       lesson.strumming = [
         ...lesson.strumming.slice(0, position),
-        ...lesson.strumming.slice(parseInt(position) + 1)
+        ...lesson.strumming.slice(parseInt(position) + 1),
       ];
     }
 
@@ -111,7 +110,7 @@
     }
 
     await updateLesson();
-    navigate("/practice");
+    navigate("/");
   }
 
   async function searchYoutube() {
@@ -125,7 +124,7 @@
             key: YOUTUBE_API,
             part: "snippet",
             maxResults: 7,
-            topicId: "/m/04rlf"
+            topicId: "/m/04rlf",
           }
         );
 
@@ -164,8 +163,8 @@
         2: {},
         3: {},
         4: {},
-        5: {}
-      }
+        5: {},
+      },
     ];
 
     await updateLesson();
@@ -174,7 +173,7 @@
   async function deleteTab(position) {
     lesson.coordinates = [
       ...lesson.coordinates.slice(0, position),
-      ...lesson.coordinates.slice(position + 1)
+      ...lesson.coordinates.slice(position + 1),
     ];
     await updateLesson();
   }

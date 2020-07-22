@@ -1,8 +1,9 @@
 <script>
-  import { navigate } from "svelte-routing";
   import VideoSnippet from "./VideoSnippet.svelte";
   import { YOUTUBE_API } from "../apiKeys.js";
   import { debounce, apiCall, createID, LESSONS } from "./helpers.js";
+
+  export let navigate;
 
   let values = {
     title: null,
@@ -15,9 +16,9 @@
         2: {},
         3: {},
         4: {},
-        5: {}
-      }
-    ]
+        5: {},
+      },
+    ],
   };
 
   let videoSearch;
@@ -35,7 +36,7 @@
       },
       set value(val) {
         values.title = val;
-      }
+      },
     },
     {
       label: "Search Youtube",
@@ -51,7 +52,7 @@
       },
       set error(err) {
         videoError = err;
-      }
+      },
     },
     {
       label: "Search Songsterr",
@@ -62,8 +63,8 @@
         tabSearch = val;
       },
       func: debounce(searchSongsterr, 300),
-      error: tabError
-    }
+      error: tabError,
+    },
   ];
 
   async function searchYoutube() {
@@ -77,10 +78,11 @@
             key: YOUTUBE_API,
             part: "snippet",
             maxResults: 7,
-            topicId: "/m/04rlf"
+            topicId: "/m/04rlf",
           }
         );
 
+        tabs = null;
         videos = res.items;
         videoError = null;
       } catch (error) {
@@ -92,11 +94,13 @@
   async function searchSongsterr() {
     if (tabSearch && tabSearch.length > 3) {
       values.tab = null;
+      videos = null;
 
       try {
         const res = await apiCall("http://www.songsterr.com/a/ra/songs.json", {
-          pattern: tabSearch
+          pattern: tabSearch,
         });
+        console.log("FIRE: searchSongsterr -> res", res);
 
         tabs = res > 7 ? res.slice(0, 7) : res;
         tabError = null;
@@ -121,7 +125,7 @@
 
       await localStorage.setItem(LESSONS, JSON.stringify(lessons));
 
-      navigate("/practice");
+      navigate("lesson", values.id);
     } catch (err) {
       console.error(err);
     }
@@ -256,10 +260,12 @@
       {/if}
     </ul>
 
-    <div class="search-result">
+    <ul class="search-result" class:search-result-show={tabs}>
       {#if tabs}
         {#each tabs as tab}
           <button
+            class="empty-button"
+            class:selected={values.tab == tab}
             title={`Click to ${values.tab == tab ? 'un' : ''}select`}
             type="button"
             on:click={() => {
@@ -268,8 +274,7 @@
               } else {
                 values.tab = tab;
               }
-            }}
-            class={`empty-button ${values.tab == tab ? 'selected' : ''}`}>
+            }}>
             <section class="tab-preview">
               <div>{tab.artist.name}</div>
               <div>{tab.title}</div>
@@ -277,7 +282,7 @@
           </button>
         {/each}
       {/if}
-    </div>
+    </ul>
 
     <button disabled={!values.title || values.title == ''} type="submit">
       Save Lesson

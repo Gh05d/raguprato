@@ -1,12 +1,13 @@
 <script>
   import { onMount } from "svelte";
-  import { Link } from "svelte-routing";
   import { LESSONS } from "./helpers.js";
 
+  export let navigate;
   let lessons;
 
   onMount(() => {
     const stringifiedLessons = localStorage.getItem(LESSONS);
+    console.log("FIRE: stringifiedLessons", stringifiedLessons);
 
     if (stringifiedLessons) {
       lessons = JSON.parse(stringifiedLessons);
@@ -45,11 +46,17 @@
 
   .naked-button {
     color: black;
-    background: 0;
+    background: unset;
 
     &:hover {
       transform: translate(1px, -2px);
     }
+  }
+
+  .fancy-link {
+    background-color: unset;
+    color: white;
+    padding: 0;
   }
 </style>
 
@@ -59,7 +66,9 @@
     <ul>
       {#each lessons as { id, title, finished }}
         <li class="lesson">
-          <Link to={`/practice/${id}`}>{title}</Link>
+          <button class="fancy-link" on:click={() => navigate('lesson', id)}>
+            {title}
+          </button>
           {#if finished}
             <i
               title="Congrats, you finished this lesson"
@@ -76,8 +85,6 @@
     </ul>
   {:else}
     <div>No lessons yet</div>
-    <Link getProps={() => ({ style })} to="/practice/new">
-      Create a new One
-    </Link>
+    <button on:click={() => navigate('new')}>Create a new One</button>
   {/if}
 </section>

@@ -1,14 +1,12 @@
 <script>
-  import { Link, navigate } from "svelte-routing";
+  export let header = false;
+  export let close = null;
+  export let navigate;
 
   const links = [
-    { name: "Home", link: "/", icon: "home" },
-    { name: "Practice", link: "/practice", icon: "guitar" },
-    { name: "Create new Practice", link: "/practice/new", icon: "plus" }
+    { name: "Practice", path: "/", icon: "guitar" },
+    { name: "Create new Practice", path: "new", icon: "plus" },
   ];
-
-  export let header;
-  export let close;
 </script>
 
 <style lang="scss">
@@ -41,12 +39,12 @@
 </style>
 
 <ul class={header ? 'header' : ''}>
-  {#each links as { name, link, icon }}
+  {#each links as { name, path, icon }}
     <li>
       <button
         class={`${header ? '' : 'fancy-link'} ${close ? 'modal-nav' : ''}`}
         on:click={() => {
-          navigate(link);
+          navigate(path);
           if (close) {
             close();
           }

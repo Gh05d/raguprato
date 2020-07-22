@@ -1,7 +1,5 @@
 <script>
   import Navigation from "./Navigation.svelte";
-  import { Router, Route, navigate } from "svelte-routing";
-  import Main from "./Main.svelte";
   import Lessons from "./Lessons.svelte";
   import NewLesson from "./NewLesson.svelte";
   import Lesson from "./Lesson.svelte";
@@ -12,14 +10,20 @@
     { link: "https://www.freecodecamp.org/gh05d", symbol: "free-code-camp" },
     {
       link: "https://www.linkedin.com/in/pascal-clanget-545956ba/",
-      symbol: "linkedin"
+      symbol: "linkedin",
     },
-    { link: "https://www.instagram.com/gh05d/?hl=de", symbol: "instagram" }
+    { link: "https://www.instagram.com/gh05d/?hl=de", symbol: "instagram" },
   ];
 
-  let url = "";
   let showNav = false;
   let windowSize;
+  let currentRoute = "/";
+  let lessonID = null;
+
+  function navigate(path, id = null) {
+    currentRoute = path;
+    lessonID = id;
+  }
 </script>
 
 <style lang="scss">
@@ -95,7 +99,7 @@
       background-image: url("background-image.jpg");
       background-size: cover;
       background-position: center;
-      opacity: 0.9;
+      opacity: 0.8;
     }
 
     footer {
@@ -172,22 +176,21 @@
 
     </div>
     {#if windowSize > 750}
-      <NavItems header={true} />
+      <NavItems {navigate} header={true} />
     {:else}
       <Navigation show={showNav} toggle={() => (showNav = !showNav)} />
     {/if}
   </header>
 
-  <Router {url}>
-    <main>
-      <Route path="/" component={Main} />
-      <Route path="practice" component={Lessons} />
-      <Route path="practice/new" component={NewLesson} />
-      <Route path="practice/:id" let:params>
-        <Lesson id={params.id} />
-      </Route>
-    </main>
-  </Router>
+  <main>
+    {#if currentRoute == 'lesson'}
+      <Lesson id={lessonID} />
+    {:else if currentRoute == 'new'}
+      <NewLesson {navigate} />
+    {:else}
+      <Lessons {navigate} />
+    {/if}
+  </main>
 
   <footer>
     <div>
@@ -209,6 +212,6 @@
   </footer>
 
   <nav class={showNav ? 'show' : ''}>
-    <NavItems close={() => (showNav = false)} />
+    <NavItems close={() => (showNav = false)} {navigate} />
   </nav>
 </div>
