@@ -4,8 +4,11 @@
   import { debounce, apiCall, createID, LESSONS } from "./helpers.js";
 
   export let navigate;
+  let test = localStorage.getItem("lessons");
+  console.log("FIRE ~ file: NewLesson.svelte ~ line 8 ~ test", test);
 
   let values = {
+    artist: "",
     title: null,
     videos: [],
     tab: null,
@@ -36,6 +39,15 @@
       },
       set value(val) {
         values.title = val;
+      },
+    },
+    {
+      label: "Artist",
+      get value() {
+        return values.artist;
+      },
+      set value(val) {
+        values.artist = val;
       },
     },
     {
@@ -132,6 +144,86 @@
   };
 </script>
 
+<section id="container">
+  <h1>Create a new Lesson</h1>
+
+  <form on:submit|preventDefault={handleSubmit}>
+    {#each inputs as { value, label, func, error }}
+      <div class="input-container">
+        <input on:input={func} bind:value />
+        <label class={value ? "flying-label" : ""}>{label}</label>
+        {#if error}
+          <div class="error">{error}</div>
+        {/if}
+      </div>
+    {/each}
+
+    <ul class={`search-result ${videos ? "search-result-show" : ""}`}>
+      {#if videos}
+        {#each videos as video}
+          <li
+            title={`Click to ${
+              values.videos.length > 0 &&
+              values.videos.find(videoID => videoID == video.id.videoId)
+                ? "un"
+                : ""
+            }select`}
+            class="empty-button"
+            class:selected={values.videos.length > 0 &&
+              values.videos.find(videoID => videoID == video.id.videoId)}
+            role="button"
+            on:click={() => {
+              if (values.videos.length > 0) {
+                const alreadyIn = values.videos.find(
+                  vid => vid == video.id.videoId
+                );
+                if (alreadyIn) {
+                  values.videos = values.videos.filter(vid => vid != alreadyIn);
+                } else {
+                  values.videos = [...values.videos, video.id.videoId];
+                }
+              } else {
+                values.videos = [video.id.videoId];
+              }
+            }}
+          >
+            <VideoSnippet snippet={video.snippet} />
+          </li>
+        {/each}
+      {/if}
+    </ul>
+
+    <ul class="search-result" class:search-result-show={tabs}>
+      {#if tabs}
+        {#each tabs as tab}
+          <button
+            class="empty-button"
+            class:selected={values.tab == tab}
+            title={`Click to ${values.tab == tab ? "un" : ""}select`}
+            type="button"
+            on:click={() => {
+              if (values.tab == tab) {
+                values.tab = null;
+              } else {
+                values.tab = tab;
+              }
+            }}
+          >
+            <section class="tab-preview">
+              <div>{tab.artist.name}</div>
+              <div>{tab.title}</div>
+            </section>
+          </button>
+        {/each}
+      {/if}
+    </ul>
+
+    <button disabled={!values.title || values.title == ""} type="submit">
+      Save Lesson
+    </button>
+  </form>
+</section>
+
 <style lang="scss">
   $inputColor: #ff6f91;
 
@@ -219,73 +311,3 @@
     }
   }
 </style>
-
-<section id="container">
-  <h1>Create a new Lesson</h1>
-
-  <form on:submit|preventDefault={handleSubmit}>
-    {#each inputs as { value, label, func, error }}
-      <div class="input-container">
-        <input on:input={func} bind:value />
-        <label class={value ? 'flying-label' : ''}>{label}</label>
-        {#if error}
-          <div class="error">{error}</div>
-        {/if}
-      </div>
-    {/each}
-
-    <ul class={`search-result ${videos ? 'search-result-show' : ''}`}>
-      {#if videos}
-        {#each videos as video}
-          <li
-            title={`Click to ${values.videos.length > 0 && values.videos.find(videoID => videoID == video.id.videoId) ? 'un' : ''}select`}
-            class="empty-button"
-            class:selected={values.videos.length > 0 && values.videos.find(videoID => videoID == video.id.videoId)}
-            role="button"
-            on:click={() => {
-              if (values.videos.length > 0) {
-                const alreadyIn = values.videos.find(vid => vid == video.id.videoId);
-                if (alreadyIn) {
-                  values.videos = values.videos.filter(vid => vid != alreadyIn);
-                } else {
-                  values.videos = [...values.videos, video.id.videoId];
-                }
-              } else {
-                values.videos = [video.id.videoId];
-              }
-            }}>
-            <VideoSnippet snippet={video.snippet} />
-          </li>
-        {/each}
-      {/if}
-    </ul>
-
-    <ul class="search-result" class:search-result-show={tabs}>
-      {#if tabs}
-        {#each tabs as tab}
-          <button
-            class="empty-button"
-            class:selected={values.tab == tab}
-            title={`Click to ${values.tab == tab ? 'un' : ''}select`}
-            type="button"
-            on:click={() => {
-              if (values.tab == tab) {
-                values.tab = null;
-              } else {
-                values.tab = tab;
-              }
-            }}>
-            <section class="tab-preview">
-              <div>{tab.artist.name}</div>
-              <div>{tab.title}</div>
-            </section>
-          </button>
-        {/each}
-      {/if}
-    </ul>
-
-    <button disabled={!values.title || values.title == ''} type="submit">
-      Save Lesson
-    </button>
-  </form>
-</section>

@@ -7,7 +7,6 @@
 
   onMount(() => {
     const stringifiedLessons = localStorage.getItem(LESSONS);
-    console.log("FIRE: stringifiedLessons", stringifiedLessons);
 
     if (stringifiedLessons) {
       lessons = JSON.parse(stringifiedLessons);
@@ -20,15 +19,38 @@
     lessons = newLessons;
     localStorage.setItem(LESSONS, newLessons);
   }
-
-  const style = `
-    text-transform: uppercase;
-    padding: 10px 5px;
-    background: #ff6f91;
-    color: white;
-    border-radius: 4px;
-    `;
 </script>
+
+<section>
+  <h1>Click a Lesson to start practicing</h1>
+  {#if lessons && lessons.length > 0}
+    <ul>
+      {#each lessons as { id, title, finished }}
+        <li class="lesson">
+          <button class="fancy-link" on:click={() => navigate("lesson", id)}>
+            {title}
+          </button>
+          {#if finished}
+            <i
+              title="Congrats, you finished this lesson"
+              class="fa fa-trophy"
+            />
+          {/if}
+          <button
+            on:click={() => deleteLesson(id)}
+            title="Delete Lesson"
+            class="naked-button"
+          >
+            <i class="fa fa-trash-alt" />
+          </button>
+        </li>
+      {/each}
+    </ul>
+  {:else}
+    <div>No lessons yet</div>
+    <button on:click={() => navigate("new")}>Create a new One</button>
+  {/if}
+</section>
 
 <style lang="scss">
   div {
@@ -55,36 +77,6 @@
 
   .fancy-link {
     background-color: unset;
-    color: white;
     padding: 0;
   }
 </style>
-
-<section>
-  <h1>Click a Lesson to start practicing</h1>
-  {#if lessons && lessons.length > 0}
-    <ul>
-      {#each lessons as { id, title, finished }}
-        <li class="lesson">
-          <button class="fancy-link" on:click={() => navigate('lesson', id)}>
-            {title}
-          </button>
-          {#if finished}
-            <i
-              title="Congrats, you finished this lesson"
-              class="fa fa-trophy" />
-          {/if}
-          <button
-            on:click={() => deleteLesson(id)}
-            title="Delete Lesson"
-            class="naked-button">
-            <i class="fa fa-trash-alt" />
-          </button>
-        </li>
-      {/each}
-    </ul>
-  {:else}
-    <div>No lessons yet</div>
-    <button on:click={() => navigate('new')}>Create a new One</button>
-  {/if}
-</section>

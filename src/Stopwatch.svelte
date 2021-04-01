@@ -6,9 +6,11 @@
   let running = false;
   let time;
   let alarm;
-  var audio = new Audio(
-    "https://interactive-examples.mdn.mozilla.net/media/examples/t-rex-roar.mp3"
-  );
+  const audio = new Audio("Herbert-03.wav");
+
+  $: normalizedMinutes = minutes > 9 ? minutes : `0${minutes}`;
+  $: normalizedSeconds = seconds > 9 ? seconds : `0${seconds}`;
+  $: title = `${normalizedMinutes}:${normalizedSeconds}`;
 
   function run() {
     if (running) {
@@ -67,7 +69,10 @@
     minutes = 10;
   }
 
-  onDestroy(() => clearInterval(time));
+  onDestroy(() => {
+    clearInterval(time);
+    title = "Raguprato";
+  });
 </script>
 
 <style lang="scss">
@@ -123,8 +128,12 @@
   }
 </style>
 
+<svelte:head>
+  <title>{title}</title>
+</svelte:head>
+
 <section>
-  <form on:submit|preventDefault={() => run()}>
+  <form on:submit|preventDefault={run}>
     <div class="controls">
       <button on:click={alarm ? stopAlarm : run}>
         <i class="fa fa-play-circle" />
@@ -137,9 +146,9 @@
       </button>
     </div>
     {#if running}
-      <div class="time">{minutes > 9 ? minutes : `0${minutes}`}</div>
+      <div class="time">{normalizedMinutes}</div>
       <span>:</span>
-      <div class="time">{seconds > 9 ? seconds : `0${seconds}`}</div>
+      <div class="time">{normalizedSeconds}</div>
     {:else}
       <input min={0} max={60} type="number" bind:value={minutes} />
       <span>:</span>

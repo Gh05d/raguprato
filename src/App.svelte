@@ -26,6 +26,58 @@
   }
 </script>
 
+<svelte:window bind:innerWidth={windowSize} />
+
+<div class="wrapper">
+  <header>
+    <div class="slogan">
+      <i class="fa fa-guitar" />
+      <h1 role="button" on:click={() => navigate("/")}>raguprato</h1>
+      {#if windowSize > 830}
+        <h2>Rad Guitar Practice Tool</h2>
+      {/if}
+    </div>
+    {#if windowSize > 750}
+      <NavItems {navigate} header={true} />
+    {:else}
+      <Navigation show={showNav} toggle={() => (showNav = !showNav)} />
+    {/if}
+  </header>
+
+  <main>
+    {#if currentRoute == "lesson"}
+      <Lesson id={lessonID} />
+    {:else if currentRoute == "new"}
+      <NewLesson {navigate} />
+    {:else}
+      <Lessons {navigate} />
+    {/if}
+  </main>
+
+  <footer>
+    <div>
+      <span>
+        Created by
+        <a class="fancy-link" href="http://gh05d.de">Gh05d</a>
+      </span>
+      <a href="https://icons8.com/icon/45289/down-arrow">
+        Down Arrow icon by Icons8
+      </a>
+    </div>
+    <ul>
+      {#each socialIcons as { link, symbol }}
+        <a target="_blank" href={link} key={symbol}>
+          <i class={`fab fa-${symbol}`} />
+        </a>
+      {/each}
+    </ul>
+  </footer>
+
+  <nav class={showNav ? "show" : ""}>
+    <NavItems close={() => (showNav = false)} {navigate} />
+  </nav>
+</div>
+
 <style lang="scss">
   :root {
     --gradient: linear-gradient(
@@ -96,10 +148,8 @@
     main {
       grid-area: main;
       padding: 20px;
-      background-image: url("background-image.jpg");
-      background-size: cover;
-      background-position: center;
-      opacity: 0.8;
+      background: #f2f7fb;
+      position: relative;
     }
 
     footer {
@@ -162,56 +212,3 @@
     }
   }
 </style>
-
-<svelte:window bind:innerWidth={windowSize} />
-
-<div class="wrapper">
-  <header>
-    <div class="slogan">
-      <i class="fa fa-guitar" />
-      <h1 role="button" on:click={() => navigate('/')}>raguprato</h1>
-      {#if windowSize > 830}
-        <h2>Rad Guitar Practice Tool</h2>
-      {/if}
-
-    </div>
-    {#if windowSize > 750}
-      <NavItems {navigate} header={true} />
-    {:else}
-      <Navigation show={showNav} toggle={() => (showNav = !showNav)} />
-    {/if}
-  </header>
-
-  <main>
-    {#if currentRoute == 'lesson'}
-      <Lesson id={lessonID} />
-    {:else if currentRoute == 'new'}
-      <NewLesson {navigate} />
-    {:else}
-      <Lessons {navigate} />
-    {/if}
-  </main>
-
-  <footer>
-    <div>
-      <span>
-        Created by
-        <a class="fancy-link" href="http://gh05d.de">Gh05d</a>
-      </span>
-      <a href="https://icons8.com/icon/45289/down-arrow">
-        Down Arrow icon by Icons8
-      </a>
-    </div>
-    <ul>
-      {#each socialIcons as { link, symbol }}
-        <a target="_blank" href={link} key={symbol}>
-          <i class={`fab fa-${symbol}`} />
-        </a>
-      {/each}
-    </ul>
-  </footer>
-
-  <nav class={showNav ? 'show' : ''}>
-    <NavItems close={() => (showNav = false)} {navigate} />
-  </nav>
-</div>

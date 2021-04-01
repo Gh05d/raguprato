@@ -5,6 +5,7 @@
   import ChordGrid from "./ChordGrid.svelte";
   import VideoSnippet from "./VideoSnippet.svelte";
   import Stopwatch from "./Stopwatch.svelte";
+  import Visualizer from "./Visualizer.svelte";
 
   export let id;
   let videoSearch;
@@ -203,6 +204,169 @@
   });
 </script>
 
+<section on:dragover|preventDefault on:drop|preventDefault={removeStrum}>
+  {#if lesson}
+    <h1>{`${lesson.title} - ${lesson.artist}`}</h1>
+    {#if lesson.videos.length > 0}
+      <div class="iframe-wrapper">
+        <button on:click={() => changeVideo(-1)} class="naked-button">
+          <i class="fa fa-caret-left" />
+        </button>
+        <iframe
+          allowfullscreen
+          class="video"
+          src={`https://www.youtube.com/embed/${lesson.videos[showVideo]}`}
+        />
+        <button on:click={() => changeVideo(1)} class="naked-button">
+          <i class="fa fa-caret-right" />
+        </button>
+      </div>
+
+      <!-- <label class={videoSearch ? 'flying-label' : ''}>
+        Search another Video
+      </label> -->
+      {#if addVideos}
+        <ul class="video-container">
+          {#each addVideos as video}
+            <li role="button" on:click={() => addVideo(video.id.videoId)}>
+              <VideoSnippet snippet={video.snippet} />
+            </li>
+          {/each}
+        </ul>
+      {/if}
+    {/if}
+
+    <input
+      placeholder="Search for another Video"
+      on:input={searchYoutube}
+      bind:value={videoSearch}
+    />
+
+    {#if lesson.tab}
+      <span class="songsterr">
+        Go to Songsterr for a tab of
+        <a
+          target="_blank"
+          class="fancy-link"
+          href={`http://www.songsterr.com/a/wa/song?id=${lesson.tab.id}`}
+        >
+          {lesson.title}
+        </a>
+      </span>
+      <!-- Seems like direct embedding does not work -->
+      <!-- <iframe
+        title={lesson.tab.title}
+        class="tab"
+        src={`http://www.songsterr.com/a/wa/song?id=${lesson.tab.id}`} /> -->
+    {/if}
+
+    <Stopwatch />
+
+    <h2>Chords</h2>
+    {#if lesson.chords && lesson.chords.length > 0}
+      <div class="chord-wrapper">
+        {#each lesson.chords as { id, chord }, i}
+          <div class="chord-holder">
+            <button class="naked-button" on:click={() => deleteChord(i)}>
+              <i class="fa fa-times" />
+            </button>
+            <ins customid={id} class="scales_chords_api" {chord} />
+          </div>
+        {/each}
+      </div>
+    {:else}Select your first chord for the Song{/if}
+
+    <label for="chord-preview-input">
+      Search for a chord and click on it to add it
+    </label>
+    <input
+      id="chord-preview-input"
+      bind:value={selectedChord}
+      placeholder="D#m(maj9)"
+      on:change={showPreview}
+    />
+
+    {#if selectedChord}
+      <button
+        class="chord-preview-button"
+        on:click={() => addChord(selectedChord)}
+      >
+        <ins
+          customid="chord-preview"
+          class="scales_chords_api"
+          chord={selectedChord}
+        />
+      </button>
+    {/if}
+
+    <h2 style="margin-top: 20px;">Tab</h2>
+    {#each lesson.coordinates as coordinates, i}
+      <ChordGrid {coordinates} {updateLesson} {deleteTab} position={i} />
+    {/each}
+    <button on:click={addTab}>add another tab</button>
+
+    <h2>Strumming Pattern</h2>
+    <div
+      class="strumming"
+      on:dragover|preventDefault
+      on:drop|preventDefault={handleDrop}
+    >
+      {#each [...Array(6)] as i}
+        <hr />
+      {/each}
+
+      {#if lesson && lesson.strumming}
+        <ul>
+          {#each lesson.strumming as strum, i}
+            <li>
+              <img
+                alt="Arrow"
+                on:dragstart={e => e.dataTransfer.setData("position", i)}
+                width={60}
+                height={80}
+                class={`arrow-${strum}`}
+                src={ARROW_SRC}
+              />
+            </li>
+          {/each}
+        </ul>
+      {/if}
+    </div>
+    <div>Drag and Drop the Arrows to create a Strumming Pattern</div>
+    <div>
+      <img
+        alt="Arrow down"
+        class="arrow-down"
+        on:dragstart={e => e.dataTransfer.setData("direction", "down")}
+        src={ARROW_SRC}
+      />
+      <img
+        class="arrow-up"
+        alt="Arrow down"
+        on:dragstart={e => e.dataTransfer.setData("direction", "up")}
+        src={ARROW_SRC}
+      />
+    </div>
+
+    <label for="notes">Notes about the Song</label>
+    <textarea
+      bind:value={notes}
+      on:change={e => addNotes(e.target.value)}
+      id="notes"
+      rows={5}
+      placeholder="Your notes for the song"
+    />
+
+    <button on:click={finish} class={lesson.finished ? "re-open" : ""}>
+      {#if lesson.finished}Open Lesson{:else}Finish Lesson{/if}
+    </button>
+
+    <Visualizer />
+  {:else}
+    <div>Sorry, could not load lesson</div>
+  {/if}
+</section>
+
 <style lang="scss">
   section {
     display: flex;
@@ -353,7 +517,7 @@
 
   @media screen and (min-width: 760px) {
     .iframe-wrapper {
-      height: 300px;
+      height: 500px;
     }
 
     .chord-wrapper {
@@ -362,154 +526,3 @@
     }
   }
 </style>
-
-<section on:dragover|preventDefault on:drop|preventDefault={removeStrum}>
-  {#if lesson}
-    <h1>{lesson.title}</h1>
-    {#if lesson.videos.length > 0}
-      <div class="iframe-wrapper">
-        <button on:click={() => changeVideo(-1)} class="naked-button">
-          <i class="fa fa-caret-left" />
-        </button>
-        <iframe
-          allowfullscreen
-          class="video"
-          src={`https://www.youtube.com/embed/${lesson.videos[showVideo]}`} />
-        <button on:click={() => changeVideo(1)} class="naked-button">
-          <i class="fa fa-caret-right" />
-        </button>
-      </div>
-
-      <!-- <label class={videoSearch ? 'flying-label' : ''}>
-        Search another Video
-      </label> -->
-      {#if addVideos}
-        <ul class="video-container">
-          {#each addVideos as video}
-            <li role="button" on:click={() => addVideo(video.id.videoId)}>
-              <VideoSnippet snippet={video.snippet} />
-            </li>
-          {/each}
-        </ul>
-      {/if}
-    {/if}
-
-    <input
-      placeholder="Search for another Video"
-      on:input={searchYoutube}
-      bind:value={videoSearch} />
-
-    {#if lesson.tab}
-      <span class="songsterr">
-        Go to Songsterr for a tab of
-        <a
-          target="_blank"
-          class="fancy-link"
-          href={`http://www.songsterr.com/a/wa/song?id=${lesson.tab.id}`}>
-          {lesson.title}
-        </a>
-      </span>
-      <!-- Seems like direct embedding does not work -->
-      <!-- <iframe
-        title={lesson.tab.title}
-        class="tab"
-        src={`http://www.songsterr.com/a/wa/song?id=${lesson.tab.id}`} /> -->
-    {/if}
-
-    <Stopwatch />
-
-    <h2>Chords</h2>
-    {#if lesson.chords && lesson.chords.length > 0}
-      <div class="chord-wrapper">
-        {#each lesson.chords as { id, chord }, i}
-          <div class="chord-holder">
-            <button class="naked-button" on:click={() => deleteChord(i)}>
-              <i class="fa fa-times" />
-            </button>
-            <ins customid={id} class="scales_chords_api" {chord} />
-          </div>
-        {/each}
-      </div>
-    {:else}Select your first chord for the Song{/if}
-
-    <label for="chord-preview-input">
-      Search for a chord and click on it to add it
-    </label>
-    <input
-      id="chord-preview-input"
-      bind:value={selectedChord}
-      placeholder="D#m(maj9)"
-      on:change={showPreview} />
-
-    {#if selectedChord}
-      <button
-        class="chord-preview-button"
-        on:click={() => addChord(selectedChord)}>
-        <ins
-          customid="chord-preview"
-          class="scales_chords_api"
-          chord={selectedChord} />
-      </button>
-    {/if}
-
-    <h2 style="margin-top: 20px;">Tab</h2>
-    {#each lesson.coordinates as coordinates, i}
-      <ChordGrid {coordinates} {updateLesson} {deleteTab} position={i} />
-    {/each}
-    <button on:click={addTab}>add another tab</button>
-
-    <h2>Strumming Pattern</h2>
-    <div
-      class="strumming"
-      on:dragover|preventDefault
-      on:drop|preventDefault={handleDrop}>
-      {#each [...Array(6)] as i}
-        <hr />
-      {/each}
-
-      {#if lesson && lesson.strumming}
-        <ul>
-          {#each lesson.strumming as strum, i}
-            <li>
-              <img
-                alt="Arrow"
-                on:dragstart={e => e.dataTransfer.setData('position', i)}
-                width={60}
-                height={80}
-                class={`arrow-${strum}`}
-                src={ARROW_SRC} />
-            </li>
-          {/each}
-        </ul>
-      {/if}
-    </div>
-    <div>Drag and Drop the Arrows to create a Strumming Pattern</div>
-    <div>
-      <img
-        alt="Arrow down"
-        class="arrow-down"
-        on:dragstart={e => e.dataTransfer.setData('direction', 'down')}
-        src={ARROW_SRC} />
-      <img
-        class="arrow-up"
-        alt="Arrow down"
-        on:dragstart={e => e.dataTransfer.setData('direction', 'up')}
-        src={ARROW_SRC} />
-    </div>
-
-    <label for="notes">Notes about the Song</label>
-    <textarea
-      bind:value={notes}
-      on:change={e => addNotes(e.target.value)}
-      id="notes"
-      rows={5}
-      placeholder="Your notes for the song" />
-
-    <button on:click={finish} class={lesson.finished ? 're-open' : ''}>
-      {#if lesson.finished}Open Lesson{:else}Finish Lesson{/if}
-    </button>
-  {:else}
-    <div>Sorry, could not load lesson</div>
-  {/if}
-
-</section>

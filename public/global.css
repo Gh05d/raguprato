@@ -8,13 +8,12 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-  color: white;
+  color: black;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background: #f5f5f5;
   box-sizing: border-box;
   font-family: -apple-system, Roboto, BlinkMacSystemFont, "Segoe UI",
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -42,6 +41,7 @@ li {
   text-decoration: none;
   transition: all 300ms ease-in-out;
   position: relative;
+  border: 0;
 }
 
 .fancy-link:after {
@@ -58,6 +58,14 @@ li {
 }
 
 .fancy-link:hover::after {
+  transform: scaleX(1);
+}
+
+.fancy-link:focus {
+  box-shadow: unset;
+}
+
+.fancy-link:focus-within::after {
   transform: scaleX(1);
 }
 
