@@ -12,6 +12,10 @@
       link: "https://www.linkedin.com/in/pascal-clanget-545956ba/",
       symbol: "linkedin",
     },
+    {
+      link: "https://stackoverflow.com/users/7490871/gh05d",
+      symbol: "stack-overflow",
+    },
     { link: "https://www.instagram.com/gh05d/?hl=de", symbol: "instagram" },
   ];
 
@@ -58,7 +62,7 @@
     <div>
       <span>
         Created by
-        <a class="fancy-link" href="http://gh05d.de">Gh05d</a>
+        <a class="fancy-link" href="https://github.com/Gh05d">Gh05d</a>
       </span>
       <a href="https://icons8.com/icon/45289/down-arrow">
         Down Arrow icon by Icons8
@@ -78,7 +82,7 @@
   </nav>
 </div>
 
-<style lang="scss">
+<style type="text/scss">
   :root {
     --gradient: linear-gradient(
       45deg,
@@ -202,13 +206,6 @@
       header {
         justify-content: space-between;
       }
-    }
-  }
-
-  @media screen and (min-width: 1200px) {
-    .wrapper {
-      max-width: 1100px;
-      margin: 0 auto;
     }
   }
 </style>

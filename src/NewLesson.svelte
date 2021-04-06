@@ -4,8 +4,6 @@
   import { debounce, apiCall, createID, LESSONS } from "./helpers.js";
 
   export let navigate;
-  let test = localStorage.getItem("lessons");
-  console.log("FIRE ~ file: NewLesson.svelte ~ line 8 ~ test", test);
 
   let values = {
     artist: "",
@@ -67,15 +65,15 @@
       },
     },
     {
-      label: "Search Songsterr",
+      label: "Enter Guitartab url",
       get value() {
-        return tabSearch;
+        return values.tab;
       },
       set value(val) {
-        tabSearch = val;
+        values.tab = val;
       },
-      func: debounce(searchSongsterr, 300),
-      error: tabError,
+      // func: debounce(searchSongsterr, 300),
+      // error: tabError,
     },
   ];
 
@@ -103,24 +101,24 @@
     }
   }
 
-  async function searchSongsterr() {
-    if (tabSearch && tabSearch.length > 3) {
-      values.tab = null;
-      videos = null;
+  // async function searchSongsterr() {
+  //   if (tabSearch && tabSearch.length > 3) {
+  //     values.tab = null;
+  //     videos = null;
 
-      try {
-        const res = await apiCall("http://www.songsterr.com/a/ra/songs.json", {
-          pattern: tabSearch,
-        });
-        console.log("FIRE: searchSongsterr -> res", res);
+  //     try {
+  //       const res = await apiCall("http://www.songsterr.com/a/ra/songs.json", {
+  //         pattern: tabSearch,
+  //       });
+  //       console.log("FIRE: searchSongsterr -> res", res);
 
-        tabs = res > 7 ? res.slice(0, 7) : res;
-        tabError = null;
-      } catch (error) {
-        tabError = "Oops, couldn't get data from songsterr. Sorry :-(";
-      }
-    }
-  }
+  //       tabs = res > 7 ? res.slice(0, 7) : res;
+  //       tabError = null;
+  //     } catch (error) {
+  //       tabError = "Oops, couldn't get data from songsterr. Sorry :-(";
+  //     }
+  //   }
+  // }
 
   const handleSubmit = async () => {
     try {
@@ -193,7 +191,7 @@
       {/if}
     </ul>
 
-    <ul class="search-result" class:search-result-show={tabs}>
+    <!-- <ul class="search-result" class:search-result-show={tabs}>
       {#if tabs}
         {#each tabs as tab}
           <button
@@ -216,7 +214,7 @@
           </button>
         {/each}
       {/if}
-    </ul>
+    </ul> -->
 
     <button disabled={!values.title || values.title == ""} type="submit">
       Save Lesson

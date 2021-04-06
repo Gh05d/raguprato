@@ -1,6 +1,6 @@
 <script>
-  import { onMount, afterUpdate } from "svelte";
-  import { createID, apiCall, LESSONS, ARROW_SRC } from "./helpers.js";
+  import { onMount } from "svelte";
+  import { apiCall, LESSONS, ARROW_SRC } from "./helpers.js";
   import { YOUTUBE_API } from "../apiKeys.js";
   import ChordGrid from "./ChordGrid.svelte";
   import VideoSnippet from "./VideoSnippet.svelte";
@@ -10,13 +10,12 @@
   export let id;
   let videoSearch;
   let addVideos;
-  let videoError;
   let lesson;
   let lessons;
   let showVideo = 0;
   let selectedChord = "";
-  let chordToUpdate = "";
   let notes = "";
+  let tab = "";
 
   async function updateLesson() {
     try {
@@ -25,27 +24,27 @@
         LESSONS,
         JSON.stringify([...newLessons, lesson])
       );
+
+      renderChords();
     } catch (error) {
       console.error(error);
     }
   }
 
-  async function addChord(chord) {
-    if (!chord) {
+  async function addChord() {
+    if (!selectedChord) {
       return;
     }
 
     try {
-      const newChord = { id: createID, chord };
-
       if (lesson.chords) {
-        lesson.chords = [...lesson.chords, newChord];
+        lesson.chords = [...lesson.chords, selectedChord];
       } else {
-        lesson.chords = [newChord];
+        lesson.chords = [selectedChord];
       }
 
-      chordToUpdate = newChord.id;
       selectedChord = "";
+
       await updateLesson();
     } catch (error) {
       console.error(error);
@@ -137,6 +136,20 @@
     }
   }
 
+  async function updateTab() {
+    lesson.tab = tab;
+    await updateLesson();
+  }
+
+  async function updateTime(seconds) {
+    if (!lesson.totalTime) {
+      lesson.totalTime = 0;
+    }
+
+    lesson.totalTime += seconds;
+    await updateLesson();
+  }
+
   async function addVideo(videoID) {
     lesson.videos = [...lesson.videos, videoID];
     addVideos = null;
@@ -158,14 +171,10 @@
   async function addTab() {
     lesson.coordinates = [
       ...lesson.coordinates,
-      {
-        0: {},
-        1: {},
-        2: {},
-        3: {},
-        4: {},
-        5: {},
-      },
+      [...new Array(6).keys()].reduce((acc, cV) => {
+        acc[cV] = {};
+        return acc;
+      }, {}),
     ];
 
     await updateLesson();
@@ -179,8 +188,12 @@
     await updateLesson();
   }
 
-  async function showPreview() {
-    scales_chords_api_refresh("chord-preview");
+  function renderChords() {
+    if (lesson.chords?.length > 0) {
+      lesson.chords.forEach((chord, i) => {
+        jtab.render(document.getElementById(`chord-${i}`), chord);
+      });
+    }
   }
 
   onMount(() => {
@@ -190,113 +203,91 @@
 
       lesson = lessons.find(lesson => lesson.id == id);
       notes = lesson.notes;
+
+      setTimeout(renderChords, 500);
     } catch (error) {
       console.error(error);
-    }
-  });
-
-  // Needed so that the chord chart gets rerendered
-  afterUpdate(async () => {
-    if (chordToUpdate) {
-      scales_chords_api_refresh(chordToUpdate);
-      chordToUpdate = "";
     }
   });
 </script>
 
 <section on:dragover|preventDefault on:drop|preventDefault={removeStrum}>
   {#if lesson}
-    <h1>{`${lesson.title} - ${lesson.artist}`}</h1>
-    {#if lesson.videos.length > 0}
-      <div class="iframe-wrapper">
-        <button on:click={() => changeVideo(-1)} class="naked-button">
-          <i class="fa fa-caret-left" />
-        </button>
-        <iframe
-          allowfullscreen
-          class="video"
-          src={`https://www.youtube.com/embed/${lesson.videos[showVideo]}`}
+    <header>
+      <Stopwatch {updateTime} />
+      <h1>{`${lesson.title} - ${lesson.artist}`}</h1>
+    </header>
+
+    <div class="media-wrapper">
+      <form>
+        <input
+          placeholder="Search for another Video"
+          on:input={searchYoutube}
+          bind:value={videoSearch}
         />
-        <button on:click={() => changeVideo(1)} class="naked-button">
-          <i class="fa fa-caret-right" />
-        </button>
-      </div>
+      </form>
 
-      <!-- <label class={videoSearch ? 'flying-label' : ''}>
-        Search another Video
-      </label> -->
-      {#if addVideos}
-        <ul class="video-container">
-          {#each addVideos as video}
-            <li role="button" on:click={() => addVideo(video.id.videoId)}>
-              <VideoSnippet snippet={video.snippet} />
-            </li>
-          {/each}
-        </ul>
+      <form on:submit|preventDefault={updateTab}>
+        <input placeholder="Update Guitar Tab" bind:value={tab} />
+      </form>
+
+      {#if lesson.videos?.length > 0}
+        <div class="iframe-wrapper">
+          <button on:click={() => changeVideo(-1)} class="naked-button">
+            <i class="fa fa-caret-left" />
+          </button>
+          <iframe
+            title={`Lesson video of ${tab.title}`}
+            allowfullscreen
+            class="video"
+            src={`https://www.youtube.com/embed/${lesson.videos[showVideo]}`}
+          />
+          <button on:click={() => changeVideo(1)} class="naked-button">
+            <i class="fa fa-caret-right" />
+          </button>
+        </div>
       {/if}
+
+      {#if lesson.tab}
+        <iframe
+          allow="fullscreen"
+          referrerpolicy="no-referrer"
+          loading="lazy"
+          height="100%"
+          width="100%"
+          title="Hopefully some lyrics"
+          src={lesson.tab || "https://www.guitaretab.com"}
+        />
+      {/if}
+    </div>
+
+    {#if addVideos}
+      <ul class="video-container">
+        {#each addVideos as video}
+          <li role="button" on:click={() => addVideo(video.id.videoId)}>
+            <VideoSnippet snippet={video.snippet} />
+          </li>
+        {/each}
+      </ul>
     {/if}
-
-    <input
-      placeholder="Search for another Video"
-      on:input={searchYoutube}
-      bind:value={videoSearch}
-    />
-
-    {#if lesson.tab}
-      <span class="songsterr">
-        Go to Songsterr for a tab of
-        <a
-          target="_blank"
-          class="fancy-link"
-          href={`http://www.songsterr.com/a/wa/song?id=${lesson.tab.id}`}
-        >
-          {lesson.title}
-        </a>
-      </span>
-      <!-- Seems like direct embedding does not work -->
-      <!-- <iframe
-        title={lesson.tab.title}
-        class="tab"
-        src={`http://www.songsterr.com/a/wa/song?id=${lesson.tab.id}`} /> -->
-    {/if}
-
-    <Stopwatch />
 
     <h2>Chords</h2>
-    {#if lesson.chords && lesson.chords.length > 0}
+
+    <form on:submit|preventDefault={addChord}>
+      <input bind:value={selectedChord} placeholder="Am" />
+    </form>
+
+    {#if lesson.chords?.length > 0}
       <div class="chord-wrapper">
-        {#each lesson.chords as { id, chord }, i}
+        {#each lesson.chords as chord, i}
           <div class="chord-holder">
             <button class="naked-button" on:click={() => deleteChord(i)}>
               <i class="fa fa-times" />
             </button>
-            <ins customid={id} class="scales_chords_api" {chord} />
+            <div id={`chord-${i}`}>{chord}</div>
           </div>
         {/each}
       </div>
-    {:else}Select your first chord for the Song{/if}
-
-    <label for="chord-preview-input">
-      Search for a chord and click on it to add it
-    </label>
-    <input
-      id="chord-preview-input"
-      bind:value={selectedChord}
-      placeholder="D#m(maj9)"
-      on:change={showPreview}
-    />
-
-    {#if selectedChord}
-      <button
-        class="chord-preview-button"
-        on:click={() => addChord(selectedChord)}
-      >
-        <ins
-          customid="chord-preview"
-          class="scales_chords_api"
-          chord={selectedChord}
-        />
-      </button>
     {/if}
 
     <h2 style="margin-top: 20px;">Tab</h2>
@@ -360,15 +351,16 @@
     <button on:click={finish} class={lesson.finished ? "re-open" : ""}>
       {#if lesson.finished}Open Lesson{:else}Finish Lesson{/if}
     </button>
-
-    <Visualizer />
   {:else}
     <div>Sorry, could not load lesson</div>
   {/if}
 </section>
 
+<Visualizer />
+
 <style lang="scss">
   section {
+    position: relative;
     display: flex;
     flex-flow: column;
     height: 100%;
@@ -434,8 +426,8 @@
 
     .naked-button {
       position: absolute;
-      top: -18px;
-      right: -10px;
+      top: 0;
+      right: 0;
       color: black;
       cursor: pointer;
       opacity: 0;
@@ -444,6 +436,7 @@
 
     &:hover .naked-button {
       opacity: 1;
+      z-index: 1;
     }
   }
 
@@ -515,14 +508,39 @@
     }
   }
 
+  header {
+    display: flex;
+  }
+
+  .iframes-container {
+    display: flex;
+    flex-flow: column;
+  }
   @media screen and (min-width: 760px) {
+    header {
+      margin: 20px 0 20px;
+      align-items: center;
+
+      h1 {
+        flex: 1;
+      }
+    }
+
+    .media-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr;
+    }
+
+    .iframes-container {
+      flex-flow: row;
+    }
     .iframe-wrapper {
       height: 500px;
     }
 
     .chord-wrapper {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
     }
   }
 </style>

@@ -1,72 +1,63 @@
 <script>
   import { onDestroy } from "svelte";
 
-  let minutes = 10;
+  export let updateTime = null;
+  let total = 0;
+  let minutes = 0;
   let seconds = 0;
+  let hours = 0;
   let running = false;
   let time;
-  let alarm;
   const audio = new Audio("Herbert-03.wav");
 
+  $: normalizedHours = hours > 9 ? hours : `0${hours}`;
   $: normalizedMinutes = minutes > 9 ? minutes : `0${minutes}`;
   $: normalizedSeconds = seconds > 9 ? seconds : `0${seconds}`;
-  $: title = `${normalizedMinutes}:${normalizedSeconds}`;
+  $: title = `${normalizedHours}:${normalizedMinutes}:${normalizedSeconds}`;
 
   function run() {
     if (running) {
       return;
     }
     running = true;
-    clearInterval(alarm);
 
     timer();
   }
 
   function timer() {
-    if (minutes > 0 || (minutes == 0 && seconds > 0)) {
-      time = setInterval(() => {
-        if (minutes == 0 && seconds == 0) {
-          return stop();
-        }
+    time = setInterval(() => {
+      total++;
 
-        if (seconds > 0) {
-          return seconds--;
-        } else if (minutes != 0 && seconds == 0) {
-          seconds = 59;
-        }
+      if (seconds == 59) {
+        seconds = 0;
 
-        if (minutes > 0) {
-          minutes--;
+        if (minutes == 9) {
+          audio.play();
+          minutes++;
+        } else if (minutes == 59) {
+          minutes = 0;
+
+          if (hours == 23) {
+            hours = 0;
+          }
+          hours++;
+        } else {
+          minutes++;
         }
-      }, 1000);
-    }
+      } else {
+        seconds++;
+      }
+    }, 1000);
   }
 
   function stop() {
     clearInterval(time);
-    clearInterval(alarm);
 
-    if (minutes == 0 && seconds == 0) {
-      alarm = setInterval(() => audio.play(), 1000);
+    if (updateTime) {
+      updateTime(total);
     }
 
     running = false;
-    minutes = 10;
-    seconds = 0;
-  }
-
-  function pauseAlarm() {
-    if (running) {
-      clearInterval(time);
-      running = false;
-    } else {
-      running = true;
-      timer();
-    }
-  }
-
-  function stopAlarm() {
-    minutes = 10;
   }
 
   onDestroy(() => {
@@ -75,28 +66,47 @@
   });
 </script>
 
+<svelte:head>
+  <title>{title}</title>
+</svelte:head>
+
+<section>
+  <form on:submit|preventDefault={run}>
+    <div class="controls">
+      <button on:click={run}>
+        <i class="fa fa-play-circle" />
+      </button>
+
+      <button type="button" on:click={stop}>
+        <i class="fa fa-stop-circle" />
+      </button>
+    </div>
+    <div class="time">{normalizedHours}</div>
+    <span>:</span>
+    <div class="time">{normalizedMinutes}</div>
+    <span>:</span>
+    <div class="time">{normalizedSeconds}</div>
+  </form>
+</section>
+
 <style lang="scss">
   $width: 60px;
-  $height: $width * 2;
 
   form {
     position: relative;
     display: inline-flex;
     box-shadow: 5px 5px 2px rgba(0, 0, 0, 0.6);
-    overflow: hidden;
     background: #ff6f91;
 
     .controls {
       position: absolute;
-      top: 15px;
-      left: 35px;
+      top: -27px;
+      left: 78px;
+      background: #f5f5f5;
 
       button {
         padding: 0;
-
-        &:hover {
-          background-color: unset;
-        }
+        background-color: unset;
       }
     }
 
@@ -105,7 +115,6 @@
       font-size: 1.5rem;
       text-align: center;
       width: $width;
-      height: $height;
       border: 0;
       margin: 0;
       padding: 0;
@@ -114,7 +123,6 @@
     .time {
       background: #ff6f91;
       width: $width;
-      height: $height;
       font-size: 1.5rem;
       display: flex;
       align-items: center;
@@ -127,32 +135,3 @@
     }
   }
 </style>
-
-<svelte:head>
-  <title>{title}</title>
-</svelte:head>
-
-<section>
-  <form on:submit|preventDefault={run}>
-    <div class="controls">
-      <button on:click={alarm ? stopAlarm : run}>
-        <i class="fa fa-play-circle" />
-      </button>
-      <button type="button" on:click={pauseAlarm}>
-        <i class="fa fa-pause-circle" />
-      </button>
-      <button type="button" on:click={alarm ? stopAlarm : stop}>
-        <i class="fa fa-stop-circle" />
-      </button>
-    </div>
-    {#if running}
-      <div class="time">{normalizedMinutes}</div>
-      <span>:</span>
-      <div class="time">{normalizedSeconds}</div>
-    {:else}
-      <input min={0} max={60} type="number" bind:value={minutes} />
-      <span>:</span>
-      <input min={0} max={60} type="number" bind:value={seconds} />
-    {/if}
-  </form>
-</section>

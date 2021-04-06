@@ -42,7 +42,7 @@
 
     dataArray.forEach((item, i) => {
       const y = (item / 255) * canvasHeight * 0.75;
-      const x = barWidth * i;
+      const x = barWidth * i * 2;
 
       canvasContext.fillStyle = `hsl(${(y / canvasHeight) * 400}, 100%, 50%)`;
       canvasContext.fillRect(x, canvasHeight - y, barWidth, y);
@@ -60,8 +60,8 @@
 
 <style lang="scss">
   canvas {
-    position: absolute;
-    top: 0;
+    position: fixed;
+    bottom: 0;
     left: 0;
     width: 100%;
     height: 100vh;
