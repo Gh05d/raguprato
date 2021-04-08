@@ -62,7 +62,12 @@
 
   onDestroy(() => {
     clearInterval(time);
-    $: title = "Raguprato";
+
+    if (updateTime) {
+      updateTime(total);
+    }
+    // Setting the title via the variable does not work
+    document.title = "Raguprato";
   });
 </script>
 

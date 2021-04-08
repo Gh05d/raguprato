@@ -22,6 +22,18 @@
 
     if (stringifiedLessons) {
       lessons = JSON.parse(stringifiedLessons);
+      // lessons.sort((a, b) => {
+      //   const titleA = a.title.toUpperCase(); // ignore upper and lowercase
+      //   const titleB = b.title.toUpperCase(); // ignore upper and lowercase
+
+      //   if (titleA < titleB) {
+      //     return -1;
+      //   } else if (titleA > titleB) {
+      //     return 1;
+      //   }
+      //   // names must be equal
+      //   return 0;
+      // });
     }
   });
 

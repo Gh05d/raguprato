@@ -6,8 +6,9 @@
   export let lesson;
   let capo;
   let tuning;
-  let editCapo = false;
-  let editTuning = false;
+  let title;
+  let artist;
+  let edit;
 
   async function updateTime(seconds) {
     if (!lesson.totalTime) {
@@ -18,29 +19,55 @@
     await updateLesson(lesson);
   }
 
-  async function setCapo() {
-    editCapo = false;
-    lesson.capo = capo;
-    await updateLesson(lesson);
-  }
+  async function update({ target: { name } }) {
+    lesson[name] =
+      name == "title"
+        ? title
+        : name == "artist"
+        ? artist
+        : name == "capo"
+        ? capo
+        : tuning;
 
-  async function setTuning() {
-    editTuning = false;
-    lesson.tuning = tuning;
     await updateLesson(lesson);
+    edit = null;
   }
 
   onMount(() => {
     capo = lesson.capo;
     tuning = lesson.tuning;
+    title = lesson.title;
+    artist = lesson.artist;
   });
 </script>
 
 <header>
-  <h1>{`${lesson.title} - ${lesson.artist}`}</h1>
+  <h1>
+    {#if edit == 1}
+      <form name="title" on:submit|preventDefault={update}>
+        <input bind:value={title} />
+      </form>
+    {:else}
+      <button class="naked-button" on:click={() => (edit = 1)}
+        >{lesson.title}</button
+      >
+    {/if}
+    <span>-</span>
+    {#if edit == 2}
+      <form name="artist" on:submit|preventDefault={update}>
+        <input bind:value={artist} />
+      </form>
+    {:else}
+      <button class="naked-button" on:click={() => (edit = 2)}
+        >{lesson.artist}</button
+      >
+    {/if}
+  </h1>
+
   <Stopwatch {updateTime} />
-  <form class="header-form" on:submit|preventDefault={setCapo}>
-    {#if editCapo || (lesson.capo != 0 && !lesson.capo)}
+
+  <form name="capo" class="header-form" on:submit|preventDefault={update}>
+    {#if edit == 3}
       <label for="capo">Capo:</label>
       <input
         id="capo"
@@ -51,14 +78,14 @@
         max="12"
       />
     {:else}
-      <button class="naked-button" on:click={() => (editCapo = true)}
+      <button class="naked-button" on:click={() => (edit = 3)}
         ><label for="capo">Capo:</label>{lesson.capo || "X"}</button
       >
     {/if}
   </form>
 
-  <form class="header-form" on:submit|preventDefault={setTuning}>
-    {#if editTuning}
+  <form name="tuning" class="header-form" on:submit|preventDefault={update}>
+    {#if edit == 4}
       <label for="tuning">Tuning:</label>
       <input
         id="tuning"
@@ -67,7 +94,7 @@
         placeholder="Standard"
       />
     {:else}
-      <button class="naked-button" on:click={() => (editTuning = true)}>
+      <button class="naked-button" on:click={() => (edit = 4)}>
         <label for="tuning">Tuning:</label>Standard</button
       >
     {/if}
@@ -77,6 +104,17 @@
 <style lang="scss">
   header {
     display: flex;
+  }
+
+  h1 {
+    display: flex;
+    align-items: center;
+
+    .naked-button {
+      background: unset;
+      font-weight: 600;
+      margin: 0;
+    }
   }
 
   .header-form {
