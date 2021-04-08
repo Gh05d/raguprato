@@ -1,35 +1,20 @@
 <script>
   import { onMount } from "svelte";
-  import { apiCall, LESSONS, ARROW_SRC } from "./helpers.js";
+  import { apiCall, LESSONS, ARROW_SRC, updateLesson } from "./helpers.js";
   import { YOUTUBE_API } from "../apiKeys.js";
   import ChordGrid from "./ChordGrid.svelte";
   import VideoSnippet from "./VideoSnippet.svelte";
-  import Stopwatch from "./Stopwatch.svelte";
+  import LessonHeader from "./LessonHeader.svelte";
   import Visualizer from "./Visualizer.svelte";
 
   export let id;
   let videoSearch;
   let addVideos;
   let lesson;
-  let lessons;
   let showVideo = 0;
   let selectedChord = "";
   let notes = "";
   let tab = "";
-
-  async function updateLesson() {
-    try {
-      const newLessons = lessons.filter(item => item.id != lesson.id);
-      await localStorage.setItem(
-        LESSONS,
-        JSON.stringify([...newLessons, lesson])
-      );
-
-      renderChords();
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   async function addChord() {
     if (!selectedChord) {
@@ -45,7 +30,8 @@
 
       selectedChord = "";
 
-      await updateLesson();
+      await updateLesson(lesson);
+      renderChords();
     } catch (error) {
       console.error(error);
     }
@@ -59,7 +45,8 @@
       ];
       lesson.chords = [...newChords];
 
-      await updateLesson();
+      await updateLesson(lesson);
+      renderChords();
     } catch (error) {
       console.error(error);
     }
@@ -69,7 +56,7 @@
     try {
       lesson.notes = notes;
 
-      await updateLesson();
+      await updateLesson(lesson);
     } catch (error) {
       console.error(error);
     }
@@ -85,7 +72,7 @@
       lesson.strumming = [direction];
     }
 
-    await updateLesson();
+    await updateLesson(lesson);
     e.stopPropagation();
   }
 
@@ -99,7 +86,7 @@
       ];
     }
 
-    await updateLesson();
+    await updateLesson(lesson);
   }
 
   async function finish() {
@@ -109,7 +96,7 @@
       lesson.finished = true;
     }
 
-    await updateLesson();
+    await updateLesson(lesson);
     navigate("/");
   }
 
@@ -138,22 +125,13 @@
 
   async function updateTab() {
     lesson.tab = tab;
-    await updateLesson();
-  }
-
-  async function updateTime(seconds) {
-    if (!lesson.totalTime) {
-      lesson.totalTime = 0;
-    }
-
-    lesson.totalTime += seconds;
-    await updateLesson();
+    await updateLesson(lesson);
   }
 
   async function addVideo(videoID) {
     lesson.videos = [...lesson.videos, videoID];
     addVideos = null;
-    await updateLesson();
+    await updateLesson(lesson);
   }
 
   function changeVideo(count) {
@@ -177,7 +155,7 @@
       }, {}),
     ];
 
-    await updateLesson();
+    await updateLesson(lesson);
   }
 
   async function deleteTab(position) {
@@ -185,7 +163,7 @@
       ...lesson.coordinates.slice(0, position),
       ...lesson.coordinates.slice(position + 1),
     ];
-    await updateLesson();
+    await updateLesson(lesson);
   }
 
   function renderChords() {
@@ -199,7 +177,7 @@
   onMount(() => {
     try {
       const stringifiedLessons = localStorage.getItem(LESSONS);
-      lessons = JSON.parse(stringifiedLessons);
+      const lessons = JSON.parse(stringifiedLessons);
 
       lesson = lessons.find(lesson => lesson.id == id);
       notes = lesson.notes;
@@ -213,10 +191,7 @@
 
 <section on:dragover|preventDefault on:drop|preventDefault={removeStrum}>
   {#if lesson}
-    <header>
-      <Stopwatch {updateTime} />
-      <h1>{`${lesson.title} - ${lesson.artist}`}</h1>
-    </header>
+    <LessonHeader {lesson} />
 
     <div class="media-wrapper">
       <form>
@@ -386,9 +361,10 @@
     button {
       font-size: 2rem;
       color: black;
-
+      background: none;
       &:hover {
         color: #ff6f91;
+        box-shadow: none;
       }
     }
 
@@ -396,10 +372,6 @@
       width: 100%;
       height: 100%;
     }
-  }
-
-  .songsterr {
-    margin: 20px 0;
   }
 
   .naked-button {
@@ -508,24 +480,11 @@
     }
   }
 
-  header {
-    display: flex;
-  }
-
   .iframes-container {
     display: flex;
     flex-flow: column;
   }
   @media screen and (min-width: 760px) {
-    header {
-      margin: 20px 0 20px;
-      align-items: center;
-
-      h1 {
-        flex: 1;
-      }
-    }
-
     .media-wrapper {
       display: grid;
       grid-template-columns: 1fr 1fr;
