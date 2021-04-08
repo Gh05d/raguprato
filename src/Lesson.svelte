@@ -343,10 +343,6 @@
     grid-row-gap: 10px;
   }
 
-  h1 {
-    text-align: center;
-  }
-
   h2 {
     font-size: 1.1rem;
   }
@@ -453,18 +449,6 @@
     grid-template-areas:
       "text text text"
       "button1 button2 .";
-
-    textarea {
-      grid-area: text;
-    }
-
-    button {
-      grid-area: button2;
-
-      &:first-of-type {
-        grid-area: button1;
-      }
-    }
   }
 
   #chord-preview-input {

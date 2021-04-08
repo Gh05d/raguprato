@@ -285,15 +285,6 @@
     }
   }
 
-  .empty-button {
-    .tab-preview {
-      div {
-        text-align: left;
-        color: black;
-      }
-    }
-  }
-
   .selected {
     position: relative;
 
