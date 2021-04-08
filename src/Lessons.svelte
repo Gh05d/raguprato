@@ -12,12 +12,9 @@
       m: Math.floor((totalTime % 3600) / 60),
       s: Math.floor(totalTime % 60),
     };
-    console.log(time);
     return Object.keys(time).reduce((acc, cV) => {
       return acc.concat(time[cV] ? `${time[cV]}${cV} ` : "");
     }, "");
-
-    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   }
 
   onMount(() => {

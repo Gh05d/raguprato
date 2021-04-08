@@ -62,7 +62,7 @@
 
   onDestroy(() => {
     clearInterval(time);
-    title = "Raguprato";
+    $: title = "Raguprato";
   });
 </script>
 
