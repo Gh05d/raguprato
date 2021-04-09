@@ -8,6 +8,7 @@
   let hours = 0;
   let running = false;
   let time;
+  let updated = false;
   const audio = new Audio("Herbert-03.wav");
 
   $: normalizedHours = hours > 9 ? hours : `0${hours}`;
@@ -20,6 +21,7 @@
       return;
     }
     running = true;
+    updated = false;
 
     timer();
   }
@@ -53,8 +55,9 @@
   function stop() {
     clearInterval(time);
 
-    if (updateTime) {
+    if (updateTime && !updated) {
       updateTime(total);
+      updated = true;
     }
 
     running = false;
@@ -63,7 +66,7 @@
   onDestroy(() => {
     clearInterval(time);
 
-    if (updateTime) {
+    if (updateTime && !updated) {
       updateTime(total);
     }
     // Setting the title via the variable does not work

@@ -12,6 +12,7 @@
       m: Math.floor((totalTime % 3600) / 60),
       s: Math.floor(totalTime % 60),
     };
+
     return Object.keys(time).reduce((acc, cV) => {
       return acc.concat(time[cV] ? `${time[cV]}${cV} ` : "");
     }, "");
@@ -22,18 +23,18 @@
 
     if (stringifiedLessons) {
       lessons = JSON.parse(stringifiedLessons);
-      // lessons.sort((a, b) => {
-      //   const titleA = a.title.toUpperCase(); // ignore upper and lowercase
-      //   const titleB = b.title.toUpperCase(); // ignore upper and lowercase
+      lessons.sort((a, b) => {
+        const titleA = a.title.toUpperCase(); // ignore upper and lowercase
+        const titleB = b.title.toUpperCase(); // ignore upper and lowercase
 
-      //   if (titleA < titleB) {
-      //     return -1;
-      //   } else if (titleA > titleB) {
-      //     return 1;
-      //   }
-      //   // names must be equal
-      //   return 0;
-      // });
+        if (titleA < titleB) {
+          return -1;
+        } else if (titleA > titleB) {
+          return 1;
+        }
+        // names must be equal
+        return 0;
+      });
     }
   });
 
