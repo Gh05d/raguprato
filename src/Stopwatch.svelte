@@ -57,6 +57,7 @@
 
     if (updateTime && !updated) {
       updateTime(total);
+      total = 0;
       updated = true;
     }
 
