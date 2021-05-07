@@ -5,6 +5,9 @@
     "name": "Gh05d",
     "email": "clap@mailbox.org"
   },
+  "engines": {
+    "node": "12.x"
+  },
   "devDependencies": {
     "node-sass": "^4.12.0",
     "npm-run-all": "^4.1.5",
