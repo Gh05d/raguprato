@@ -16,3 +16,5 @@
 - Overview of open and finished lessons with the time dedicated for it
 - Microphone integration for visual effects which represent the notes when playing
 - Uses the built-in local storage of the browser so that users don't need any account
+
+#### App is deployed via [Heroku](https://raguprato.herokuapp.com/)

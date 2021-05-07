@@ -6,7 +6,8 @@
     "email": "clap@mailbox.org"
   },
   "engines": {
-    "node": "12.x"
+    "node": "12.x",
+    "npm": "7.x"
   },
   "devDependencies": {
     "node-sass": "^4.12.0",
