@@ -1,6 +1,6 @@
 # RAGUPRATO - Rad Guitar Practice Tool
 
-#### Video Demo:
+#### Video Demo: [D.tube](https://d.tube/#!/v/gh05dan0n/QmQuhNVpDk9ArkyKsvA5nne3mq2PJKkaEQ8A6gCXaGSnUc)
 
 #### Description:
 

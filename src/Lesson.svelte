@@ -1,8 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { apiCall, LESSONS, ARROW_SRC, updateLesson } from "./helpers.js";
-  import { YOUTUBE_API } from "../apiKeys.js";
-  import ChordGrid from "./ChordGrid.svelte";
+  //import ChordGrid from "./ChordGrid.svelte";
   import VideoSnippet from "./VideoSnippet.svelte";
   import LessonHeader from "./LessonHeader.svelte";
   import Visualizer from "./Visualizer.svelte";

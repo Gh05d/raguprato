@@ -1,6 +1,5 @@
 <script>
   import VideoSnippet from "./VideoSnippet.svelte";
-  import { YOUTUBE_API } from "../apiKeys.js";
   import { debounce, apiCall, createID, LESSONS } from "./helpers.js";
 
   export let navigate;
