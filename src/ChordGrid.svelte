@@ -1,6 +1,7 @@
 <script>
+  import { updateLesson } from "./helpers";
   export let coordinates;
-  export let updateLesson;
+  export let lesson;
   export let deleteTab;
   export let position;
 
@@ -8,6 +9,77 @@
   let edit = false;
   let showSelection = { x: null, y: null };
 </script>
+
+<div
+  role="button"
+  tabindex="1"
+  class="chord-grid"
+  on:click={() => {
+    edit = !edit;
+    showSelection = { x: null, y: null };
+  }}
+>
+  {#each [...Array(6)] as _lineX, x}
+    {#each [...Array(10)] as _lineY, y}
+      <div class="cell">
+        <div
+          on:click|stopPropagation={() => {
+            if (edit) {
+              showSelection = { x, y };
+            }
+          }}
+          role="button"
+          class="note"
+          class:edit
+        >
+          <i
+            class={`fa fa-circle ${
+              edit && showSelection.x == x && showSelection.y == y
+                ? "selected"
+                : ""
+            } ${coordinates[x][y] || edit ? "show" : ""}`}
+          />
+          <span class={coordinates[x][y] > 9 ? "more-space" : ""}>
+            {coordinates[x][y] || ""}
+          </span>
+        </div>
+
+        {#if edit && showSelection.x == x && showSelection.y == y}
+          <ul class={`selection ${y == 0 ? "selection-start" : ""}`}>
+            {#each tabOptions as option}
+              <li
+                on:click={() => {
+                  coordinates[x][y] = option;
+                  updateLesson(lesson);
+                }}
+                role="button"
+              >
+                {option}
+              </li>
+            {/each}
+
+            {#if coordinates[x][y]}
+              <li
+                on:click={() => {
+                  delete coordinates[x][y];
+                  coordinates = { ...coordinates };
+                  updateLesson(lesson);
+                }}
+                role="button"
+              >
+                -
+              </li>
+            {/if}
+          </ul>
+        {/if}
+      </div>
+    {/each}
+  {/each}
+
+  <button on:click={() => deleteTab(position)} class="naked-button delete">
+    <i class="fa fa-trash-alt" />
+  </button>
+</div>
 
 <style lang="scss">
   .chord-grid {
@@ -143,65 +215,3 @@
     }
   }
 </style>
-
-<div
-  role="button"
-  tabindex="1"
-  class="chord-grid"
-  on:click={() => {
-    edit = !edit;
-    showSelection = { x: null, y: null };
-  }}>
-  {#each [...Array(6)] as lineX, x}
-    {#each [...Array(10)] as lineY, y}
-      <div class="cell">
-        <div
-          on:click|stopPropagation={() => {
-            if (edit) {
-              showSelection = { x, y };
-            }
-          }}
-          role="button"
-          class="note"
-          class:edit>
-          <i
-            class={`fa fa-circle ${edit && showSelection.x == x && showSelection.y == y ? 'selected' : ''} ${coordinates[x][y] || edit ? 'show' : ''}`} />
-          <span class={coordinates[x][y] > 9 ? 'more-space' : ''}>
-            {coordinates[x][y] || ''}
-          </span>
-        </div>
-
-        {#if edit && showSelection.x == x && showSelection.y == y}
-          <ul class={`selection ${y == 0 ? 'selection-start' : ''}`}>
-            {#each tabOptions as option}
-              <li
-                on:click={() => {
-                  coordinates[x][y] = option;
-                  updateLesson();
-                }}
-                role="button">
-                {option}
-              </li>
-            {/each}
-
-            {#if coordinates[x][y]}
-              <li
-                on:click={() => {
-                  delete coordinates[x][y];
-                  coordinates = { ...coordinates };
-                  updateLesson();
-                }}
-                role="button">
-                -
-              </li>
-            {/if}
-          </ul>
-        {/if}
-      </div>
-    {/each}
-  {/each}
-
-  <button on:click={() => deleteTab(position)} class="naked-button delete">
-    <i class="fa fa-trash-alt" />
-  </button>
-</div>

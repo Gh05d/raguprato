@@ -265,11 +265,11 @@
       </div>
     {/if}
 
-    <h2 style="margin-top: 20px;">Tab</h2>
+    <!-- <h2 style="margin-top: 20px;">Tab</h2>
     {#each lesson.coordinates as coordinates, i}
-      <ChordGrid {coordinates} {updateLesson} {deleteTab} position={i} />
+      <ChordGrid {coordinates} {lesson} {deleteTab} position={i} />
     {/each}
-    <button on:click={addTab}>add another tab</button>
+    <button on:click={addTab}>add another tab</button> -->
 
     <h2>Strumming Pattern</h2>
     <div
@@ -281,7 +281,7 @@
         <hr />
       {/each}
 
-      {#if lesson && lesson.strumming}
+      {#if lesson?.strumming}
         <ul>
           {#each lesson.strumming as strum, i}
             <li>

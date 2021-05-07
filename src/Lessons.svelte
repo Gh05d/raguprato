@@ -4,6 +4,7 @@
 
   export let navigate;
   let lessons;
+  let error = null;
 
   function computePracticeTime(totalTime) {
     const time = {
@@ -18,25 +19,84 @@
     }, "");
   }
 
+  async function exportData() {
+    try {
+      const stringifiedLessons = localStorage.getItem(LESSONS);
+      const blob = new Blob([stringifiedLessons], { type: "text/json" });
+      const link = document.createElement("a");
+
+      link.download = "lessons.json";
+      link.href = window.URL.createObjectURL(blob);
+      link.dataset.downloadurl = `text/json:${link.download}${link.href}`;
+
+      const evt = new MouseEvent("click", {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+      });
+
+      link.dispatchEvent(evt);
+      link.remove();
+    } catch (err) {
+      error = err.message;
+    }
+  }
+
+  async function importData(e) {
+    try {
+      error = null;
+      const files = e.target.files;
+
+      if (files.length == 0) {
+        return;
+      }
+
+      const file = files[0];
+      if (file.type != "application/json") {
+        throw new Error("Only JSON files allowed!");
+      }
+
+      let reader = new FileReader();
+
+      reader.onload = e => {
+        const importedLessons = e.target.result;
+        localStorage.setItem(LESSONS, importedLessons);
+        renderLessons(importedLessons);
+      };
+
+      reader.onerror = e => {
+        throw new Error(e.target.error.name);
+      };
+
+      reader.readAsText(file);
+    } catch (err) {
+      error = err.message;
+    }
+  }
+
   onMount(() => {
     const stringifiedLessons = localStorage.getItem(LESSONS);
 
     if (stringifiedLessons) {
-      lessons = JSON.parse(stringifiedLessons);
-      lessons.sort((a, b) => {
-        const titleA = a.title.toUpperCase(); // ignore upper and lowercase
-        const titleB = b.title.toUpperCase(); // ignore upper and lowercase
-
-        if (titleA < titleB) {
-          return -1;
-        } else if (titleA > titleB) {
-          return 1;
-        }
-        // names must be equal
-        return 0;
-      });
+      renderLessons(stringifiedLessons);
     }
   });
+
+  function renderLessons(stringifiedLessons) {
+    lessons = JSON.parse(stringifiedLessons);
+    lessons.sort((a, b) => {
+      const titleA = a.title.toUpperCase(); // ignore upper and lowercase
+      const titleB = b.title.toUpperCase(); // ignore upper and lowercase
+
+      if (titleA < titleB) {
+        return -1;
+      } else if (titleA > titleB) {
+        return 1;
+      }
+      // names must be equal
+      return 0;
+    });
+  }
 
   function deleteLesson(id) {
     const newLessons = lessons.filter(lesson => lesson.id != id);
@@ -84,9 +144,21 @@
         </li>
       {/each}
     </ul>
+    <button on:click={exportData}>Export Data</button>
   {:else}
     <div>No lessons yet</div>
     <button on:click={() => navigate("new")}>Create a new One</button>
+  {/if}
+  <label
+    >Import lessons: <input
+      on:change|preventDefault={importData}
+      accept=".json"
+      type="file"
+    /></label
+  >
+
+  {#if error}
+    <div class="error">{error}</div>
   {/if}
 </section>
 

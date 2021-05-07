@@ -95,6 +95,11 @@
     );
   }
 
+  body,
+  html {
+    overflow: hidden;
+  }
+
   .wrapper {
     display: grid;
     height: 100vh;
@@ -107,7 +112,6 @@
 
     header {
       padding: 0 10px;
-      position: relative;
       grid-area: header;
       display: flex;
       align-items: center;
@@ -154,6 +158,7 @@
       padding: 20px;
       background: #f2f7fb;
       position: relative;
+      overflow: auto;
     }
 
     footer {

@@ -1,69 +1,18 @@
-*Psst — looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
+# RAGUPRATO - Rad Guitar Practice Tool
 
----
+#### Video Demo:
 
-# svelte app
+#### Description:
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+**RAGUPRATO** is a practice tool for playing guitar. It consists of personal lessons the user can create which have the following features:
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
-
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
-```
-
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
-
-
-## Get started
-
-Install the dependencies...
-
-```bash
-cd svelte-app
-npm install
-```
-
-...then start [Rollup](https://rollupjs.org):
-
-```bash
-npm run dev
-```
-
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
-
-
-## Deploying to the web
-
-### With [now](https://zeit.co/now)
-
-Install `now` if you haven't already:
-
-```bash
-npm install -g now
-```
-
-Then, from within your project folder:
-
-```bash
-cd public
-now
-```
-
-As an alternative, use the [Now desktop client](https://zeit.co/download) and simply drag the unzipped project folder to the taskbar icon.
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public
-```
+- Youtube integration
+- Free flow integration of chord sites like echords via an `Iframe`
+- A stopwatch to track how long a track was played / practiced
+- Chords can be saved
+- Tabs can be created
+- Strumming patterns can be created via Drag and Drop
+- Personal notes can be saved
+- Overview of open and finished lessons with the time dedicated for it
+- Microphone integration for visual effects which represent the notes when playing
+- Uses the built-in local storage of the browser so that users don't need any account
