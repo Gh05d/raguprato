@@ -6,6 +6,7 @@ import replace from "rollup-plugin-replace";
 import { terser } from "rollup-plugin-terser";
 import { sass } from "svelte-preprocess-sass";
 import css from "rollup-plugin-css-only";
+import ghPages from "gh-pages";
 import { config } from "dotenv";
 config();
 
@@ -51,7 +52,9 @@ export default {
 
     // If we're building for production (npm run build
     // instead of npm run dev), minify
-    production && terser(),
+    production &&
+      terser() &&
+      ghPages.publish("public", () => console.info("Uploaded to Github Pages")),
   ],
   watch: {
     clearScreen: false,
