@@ -17,4 +17,20 @@
 - Microphone integration for visual effects which represent the notes when playing
 - Uses the built-in local storage of the browser so that users don't need any account
 
+Technologies which were used:
+
+- Svelte
+- node-sass
+- Rollup
+- Axios
+- sirv
+
 #### App is deployed via [Github Pages](https://gh05d.github.io/raguprato/index.html)
+
+#### How to launch the Application
+
+1. Clone the code: `git clone https://github.com/Gh05d/raguprato.git`
+2. Run command prompt in the folder and `run npm install` to install all dependencies
+3. Once installed run the command `npm run start`
+4. In your browser go to [localhost:5000]
+5. You are ready to go!
