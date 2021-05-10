@@ -426,6 +426,7 @@
   .strumming {
     position: relative;
     height: 80px;
+    flex-shrink: 0;
     background: white;
     display: flex;
     flex-flow: column;
