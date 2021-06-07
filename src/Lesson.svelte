@@ -115,9 +115,8 @@
         );
 
         addVideos = res.items;
-        videoError = null;
       } catch (error) {
-        videoError = "Oops, couldn't get data from youtube. Sorry :-(";
+        console.log(error.message);
       }
     }
   }

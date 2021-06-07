@@ -16,6 +16,7 @@
 - Overview of open and finished lessons with the time dedicated for it
 - Microphone integration for visual effects which represent the notes when playing
 - Uses the built-in local storage of the browser so that users don't need any account
+- All data of a user is saved via the integrated local storage db to avoid amassing too much data for privacy concerns and also to avoid implementing of a central server structure as well as well as keep the data into the users hands
 
 ### Technologies which were used:
 
@@ -24,6 +25,7 @@
 - Rollup
 - Axios
 - sirv
+- localStorage
 
 ### Files contain the following:
 
@@ -33,11 +35,11 @@ The entry file for the application
 
 #### global.css
 
-Global styles
+Global styles. Styles which several components share
 
 #### helpers.js
 
-Some helper methods which are shared by several components
+Some helper methods which are shared by several components. These are for example a `debounce` function to avoid triggering a specific function too many times, an `apiCall` function which implements error checking, a simple `createID` function which uses `Math.random()` to create unique ids and an `updateLesson` function which updates the `localStorage` of the user
 
 #### Lesson.svelte
 
@@ -65,7 +67,7 @@ Basically a form where you can add a youtube video, an url for the chords as wel
 
 #### Stopwatch.svelte
 
-A simple stopwatch
+A simple stopwatch implementation. It uses the `window` functions `window.setInterval` and `window.clearInterval` for implementing the functionality. Also, hidden from the user, an `updateTime` function collects the seconds which have passed since the interval was running to compute the total time the user has spent practicing
 
 #### VideoSnippet.svelte
 
