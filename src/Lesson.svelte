@@ -192,7 +192,7 @@
     <LessonHeader {lesson} />
 
     <div class="media-wrapper">
-      <form>
+      <form on:submit|preventDefault={() => {}}>
         <input
           placeholder="Search for another Video"
           on:input={searchYoutube}

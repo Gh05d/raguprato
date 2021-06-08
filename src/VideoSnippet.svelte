@@ -1,6 +1,20 @@
 <script>
   export let snippet;
+  console.log(snippet);
 </script>
+
+<section>
+  {#if snippet}
+    <img
+      alt={snippet.title}
+      src={snippet.thumbnails.default.url}
+      width={250}
+      height={snippet.thumbnails.default.height}
+    />
+    <h1>{snippet.title}</h1>
+    <p>{snippet.description}</p>
+  {/if}
+</section>
 
 <style lang="scss">
   section {
@@ -25,15 +39,3 @@
     }
   }
 </style>
-
-<section>
-  {#if snippet}
-    <img
-      alt={snippet.title}
-      src={snippet.thumbnails.default.url}
-      width={250}
-      height={snippet.thumbnails.default.height} />
-    <h1>{snippet.title}</h1>
-    <p>{snippet.description}</p>
-  {/if}
-</section>

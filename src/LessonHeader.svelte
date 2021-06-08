@@ -34,8 +34,8 @@
   }
 
   onMount(() => {
-    capo = lesson.capo;
-    tuning = lesson.tuning;
+    capo = lesson.capo || "X";
+    tuning = lesson.tuning || "Standard";
     title = lesson.title;
     artist = lesson.artist;
   });
@@ -79,7 +79,7 @@
       />
     {:else}
       <button class="naked-button" on:click={() => (edit = 3)}
-        ><label for="capo">Capo:</label>{lesson.capo || "X"}</button
+        ><label for="capo">Capo:</label>{lesson.capo}</button
       >
     {/if}
   </form>
@@ -95,7 +95,7 @@
       />
     {:else}
       <button class="naked-button" on:click={() => (edit = 4)}>
-        <label for="tuning">Tuning:</label>Standard</button
+        <label for="tuning">Tuning:</label>{lesson.tuning}</button
       >
     {/if}
   </form>

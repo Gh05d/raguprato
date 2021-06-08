@@ -102,7 +102,6 @@
 
   .wrapper {
     display: grid;
-    height: 100vh;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
     grid-template-rows: 50px 1fr 40px;
     grid-template-areas:
