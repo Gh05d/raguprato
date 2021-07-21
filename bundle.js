@@ -2726,6 +2726,7 @@ var app = (function () {
 
     	function deleteLesson(id) {
     		const newLessons = lessons.filter(lesson => lesson.id != id);
+    		console.log(JSON.stringify(newLessons));
     		$$invalidate(1, lessons = newLessons);
     		localStorage.setItem(LESSONS, JSON.stringify(newLessons));
     	}
