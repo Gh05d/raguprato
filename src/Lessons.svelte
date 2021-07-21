@@ -100,7 +100,7 @@
 
   function deleteLesson(id) {
     const newLessons = lessons.filter(lesson => lesson.id != id);
-
+    console.log(JSON.stringify(newLessons));
     lessons = newLessons;
     localStorage.setItem(LESSONS, JSON.stringify(newLessons));
   }
