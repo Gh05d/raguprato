@@ -102,7 +102,7 @@
     const newLessons = lessons.filter(lesson => lesson.id != id);
 
     lessons = newLessons;
-    localStorage.setItem(LESSONS, newLessons);
+    localStorage.setItem(LESSONS, JSON.stringify(newLessons));
   }
 </script>
 
