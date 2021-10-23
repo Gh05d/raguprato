@@ -1,10 +1,10 @@
 <script>
   import { onMount } from "svelte";
-  import { apiCall, LESSONS, ARROW_SRC, updateLesson } from "./helpers.js";
+  import { apiCall, LESSONS, ARROW_SRC, updateLesson } from "../helpers.js";
   //import ChordGrid from "./ChordGrid.svelte";
-  import VideoSnippet from "./VideoSnippet.svelte";
+  import VideoSnippet from "../components/VideoSnippet.svelte";
   import LessonHeader from "./LessonHeader.svelte";
-  import Visualizer from "./Visualizer.svelte";
+  // import Visualizer from "./Visualizer.svelte";
 
   export let id;
   let videoSearch;
@@ -144,25 +144,25 @@
     }
   }
 
-  async function addTab() {
-    lesson.coordinates = [
-      ...lesson.coordinates,
-      [...new Array(6).keys()].reduce((acc, cV) => {
-        acc[cV] = {};
-        return acc;
-      }, {}),
-    ];
+  // async function addTab() {
+  //   lesson.coordinates = [
+  //     ...lesson.coordinates,
+  //     [...new Array(6).keys()].reduce((acc, cV) => {
+  //       acc[cV] = {};
+  //       return acc;
+  //     }, {}),
+  //   ];
 
-    await updateLesson(lesson);
-  }
+  //   await updateLesson(lesson);
+  // }
 
-  async function deleteTab(position) {
-    lesson.coordinates = [
-      ...lesson.coordinates.slice(0, position),
-      ...lesson.coordinates.slice(position + 1),
-    ];
-    await updateLesson(lesson);
-  }
+  // async function deleteTab(position) {
+  //   lesson.coordinates = [
+  //     ...lesson.coordinates.slice(0, position),
+  //     ...lesson.coordinates.slice(position + 1),
+  //   ];
+  //   await updateLesson(lesson);
+  // }
 
   function renderChords() {
     if (lesson.chords?.length > 0) {
@@ -178,6 +178,7 @@
       const lessons = JSON.parse(stringifiedLessons);
 
       lesson = lessons.find(lesson => lesson.id == id);
+
       notes = lesson.notes;
 
       setTimeout(renderChords, 500);
@@ -329,8 +330,7 @@
   {/if}
 </section>
 
-<Visualizer />
-
+<!-- <Visualizer /> -->
 <style lang="scss">
   section {
     position: relative;

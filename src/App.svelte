@@ -1,9 +1,9 @@
 <script>
-  import Navigation from "./Navigation.svelte";
-  import Lessons from "./Lessons.svelte";
-  import NewLesson from "./NewLesson.svelte";
-  import Lesson from "./Lesson.svelte";
-  import NavItems from "./NavItems.svelte";
+  import Navigation from "./components/Navigation.svelte";
+  import Lessons from "./Lessons/index.svelte";
+  import NewLesson from "./NewLesson/index.svelte";
+  import Lesson from "./Lesson/index.svelte";
+  import NavItems from "./components/NavItems.svelte";
 
   const socialIcons = [
     { link: "https://github.com/Gh05d", symbol: "github" },
@@ -84,17 +84,17 @@
 
 <style type="text/scss">
   :root {
+    --main-color: #ffc75f;
     --gradient: linear-gradient(
       45deg,
       #845ec2,
       #d65db1,
       #ff6f91,
       #ff9671,
-      #ffc75f,
+      var(--main-color),
       #f9f871
     );
   }
-
   body,
   html {
     overflow: hidden;
@@ -165,7 +165,7 @@
       grid-area: footer;
       color: black;
       padding: 0 20px;
-      background-color: #ffc75f;
+      background-color: var(--main-color);
       display: flex;
       align-items: center;
       justify-content: space-between;

@@ -1,33 +1,31 @@
 import axios from "axios";
 
-// Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
-export const debounce = (func, wait, immediate) => {
+/**
+ * @description Returns a function, that, as long as it continues to be invoked, will not
+ * be triggered. The function will be called after it stops being called for
+ * N milliseconds.
+ *
+ * @param {function} fn The function to be executed
+ * @param {number} [wait] The time after which the function should be executed. Defaults to 300ms
+ * @returns {fn} The debounced function
+ */
+export function debounce(fn, wait = 300) {
   let timeout;
 
-  return () => {
-    let context = this,
-      args = arguments;
+  return function debounced(...args) {
+    clearTimeout(timeout);
 
-    let later = () => {
+    timeout = setTimeout(() => {
       timeout = null;
 
-      if (!immediate) func.apply(context, args);
-    };
-
-    let callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-
-    if (callNow) func.apply(context, args);
+      fn.apply(this, args);
+    }, wait);
   };
-};
+}
 
-export const apiCall = async (url, params) => {
+export const apiCall = async (url, params, method = "GET") => {
   try {
-    const { data } = await axios({ method: "GET", url, params });
+    const { data } = await axios({ method, url, params });
 
     return data;
   } catch (error) {
@@ -35,7 +33,7 @@ export const apiCall = async (url, params) => {
   }
 };
 
-export const createID = Math.random().toString(36).substring(7);
+export const createID = () => Math.random().toString(36).substring(7);
 
 export const LESSONS = "lessons";
 export const ARROW_SRC =
@@ -55,3 +53,12 @@ export async function updateLesson(lesson) {
     console.error(error);
   }
 }
+
+/**
+ * Takes an array of artists and concats their names
+ * @param {Object[]} artists
+ *
+ * @returns {string} Names separated by commas
+ */
+export const getArtists = artists =>
+  artists?.map(artist => artist.name).join(", ") || "John Doe";

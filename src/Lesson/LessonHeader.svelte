@@ -1,14 +1,32 @@
 <script>
   import { onMount } from "svelte";
   import Stopwatch from "./Stopwatch.svelte";
-  import { updateLesson } from "./helpers.js";
+  import { updateLesson } from "../helpers.js";
 
   export let lesson;
   let capo;
   let tuning;
   let title;
   let artist;
+  let key;
+  let bpm;
   let edit;
+
+  const keys = [
+    "C",
+    "C#/Db",
+    "D",
+    "D#/Eb",
+    "E",
+    "F",
+    "F#/Gb",
+    "G",
+    "G#/Ab",
+    "A",
+    "A#/Bb",
+    "B",
+    "C",
+  ];
 
   async function updateTime(seconds) {
     if (!lesson.totalTime) {
@@ -20,24 +38,52 @@
   }
 
   async function update({ target: { name } }) {
-    lesson[name] =
-      name == "title"
-        ? title
-        : name == "artist"
-        ? artist
-        : name == "capo"
-        ? capo
-        : tuning;
+    if (name == "key") {
+      if (!lesson.audioFeatures) {
+        lesson.audioFeatures = {};
+      }
+
+      const validKey = keys.findIndex(
+        keyValue => keyValue == key.toUpperCase()
+      );
+
+      lesson.audioFeatures.key = validKey !== -1 ? validKey : null;
+    } else if (name == "bpm") {
+      if (!lesson.audioFeatures) {
+        lesson.audioFeatures = {};
+      }
+
+      lesson.audioFeatures.tempo = bpm;
+    } else {
+      lesson[name] =
+        name == "title"
+          ? title
+          : name == "artist"
+          ? artist
+          : name == "capo"
+          ? capo
+          : tuning;
+    }
 
     await updateLesson(lesson);
     edit = null;
   }
 
+  function translateKey(key) {
+    if (key === undefined || key === null) {
+      return "Not set";
+    }
+
+    return keys[key];
+  }
+
   onMount(() => {
-    capo = lesson.capo || "X";
-    tuning = lesson.tuning || "Standard";
+    capo = lesson.capo;
+    tuning = lesson.tuning;
     title = lesson.title;
     artist = lesson.artist;
+    key = lesson.audioFeatures?.key;
+    bpm = lesson.audioFeatures?.tempo;
   });
 </script>
 
@@ -79,7 +125,7 @@
       />
     {:else}
       <button class="naked-button" on:click={() => (edit = 3)}
-        ><label for="capo">Capo:</label>{lesson.capo}</button
+        ><label for="capo">Capo:</label>{lesson.capo || "No"}</button
       >
     {/if}
   </form>
@@ -95,7 +141,39 @@
       />
     {:else}
       <button class="naked-button" on:click={() => (edit = 4)}>
-        <label for="tuning">Tuning:</label>{lesson.tuning}</button
+        <label for="tuning">Tuning:</label>{lesson.tuning || "Standard"}</button
+      >
+    {/if}
+  </form>
+
+  <form name="key" class="header-form" on:submit|preventDefault={update}>
+    {#if edit == 5}
+      <label for="key">Key:</label>
+      <input id="key" class="text-input" bind:value={key} placeholder="Key" />
+    {:else}
+      <button class="naked-button" on:click={() => (edit = 5)}>
+        <label for="tuning">Key:</label>{translateKey(
+          lesson.audioFeatures?.key
+        )}</button
+      >
+    {/if}
+  </form>
+
+  <form name="bpm" class="header-form" on:submit|preventDefault={update}>
+    {#if edit == 6}
+      <label for="bpm">Bpm:</label>
+      <input
+        id="bpm"
+        type="number"
+        class="text-input"
+        bind:value={bpm}
+        placeholder="Enter tempo"
+      />
+    {:else}
+      <button class="naked-button" on:click={() => (edit = 6)}>
+        <label for="tuning">Bpm:</label>{lesson.audioFeatures?.tempo.toFixed(
+          0
+        ) || "Not set"}</button
       >
     {/if}
   </form>
@@ -104,11 +182,13 @@
 <style lang="scss">
   header {
     display: flex;
+    flex-flow: column;
   }
 
   h1 {
     display: flex;
     align-items: center;
+    font-size: 1rem;
 
     .naked-button {
       background: unset;
@@ -123,6 +203,7 @@
 
     label {
       font-weight: 600;
+      font-size: 1rem;
     }
 
     button {
@@ -133,7 +214,7 @@
     }
 
     input {
-      width: 24px;
+      width: 45px;
       margin: 0;
       padding-top: 3px;
     }
@@ -145,9 +226,18 @@
 
   @media screen and (min-width: 760px) {
     header {
+      flex-flow: row;
       margin: 20px 0 20px;
       align-items: center;
       justify-content: space-between;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+    }
+
+    label {
+      font-size: 1rem;
     }
   }
 </style>

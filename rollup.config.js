@@ -6,6 +6,7 @@ import replace from "rollup-plugin-replace";
 import { terser } from "rollup-plugin-terser";
 import { sass } from "svelte-preprocess-sass";
 import css from "rollup-plugin-css-only";
+import json from "@rollup/plugin-json";
 import ghPages from "gh-pages";
 import { config } from "dotenv";
 config();
@@ -21,7 +22,11 @@ export default {
     file: "public/bundle.js",
   },
   plugins: [
-    replace({ YOUTUBE_API: JSON.stringify(process.env.YOUTUBE_API) }),
+    replace({
+      YOUTUBE_API: JSON.stringify(process.env.YOUTUBE_API),
+      SPOTIFY_ID: JSON.stringify(process.env.SPOTIFY_ID),
+      SPOTIFY_SECRET: JSON.stringify(process.env.SPOTIFY_SECRET),
+    }),
     svelte({
       compilerOptions: {
         // enable run-time checks when not in production
@@ -45,6 +50,7 @@ export default {
         importee === "svelte" || importee.startsWith("svelte/"),
     }),
     commonjs(),
+    json({ compact: true }),
 
     // Watch the `public` directory and refresh the
     // browser on changes when not in production

@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { LESSONS } from "./helpers.js";
+  import { LESSONS } from "../helpers.js";
 
   export let navigate;
   let lessons;

@@ -109,8 +109,7 @@
 
     .controls {
       position: absolute;
-      top: -27px;
-      left: 78px;
+      left: 207px;
       background: #f5f5f5;
 
       button {
@@ -141,6 +140,15 @@
     span {
       margin: auto;
       font-size: 1.5rem;
+    }
+  }
+
+  @media screen and (min-width: 760px) {
+    form {
+      .controls {
+        top: -27px;
+        left: 78px;
+      }
     }
   }
 </style>
