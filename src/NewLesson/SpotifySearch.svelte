@@ -6,7 +6,7 @@
   import Input from "../components/Input.svelte";
   import Loading from "../components/Loading.svelte";
   import Error from "../components/Error.svelte";
-  import { debounce } from "../helpers.js";
+  import { authenticateSpotify, debounce } from "../helpers.js";
 
   export let songName = "";
   let loading = false;
@@ -36,26 +36,10 @@
   }
 
   onMount(() => {
-    (async function authenticateSpotify() {
-      try {
-        // Needed as content-type means that the server expects tuples
-        const params = new URLSearchParams();
-        params.append("grant_type", "client_credentials");
-
-        const credentials = await axios.post(
-          "https://accounts.spotify.com/api/token",
-          params,
-          {
-            headers: {
-              "Content-type": "application/x-www-form-urlencoded",
-              Authorization: `Basic ${btoa(SPOTIFY_ID + ":" + SPOTIFY_SECRET)}`,
-            },
-          }
-        );
-
+    (async function init() {
+      if (!$spotifyToken) {
+        const credentials = await authenticateSpotify();
         spotifyToken.set(credentials?.data?.access_token);
-      } catch (err) {
-        console.error(err);
       }
     })();
   });

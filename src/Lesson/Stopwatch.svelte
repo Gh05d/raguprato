@@ -64,6 +64,13 @@
     running = false;
   }
 
+  function reset() {
+    stop();
+    hours = 0;
+    minutes = 0;
+    seconds = 0;
+  }
+
   onDestroy(() => {
     clearInterval(time);
 
@@ -73,6 +80,12 @@
     // Setting the title via the variable does not work
     document.title = "Raguprato";
   });
+
+  const buttons = [
+    { title: "Play", click: run, icon: "play" },
+    { title: "Pause", click: stop, icon: "pause" },
+    { title: "Reset", click: reset, icon: "stop" },
+  ];
 </script>
 
 <svelte:head>
@@ -82,13 +95,11 @@
 <section>
   <form on:submit|preventDefault={run}>
     <div class="controls">
-      <button on:click={run}>
-        <i class="fa fa-play-circle" />
-      </button>
-
-      <button type="button" on:click={stop}>
-        <i class="fa fa-stop-circle" />
-      </button>
+      {#each buttons as { title, click, icon }}
+        <button {title} on:click={click}>
+          <i class={`fa fa-${icon}-circle`} />
+        </button>
+      {/each}
     </div>
     <div class="time">{normalizedHours}</div>
     <span>:</span>
@@ -147,7 +158,7 @@
     form {
       .controls {
         top: -27px;
-        left: 78px;
+        left: 70px;
       }
     }
   }

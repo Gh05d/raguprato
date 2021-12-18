@@ -1,7 +1,9 @@
 <script>
   import { onMount } from "svelte";
   import Stopwatch from "./Stopwatch.svelte";
-  import { updateLesson } from "../helpers.js";
+  import { authenticateSpotify, updateLesson } from "../helpers.js";
+  import { spotifyToken } from "../stores";
+  import axios from "axios";
 
   export let lesson;
   let capo;
@@ -11,6 +13,7 @@
   let key;
   let bpm;
   let edit;
+  let loading;
 
   const keys = [
     "C",
@@ -43,9 +46,7 @@
         lesson.audioFeatures = {};
       }
 
-      const validKey = keys.findIndex(
-        keyValue => keyValue == key.toUpperCase()
-      );
+      const validKey = keys.findIndex(keyValue => keyValue == key.toUpperCase());
 
       lesson.audioFeatures.key = validKey !== -1 ? validKey : null;
     } else if (name == "bpm") {
@@ -77,6 +78,49 @@
     return keys[key];
   }
 
+  async function sync() {
+    try {
+      loading = true;
+      if (!$spotifyToken) {
+        const credentials = await authenticateSpotify();
+        await spotifyToken.set(credentials?.data?.access_token);
+      }
+      const res = await axios("https://api.spotify.com/v1/search", {
+        headers: {
+          Authorization: `Authorization: Bearer ${$spotifyToken}`,
+        },
+        params: { q: encodeURI(title), type: "track", limit: 1 },
+      });
+
+      const [spotifyResponse] = res?.data?.tracks?.items;
+
+      const { data } = await axios("https://api.spotify.com/v1/audio-features", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Authorization: Bearer ${$spotifyToken}`,
+        },
+        params: { ids: spotifyResponse.id },
+      });
+
+      if (data?.audio_features[0]) {
+        key = data?.audio_features[0]?.key;
+        bpm = data?.audio_features[0]?.tempo;
+
+        if (!lesson.audioFeatures) {
+          lesson.audioFeatures = {};
+        }
+
+        lesson.audioFeatures.key = key;
+        lesson.audioFeatures.tempo = bpm;
+        await updateLesson(lesson);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      loading = false;
+    }
+  }
+
   onMount(() => {
     capo = lesson.capo;
     tuning = lesson.tuning;
@@ -94,9 +138,7 @@
         <input bind:value={title} />
       </form>
     {:else}
-      <button class="naked-button" on:click={() => (edit = 1)}
-        >{lesson.title}</button
-      >
+      <button class="naked-button" on:click={() => (edit = 1)}>{lesson.title}</button>
     {/if}
     <span>-</span>
     {#if edit == 2}
@@ -104,9 +146,7 @@
         <input bind:value={artist} />
       </form>
     {:else}
-      <button class="naked-button" on:click={() => (edit = 2)}
-        >{lesson.artist}</button
-      >
+      <button class="naked-button" on:click={() => (edit = 2)}>{lesson.artist}</button>
     {/if}
   </h1>
 
@@ -115,34 +155,20 @@
   <form name="capo" class="header-form" on:submit|preventDefault={update}>
     {#if edit == 3}
       <label for="capo">Capo:</label>
-      <input
-        id="capo"
-        type="number"
-        bind:value={capo}
-        placeholder="X"
-        min="0"
-        max="12"
-      />
+      <input id="capo" type="number" bind:value={capo} placeholder="X" min="0" max="12" />
     {:else}
       <button class="naked-button" on:click={() => (edit = 3)}
-        ><label for="capo">Capo:</label>{lesson.capo || "No"}</button
-      >
+        ><label for="capo">Capo:</label>{lesson.capo || "No"}</button>
     {/if}
   </form>
 
   <form name="tuning" class="header-form" on:submit|preventDefault={update}>
     {#if edit == 4}
       <label for="tuning">Tuning:</label>
-      <input
-        id="tuning"
-        class="text-input"
-        bind:value={tuning}
-        placeholder="Standard"
-      />
+      <input id="tuning" class="text-input" bind:value={tuning} placeholder="Standard" />
     {:else}
       <button class="naked-button" on:click={() => (edit = 4)}>
-        <label for="tuning">Tuning:</label>{lesson.tuning || "Standard"}</button
-      >
+        <label for="tuning">Tuning:</label>{lesson.tuning || "Standard"}</button>
     {/if}
   </form>
 
@@ -152,10 +178,7 @@
       <input id="key" class="text-input" bind:value={key} placeholder="Key" />
     {:else}
       <button class="naked-button" on:click={() => (edit = 5)}>
-        <label for="tuning">Key:</label>{translateKey(
-          lesson.audioFeatures?.key
-        )}</button
-      >
+        <label for="tuning">Key:</label>{translateKey(lesson.audioFeatures?.key)}</button>
     {/if}
   </form>
 
@@ -167,16 +190,17 @@
         type="number"
         class="text-input"
         bind:value={bpm}
-        placeholder="Enter tempo"
-      />
+        placeholder="Enter tempo" />
     {:else}
       <button class="naked-button" on:click={() => (edit = 6)}>
-        <label for="tuning">Bpm:</label>{lesson.audioFeatures?.tempo.toFixed(
-          0
-        ) || "Not set"}</button
-      >
+        <label for="tuning">Bpm:</label>{lesson.audioFeatures?.tempo?.toFixed(0) ||
+          "Not set"}</button>
     {/if}
   </form>
+
+  <button class="sync-button" title="Sync Spotify" disabled={loading} on:click={sync}>
+    <i class="fab fa-spotify" />
+  </button>
 </header>
 
 <style lang="scss">
@@ -224,6 +248,9 @@
     }
   }
 
+  .sync-button {
+    background-color: unset;
+  }
   @media screen and (min-width: 760px) {
     header {
       flex-flow: row;

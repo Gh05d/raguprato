@@ -62,3 +62,26 @@ export async function updateLesson(lesson) {
  */
 export const getArtists = artists =>
   artists?.map(artist => artist.name).join(", ") || "John Doe";
+
+export async function authenticateSpotify() {
+  try {
+    // Needed as content-type means that the server expects tuples
+    const params = new URLSearchParams();
+    params.append("grant_type", "client_credentials");
+
+    const credentials = await axios.post(
+      "https://accounts.spotify.com/api/token",
+      params,
+      {
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded",
+          Authorization: `Basic ${btoa(SPOTIFY_ID + ":" + SPOTIFY_SECRET)}`,
+        },
+      }
+    );
+
+    return credentials;
+  } catch (err) {
+    console.error(err);
+  }
+}

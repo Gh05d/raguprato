@@ -102,17 +102,14 @@
   async function searchYoutube() {
     if (videoSearch && videoSearch.length > 3) {
       try {
-        const res = await apiCall(
-          "https://www.googleapis.com/youtube/v3/search",
-          {
-            q: videoSearch,
-            type: "video",
-            key: YOUTUBE_API,
-            part: "snippet",
-            maxResults: 7,
-            topicId: "/m/04rlf",
-          }
-        );
+        const res = await apiCall("https://www.googleapis.com/youtube/v3/search", {
+          q: videoSearch,
+          type: "video",
+          key: YOUTUBE_API,
+          part: "snippet",
+          maxResults: 7,
+          topicId: "/m/04rlf",
+        });
 
         addVideos = res.items;
       } catch (error) {
@@ -197,25 +194,23 @@
         <input
           placeholder="Search for another Video"
           on:input={searchYoutube}
-          bind:value={videoSearch}
-        />
+          bind:value={videoSearch} />
       </form>
 
       <form on:submit|preventDefault={updateTab}>
         <input placeholder="Update Guitar Tab" bind:value={tab} />
       </form>
 
-      {#if lesson.videos?.length > 0}
+      {#if lesson.videos?.length}
         <div class="iframe-wrapper">
           <button on:click={() => changeVideo(-1)} class="naked-button">
             <i class="fa fa-caret-left" />
           </button>
           <iframe
-            title={`Lesson video of ${tab.title}`}
+            title={`Lesson video of ${lesson.title}`}
             allowfullscreen
             class="video"
-            src={`https://www.youtube.com/embed/${lesson.videos[showVideo]}`}
-          />
+            src={`https://www.youtube.com/embed/${lesson.videos[showVideo]}`} />
           <button on:click={() => changeVideo(1)} class="naked-button">
             <i class="fa fa-caret-right" />
           </button>
@@ -230,8 +225,7 @@
           height="100%"
           width="100%"
           title="Hopefully some lyrics"
-          src={lesson.tab || "https://www.guitaretab.com"}
-        />
+          src={lesson.tab || "https://www.guitaretab.com"} />
       {/if}
     </div>
 
@@ -271,11 +265,7 @@
     <button on:click={addTab}>add another tab</button> -->
 
     <h2>Strumming Pattern</h2>
-    <div
-      class="strumming"
-      on:dragover|preventDefault
-      on:drop|preventDefault={handleDrop}
-    >
+    <div class="strumming" on:dragover|preventDefault on:drop|preventDefault={handleDrop}>
       {#each [...Array(6)] as i}
         <hr />
       {/each}
@@ -290,8 +280,7 @@
                 width={60}
                 height={80}
                 class={`arrow-${strum}`}
-                src={ARROW_SRC}
-              />
+                src={ARROW_SRC} />
             </li>
           {/each}
         </ul>
@@ -303,14 +292,12 @@
         alt="Arrow down"
         class="arrow-down"
         on:dragstart={e => e.dataTransfer.setData("direction", "down")}
-        src={ARROW_SRC}
-      />
+        src={ARROW_SRC} />
       <img
         class="arrow-up"
         alt="Arrow down"
         on:dragstart={e => e.dataTransfer.setData("direction", "up")}
-        src={ARROW_SRC}
-      />
+        src={ARROW_SRC} />
     </div>
 
     <label for="notes">Notes about the Song</label>
@@ -319,8 +306,7 @@
       on:change={e => addNotes(e.target.value)}
       id="notes"
       rows={5}
-      placeholder="Your notes for the song"
-    />
+      placeholder="Your notes for the song" />
 
     <button on:click={finish} class={lesson.finished ? "re-open" : ""}>
       {#if lesson.finished}Open Lesson{:else}Finish Lesson{/if}

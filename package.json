@@ -5,18 +5,23 @@
     "name": "Gh05d",
     "email": "clap@mailbox.org"
   },
+  "type": "module",
   "engines": {
     "node": "14.x",
     "npm": "7.x"
   },
-  "type": "module",
   "devDependencies": {
     "@rollup/plugin-json": "^4.1.0",
-    "eslint": "^8.0.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^8.5.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-svelte3": "^3.2.1",
     "gh-pages": "^3.1.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.4.1",
+    "prettier": "^2.5.1",
+    "prettier-plugin-svelte": "^2.5.1",
     "rollup": "^2.44.0",
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-css-only": "^3.1.0",
