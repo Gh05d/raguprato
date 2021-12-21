@@ -6313,7 +6313,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (98:6) {#each buttons as { title, click, icon }}
+    // (99:6) {#each buttons as { title, click, icon }}
     function create_each_block$3(ctx) {
     	let button;
     	let i;
@@ -6329,7 +6329,7 @@ var app = (function () {
     			this.h();
     		},
     		l: function claim(nodes) {
-    			button = claim_element(nodes, "BUTTON", { title: true, class: true });
+    			button = claim_element(nodes, "BUTTON", { type: true, title: true, class: true });
     			var button_nodes = children(button);
     			i = claim_element(button_nodes, "I", { class: true });
     			children(i).forEach(detach_dev);
@@ -6338,11 +6338,12 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(i, "class", "" + (null_to_empty(`fa fa-${/*icon*/ ctx[19]}-circle`) + " svelte-7nspsx"));
-    			add_location(i, file$4, 99, 10, 1971);
+    			attr_dev(i, "class", "" + (null_to_empty(`fa fa-${/*icon*/ ctx[19]}-circle`) + " svelte-5940q5"));
+    			add_location(i, file$4, 100, 10, 2005);
+    			attr_dev(button, "type", "button");
     			attr_dev(button, "title", /*title*/ ctx[3]);
-    			attr_dev(button, "class", "svelte-7nspsx");
-    			add_location(button, file$4, 98, 8, 1927);
+    			attr_dev(button, "class", "svelte-5940q5");
+    			add_location(button, file$4, 99, 8, 1947);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, button, anchor);
@@ -6368,7 +6369,7 @@ var app = (function () {
     		block,
     		id: create_each_block$3.name,
     		type: "each",
-    		source: "(98:6) {#each buttons as { title, click, icon }}",
+    		source: "(99:6) {#each buttons as { title, click, icon }}",
     		ctx
     	});
 
@@ -6481,21 +6482,21 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(div0, "class", "controls svelte-7nspsx");
-    			add_location(div0, file$4, 96, 4, 1848);
-    			attr_dev(div1, "class", "time svelte-7nspsx");
-    			add_location(div1, file$4, 103, 4, 2055);
-    			attr_dev(span0, "class", "svelte-7nspsx");
-    			add_location(span0, file$4, 104, 4, 2101);
-    			attr_dev(div2, "class", "time svelte-7nspsx");
-    			add_location(div2, file$4, 105, 4, 2120);
-    			attr_dev(span1, "class", "svelte-7nspsx");
-    			add_location(span1, file$4, 106, 4, 2168);
-    			attr_dev(div3, "class", "time svelte-7nspsx");
-    			add_location(div3, file$4, 107, 4, 2187);
-    			attr_dev(form, "class", "svelte-7nspsx");
-    			add_location(form, file$4, 95, 2, 1806);
-    			add_location(section, file$4, 94, 0, 1794);
+    			attr_dev(div0, "class", "controls svelte-5940q5");
+    			add_location(div0, file$4, 97, 4, 1868);
+    			attr_dev(div1, "class", "time svelte-5940q5");
+    			add_location(div1, file$4, 104, 4, 2089);
+    			attr_dev(span0, "class", "svelte-5940q5");
+    			add_location(span0, file$4, 105, 4, 2135);
+    			attr_dev(div2, "class", "time svelte-5940q5");
+    			add_location(div2, file$4, 106, 4, 2154);
+    			attr_dev(span1, "class", "svelte-5940q5");
+    			add_location(span1, file$4, 107, 4, 2202);
+    			attr_dev(div3, "class", "time svelte-5940q5");
+    			add_location(div3, file$4, 108, 4, 2221);
+    			attr_dev(form, "class", "svelte-5940q5");
+    			add_location(form, file$4, 96, 2, 1826);
+    			add_location(section, file$4, 95, 0, 1814);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, t0, anchor);
@@ -6640,8 +6641,9 @@ var app = (function () {
     		);
     	}
 
-    	function stop() {
+    	function pause() {
     		clearInterval(time);
+    		time = null;
 
     		if (updateTime && !updated) {
     			updateTime(total);
@@ -6653,7 +6655,7 @@ var app = (function () {
     	}
 
     	function reset() {
-    		stop();
+    		pause();
     		$$invalidate(9, hours = 0);
     		$$invalidate(7, minutes = 0);
     		$$invalidate(8, seconds = 0);
@@ -6674,7 +6676,7 @@ var app = (function () {
     		{ title: "Play", click: run, icon: "play" },
     		{
     			title: "Pause",
-    			click: stop,
+    			click: pause,
     			icon: "pause"
     		},
     		{
@@ -6707,7 +6709,7 @@ var app = (function () {
     		audio,
     		run,
     		timer,
-    		stop,
+    		pause,
     		reset,
     		buttons,
     		normalizedSeconds,
@@ -6794,7 +6796,7 @@ var app = (function () {
     const { console: console_1$1 } = globals;
     const file$3 = "src/Lesson/LessonHeader.svelte";
 
-    // (140:4) {:else}
+    // (141:4) {:else}
     function create_else_block_5(ctx) {
     	let button;
     	let t_value = /*lesson*/ ctx[0].title + "";
@@ -6817,7 +6819,7 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(button, "class", "naked-button svelte-1wjd2ri");
-    			add_location(button, file$3, 140, 6, 3148);
+    			add_location(button, file$3, 141, 6, 3149);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, button, anchor);
@@ -6842,14 +6844,14 @@ var app = (function () {
     		block,
     		id: create_else_block_5.name,
     		type: "else",
-    		source: "(140:4) {:else}",
+    		source: "(141:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (136:4) {#if edit == 1}
+    // (137:4) {#if edit == 1}
     function create_if_block_5$1(ctx) {
     	let form;
     	let input;
@@ -6870,9 +6872,9 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			add_location(input, file$3, 137, 8, 3087);
+    			add_location(input, file$3, 138, 8, 3088);
     			attr_dev(form, "name", "title");
-    			add_location(form, file$3, 136, 6, 3025);
+    			add_location(form, file$3, 137, 6, 3026);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, form, anchor);
@@ -6904,14 +6906,14 @@ var app = (function () {
     		block,
     		id: create_if_block_5$1.name,
     		type: "if",
-    		source: "(136:4) {#if edit == 1}",
+    		source: "(137:4) {#if edit == 1}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (148:4) {:else}
+    // (149:4) {:else}
     function create_else_block_4(ctx) {
     	let button;
     	let t_value = /*lesson*/ ctx[0].artist + "";
@@ -6934,7 +6936,7 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(button, "class", "naked-button svelte-1wjd2ri");
-    			add_location(button, file$3, 148, 6, 3409);
+    			add_location(button, file$3, 149, 6, 3410);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, button, anchor);
@@ -6959,14 +6961,14 @@ var app = (function () {
     		block,
     		id: create_else_block_4.name,
     		type: "else",
-    		source: "(148:4) {:else}",
+    		source: "(149:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (144:4) {#if edit == 2}
+    // (145:4) {#if edit == 2}
     function create_if_block_4$1(ctx) {
     	let form;
     	let input;
@@ -6987,9 +6989,9 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			add_location(input, file$3, 145, 8, 3347);
+    			add_location(input, file$3, 146, 8, 3348);
     			attr_dev(form, "name", "artist");
-    			add_location(form, file$3, 144, 6, 3284);
+    			add_location(form, file$3, 145, 6, 3285);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, form, anchor);
@@ -7021,14 +7023,14 @@ var app = (function () {
     		block,
     		id: create_if_block_4$1.name,
     		type: "if",
-    		source: "(144:4) {#if edit == 2}",
+    		source: "(145:4) {#if edit == 2}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (159:4) {:else}
+    // (160:4) {:else}
     function create_else_block_3(ctx) {
     	let button;
     	let label;
@@ -7060,9 +7062,9 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(label, "for", "capo");
     			attr_dev(label, "class", "svelte-1wjd2ri");
-    			add_location(label, file$3, 160, 9, 3848);
+    			add_location(label, file$3, 161, 9, 3849);
     			attr_dev(button, "class", "naked-button svelte-1wjd2ri");
-    			add_location(button, file$3, 159, 6, 3782);
+    			add_location(button, file$3, 160, 6, 3783);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, button, anchor);
@@ -7089,14 +7091,14 @@ var app = (function () {
     		block,
     		id: create_else_block_3.name,
     		type: "else",
-    		source: "(159:4) {:else}",
+    		source: "(160:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (156:4) {#if edit == 3}
+    // (157:4) {#if edit == 3}
     function create_if_block_3$2(ctx) {
     	let label;
     	let t0;
@@ -7134,14 +7136,14 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(label, "for", "capo");
     			attr_dev(label, "class", "svelte-1wjd2ri");
-    			add_location(label, file$3, 156, 6, 3641);
+    			add_location(label, file$3, 157, 6, 3642);
     			attr_dev(input, "id", "capo");
     			attr_dev(input, "type", "number");
     			attr_dev(input, "placeholder", "X");
     			attr_dev(input, "min", "0");
     			attr_dev(input, "max", "12");
     			attr_dev(input, "class", "svelte-1wjd2ri");
-    			add_location(input, file$3, 157, 6, 3679);
+    			add_location(input, file$3, 158, 6, 3680);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, label, anchor);
@@ -7173,14 +7175,14 @@ var app = (function () {
     		block,
     		id: create_if_block_3$2.name,
     		type: "if",
-    		source: "(156:4) {#if edit == 3}",
+    		source: "(157:4) {#if edit == 3}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (169:4) {:else}
+    // (170:4) {:else}
     function create_else_block_2(ctx) {
     	let button;
     	let label;
@@ -7212,9 +7214,9 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(label, "for", "tuning");
     			attr_dev(label, "class", "svelte-1wjd2ri");
-    			add_location(label, file$3, 170, 8, 4244);
+    			add_location(label, file$3, 171, 8, 4245);
     			attr_dev(button, "class", "naked-button svelte-1wjd2ri");
-    			add_location(button, file$3, 169, 6, 4178);
+    			add_location(button, file$3, 170, 6, 4179);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, button, anchor);
@@ -7241,14 +7243,14 @@ var app = (function () {
     		block,
     		id: create_else_block_2.name,
     		type: "else",
-    		source: "(169:4) {:else}",
+    		source: "(170:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (166:4) {#if edit == 4}
+    // (167:4) {#if edit == 4}
     function create_if_block_2$2(ctx) {
     	let label;
     	let t0;
@@ -7277,11 +7279,11 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(label, "for", "tuning");
     			attr_dev(label, "class", "svelte-1wjd2ri");
-    			add_location(label, file$3, 166, 6, 4034);
+    			add_location(label, file$3, 167, 6, 4035);
     			attr_dev(input, "id", "tuning");
     			attr_dev(input, "class", "text-input svelte-1wjd2ri");
     			attr_dev(input, "placeholder", "Standard");
-    			add_location(input, file$3, 167, 6, 4076);
+    			add_location(input, file$3, 168, 6, 4077);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, label, anchor);
@@ -7313,14 +7315,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2$2.name,
     		type: "if",
-    		source: "(166:4) {#if edit == 4}",
+    		source: "(167:4) {#if edit == 4}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (179:4) {:else}
+    // (180:4) {:else}
     function create_else_block_1$2(ctx) {
     	let button;
     	let label;
@@ -7352,9 +7354,9 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(label, "for", "tuning");
     			attr_dev(label, "class", "svelte-1wjd2ri");
-    			add_location(label, file$3, 180, 8, 4632);
+    			add_location(label, file$3, 181, 8, 4633);
     			attr_dev(button, "class", "naked-button svelte-1wjd2ri");
-    			add_location(button, file$3, 179, 6, 4566);
+    			add_location(button, file$3, 180, 6, 4567);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, button, anchor);
@@ -7381,14 +7383,14 @@ var app = (function () {
     		block,
     		id: create_else_block_1$2.name,
     		type: "else",
-    		source: "(179:4) {:else}",
+    		source: "(180:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (176:4) {#if edit == 5}
+    // (177:4) {#if edit == 5}
     function create_if_block_1$2(ctx) {
     	let label;
     	let t0;
@@ -7417,11 +7419,11 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(label, "for", "key");
     			attr_dev(label, "class", "svelte-1wjd2ri");
-    			add_location(label, file$3, 176, 6, 4439);
+    			add_location(label, file$3, 177, 6, 4440);
     			attr_dev(input, "id", "key");
     			attr_dev(input, "class", "text-input svelte-1wjd2ri");
     			attr_dev(input, "placeholder", "Key");
-    			add_location(input, file$3, 177, 6, 4475);
+    			add_location(input, file$3, 178, 6, 4476);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, label, anchor);
@@ -7453,14 +7455,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1$2.name,
     		type: "if",
-    		source: "(176:4) {#if edit == 5}",
+    		source: "(177:4) {#if edit == 5}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (194:4) {:else}
+    // (195:4) {:else}
     function create_else_block$2(ctx) {
     	let button;
     	let label;
@@ -7492,9 +7494,9 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(label, "for", "tuning");
     			attr_dev(label, "class", "svelte-1wjd2ri");
-    			add_location(label, file$3, 195, 8, 5091);
+    			add_location(label, file$3, 196, 8, 5092);
     			attr_dev(button, "class", "naked-button svelte-1wjd2ri");
-    			add_location(button, file$3, 194, 6, 5025);
+    			add_location(button, file$3, 195, 6, 5026);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, button, anchor);
@@ -7521,14 +7523,14 @@ var app = (function () {
     		block,
     		id: create_else_block$2.name,
     		type: "else",
-    		source: "(194:4) {:else}",
+    		source: "(195:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (186:4) {#if edit == 6}
+    // (187:4) {#if edit == 6}
     function create_if_block$2(ctx) {
     	let label;
     	let t0;
@@ -7564,12 +7566,12 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(label, "for", "bpm");
     			attr_dev(label, "class", "svelte-1wjd2ri");
-    			add_location(label, file$3, 186, 6, 4836);
+    			add_location(label, file$3, 187, 6, 4837);
     			attr_dev(input, "id", "bpm");
     			attr_dev(input, "type", "number");
     			attr_dev(input, "class", "text-input svelte-1wjd2ri");
     			attr_dev(input, "placeholder", "Enter tempo");
-    			add_location(input, file$3, 187, 6, 4872);
+    			add_location(input, file$3, 188, 6, 4873);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, label, anchor);
@@ -7601,7 +7603,7 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(186:4) {#if edit == 6}",
+    		source: "(187:4) {#if edit == 6}",
     		ctx
     	});
 
@@ -7760,29 +7762,29 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			add_location(span, file$3, 142, 4, 3243);
+    			add_location(span, file$3, 143, 4, 3244);
     			attr_dev(h1, "class", "svelte-1wjd2ri");
-    			add_location(h1, file$3, 134, 2, 2994);
+    			add_location(h1, file$3, 135, 2, 2995);
     			attr_dev(form0, "name", "capo");
     			attr_dev(form0, "class", "header-form svelte-1wjd2ri");
-    			add_location(form0, file$3, 154, 2, 3542);
+    			add_location(form0, file$3, 155, 2, 3543);
     			attr_dev(form1, "name", "tuning");
     			attr_dev(form1, "class", "header-form svelte-1wjd2ri");
-    			add_location(form1, file$3, 164, 2, 3933);
+    			add_location(form1, file$3, 165, 2, 3934);
     			attr_dev(form2, "name", "key");
     			attr_dev(form2, "class", "header-form svelte-1wjd2ri");
-    			add_location(form2, file$3, 174, 2, 4341);
+    			add_location(form2, file$3, 175, 2, 4342);
     			attr_dev(form3, "name", "bpm");
     			attr_dev(form3, "class", "header-form svelte-1wjd2ri");
-    			add_location(form3, file$3, 184, 2, 4738);
+    			add_location(form3, file$3, 185, 2, 4739);
     			attr_dev(i, "class", "fab fa-spotify");
-    			add_location(i, file$3, 201, 4, 5309);
+    			add_location(i, file$3, 202, 4, 5310);
     			attr_dev(button, "class", "sync-button svelte-1wjd2ri");
     			attr_dev(button, "title", "Sync Spotify");
     			button.disabled = /*loading*/ ctx[8];
-    			add_location(button, file$3, 200, 2, 5220);
+    			add_location(button, file$3, 201, 2, 5221);
     			attr_dev(header, "class", "svelte-1wjd2ri");
-    			add_location(header, file$3, 133, 0, 2983);
+    			add_location(header, file$3, 134, 0, 2984);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, header, anchor);
