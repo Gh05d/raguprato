@@ -52,8 +52,9 @@
     }, 1000);
   }
 
-  function stop() {
+  function pause() {
     clearInterval(time);
+    time = null;
 
     if (updateTime && !updated) {
       updateTime(total);
@@ -65,7 +66,7 @@
   }
 
   function reset() {
-    stop();
+    pause();
     hours = 0;
     minutes = 0;
     seconds = 0;
@@ -83,7 +84,7 @@
 
   const buttons = [
     { title: "Play", click: run, icon: "play" },
-    { title: "Pause", click: stop, icon: "pause" },
+    { title: "Pause", click: pause, icon: "pause" },
     { title: "Reset", click: reset, icon: "stop" },
   ];
 </script>
@@ -96,7 +97,7 @@
   <form on:submit|preventDefault={run}>
     <div class="controls">
       {#each buttons as { title, click, icon }}
-        <button {title} on:click={click}>
+        <button type="button" {title} on:click={click}>
           <i class={`fa fa-${icon}-circle`} />
         </button>
       {/each}
@@ -127,16 +128,6 @@
         padding: 0;
         background-color: unset;
       }
-    }
-
-    input {
-      background: #ff6f91;
-      font-size: 1.5rem;
-      text-align: center;
-      width: $width;
-      border: 0;
-      margin: 0;
-      padding: 0;
     }
 
     .time {

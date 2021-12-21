@@ -85,6 +85,7 @@
         const credentials = await authenticateSpotify();
         await spotifyToken.set(credentials?.data?.access_token);
       }
+
       const res = await axios("https://api.spotify.com/v1/search", {
         headers: {
           Authorization: `Authorization: Bearer ${$spotifyToken}`,
