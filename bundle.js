@@ -5226,7 +5226,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (64:2) {#each searchResult as video}
+    // (60:2) {#each searchResult as video}
     function create_each_block$4(ctx) {
     	let li;
     	let videosnippet;
@@ -5268,7 +5268,7 @@ var app = (function () {
     			attr_dev(li, "class", "empty-button svelte-krholc");
     			attr_dev(li, "role", "button");
     			toggle_class(li, "selected", /*findID*/ ctx[3](/*video*/ ctx[10].id.videoId));
-    			add_location(li, file$6, 64, 4, 1579);
+    			add_location(li, file$6, 60, 4, 1535);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, li, anchor);
@@ -5318,7 +5318,7 @@ var app = (function () {
     		block,
     		id: create_each_block$4.name,
     		type: "each",
-    		source: "(64:2) {#each searchResult as video}",
+    		source: "(60:2) {#each searchResult as video}",
     		ctx
     	});
 
@@ -5399,7 +5399,7 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(ul, "class", "search-result svelte-krholc");
     			toggle_class(ul, "show", /*searchResult*/ ctx[1]);
-    			add_location(ul, file$6, 62, 0, 1490);
+    			add_location(ul, file$6, 58, 0, 1446);
     		},
     		m: function mount(target, anchor) {
     			mount_component(input, target, anchor);
@@ -8303,13 +8303,13 @@ var app = (function () {
     function create_if_block$1(ctx) {
     	let lessonheader;
     	let t0;
+    	let t1;
     	let div0;
     	let form0;
     	let input0;
-    	let t1;
+    	let t2;
     	let form1;
     	let input1;
-    	let t2;
     	let t3;
     	let t4;
     	let t5;
@@ -8352,9 +8352,9 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	let if_block0 = /*lesson*/ ctx[2].videos?.length && create_if_block_6(ctx);
-    	let if_block1 = /*lesson*/ ctx[2].tab && create_if_block_5(ctx);
-    	let if_block2 = /*addVideos*/ ctx[1] && create_if_block_4(ctx);
+    	let if_block0 = /*addVideos*/ ctx[1] && create_if_block_6(ctx);
+    	let if_block1 = /*lesson*/ ctx[2].videos?.length && create_if_block_5(ctx);
+    	let if_block2 = /*lesson*/ ctx[2].tab && create_if_block_4(ctx);
     	let if_block3 = /*lesson*/ ctx[2].chords?.length > 0 && create_if_block_3$1(ctx);
     	let each_value_1 = [...Array(6)];
     	validate_each_argument(each_value_1);
@@ -8378,14 +8378,14 @@ var app = (function () {
     		c: function create() {
     			create_component(lessonheader.$$.fragment);
     			t0 = space();
+    			if (if_block0) if_block0.c();
+    			t1 = space();
     			div0 = element("div");
     			form0 = element("form");
     			input0 = element("input");
-    			t1 = space();
+    			t2 = space();
     			form1 = element("form");
     			input1 = element("input");
-    			t2 = space();
-    			if (if_block0) if_block0.c();
     			t3 = space();
     			if (if_block1) if_block1.c();
     			t4 = space();
@@ -8431,24 +8431,24 @@ var app = (function () {
     		l: function claim(nodes) {
     			claim_component(lessonheader.$$.fragment, nodes);
     			t0 = claim_space(nodes);
+    			if (if_block0) if_block0.l(nodes);
+    			t1 = claim_space(nodes);
     			div0 = claim_element(nodes, "DIV", { class: true });
     			var div0_nodes = children(div0);
     			form0 = claim_element(div0_nodes, "FORM", { class: true });
     			var form0_nodes = children(form0);
     			input0 = claim_element(form0_nodes, "INPUT", { placeholder: true });
     			form0_nodes.forEach(detach_dev);
-    			t1 = claim_space(div0_nodes);
+    			t2 = claim_space(div0_nodes);
     			form1 = claim_element(div0_nodes, "FORM", { class: true });
     			var form1_nodes = children(form1);
     			input1 = claim_element(form1_nodes, "INPUT", { placeholder: true });
     			form1_nodes.forEach(detach_dev);
-    			t2 = claim_space(div0_nodes);
-    			if (if_block0) if_block0.l(div0_nodes);
     			t3 = claim_space(div0_nodes);
     			if (if_block1) if_block1.l(div0_nodes);
+    			t4 = claim_space(div0_nodes);
+    			if (if_block2) if_block2.l(div0_nodes);
     			div0_nodes.forEach(detach_dev);
-    			t4 = claim_space(nodes);
-    			if (if_block2) if_block2.l(nodes);
     			t5 = claim_space(nodes);
     			h20 = claim_element(nodes, "H2", { class: true });
     			var h20_nodes = children(h20);
@@ -8506,31 +8506,31 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(input0, "placeholder", "Search for another Video");
-    			add_location(input0, file$2, 193, 8, 4511);
-    			attr_dev(form0, "class", "svelte-14qmrxj");
-    			add_location(form0, file$2, 192, 6, 4460);
+    			add_location(input0, file$2, 203, 8, 4782);
+    			attr_dev(form0, "class", "svelte-15tqh3r");
+    			add_location(form0, file$2, 202, 6, 4731);
     			attr_dev(input1, "placeholder", "Update Guitar Tab");
-    			add_location(input1, file$2, 200, 8, 4713);
-    			attr_dev(form1, "class", "svelte-14qmrxj");
-    			add_location(form1, file$2, 199, 6, 4661);
-    			attr_dev(div0, "class", "media-wrapper svelte-14qmrxj");
-    			add_location(div0, file$2, 191, 4, 4426);
-    			attr_dev(h20, "class", "svelte-14qmrxj");
+    			add_location(input1, file$2, 210, 8, 4984);
+    			attr_dev(form1, "class", "svelte-15tqh3r");
+    			add_location(form1, file$2, 209, 6, 4932);
+    			attr_dev(div0, "class", "media-wrapper svelte-15tqh3r");
+    			add_location(div0, file$2, 201, 4, 4697);
+    			attr_dev(h20, "class", "svelte-15tqh3r");
     			add_location(h20, file$2, 241, 4, 5945);
     			attr_dev(input2, "placeholder", "Am");
     			add_location(input2, file$2, 244, 6, 6015);
-    			attr_dev(form2, "class", "svelte-14qmrxj");
+    			attr_dev(form2, "class", "svelte-15tqh3r");
     			add_location(form2, file$2, 243, 4, 5966);
-    			attr_dev(h21, "class", "svelte-14qmrxj");
+    			attr_dev(h21, "class", "svelte-15tqh3r");
     			add_location(h21, file$2, 266, 4, 6714);
-    			attr_dev(div1, "class", "strumming svelte-14qmrxj");
+    			attr_dev(div1, "class", "strumming svelte-15tqh3r");
     			add_location(div1, file$2, 267, 4, 6745);
     			add_location(div2, file$2, 288, 4, 7331);
     			attr_dev(img0, "alt", "Arrow down");
     			attr_dev(img0, "class", "arrow-down");
     			if (!src_url_equal(img0.src, img0_src_value = ARROW_SRC)) attr_dev(img0, "src", img0_src_value);
     			add_location(img0, file$2, 290, 6, 7413);
-    			attr_dev(img1, "class", "arrow-up svelte-14qmrxj");
+    			attr_dev(img1, "class", "arrow-up svelte-15tqh3r");
     			attr_dev(img1, "alt", "Arrow down");
     			if (!src_url_equal(img1.src, img1_src_value = ARROW_SRC)) attr_dev(img1, "src", img1_src_value);
     			add_location(img1, file$2, 295, 6, 7575);
@@ -8541,26 +8541,26 @@ var app = (function () {
     			attr_dev(textarea, "rows", 5);
     			attr_dev(textarea, "placeholder", "Your notes for the song");
     			add_location(textarea, file$2, 303, 4, 7795);
-    			attr_dev(button, "class", button_class_value = "" + (null_to_empty(/*lesson*/ ctx[2].finished ? "re-open" : "") + " svelte-14qmrxj"));
+    			attr_dev(button, "class", button_class_value = "" + (null_to_empty(/*lesson*/ ctx[2].finished ? "re-open" : "") + " svelte-15tqh3r"));
     			add_location(button, file$2, 310, 4, 7962);
     		},
     		m: function mount(target, anchor) {
     			mount_component(lessonheader, target, anchor);
     			insert_hydration_dev(target, t0, anchor);
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert_hydration_dev(target, t1, anchor);
     			insert_hydration_dev(target, div0, anchor);
     			append_hydration_dev(div0, form0);
     			append_hydration_dev(form0, input0);
     			set_input_value(input0, /*videoSearch*/ ctx[0]);
-    			append_hydration_dev(div0, t1);
+    			append_hydration_dev(div0, t2);
     			append_hydration_dev(div0, form1);
     			append_hydration_dev(form1, input1);
     			set_input_value(input1, /*tab*/ ctx[6]);
-    			append_hydration_dev(div0, t2);
-    			if (if_block0) if_block0.m(div0, null);
     			append_hydration_dev(div0, t3);
     			if (if_block1) if_block1.m(div0, null);
-    			insert_hydration_dev(target, t4, anchor);
-    			if (if_block2) if_block2.m(target, anchor);
+    			append_hydration_dev(div0, t4);
+    			if (if_block2) if_block2.m(div0, null);
     			insert_hydration_dev(target, t5, anchor);
     			insert_hydration_dev(target, h20, anchor);
     			append_hydration_dev(h20, t6);
@@ -8604,9 +8604,9 @@ var app = (function () {
     			if (!mounted) {
     				dispose = [
     					listen_dev(input0, "input", /*searchYoutube*/ ctx[13], false, false, false),
-    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[20]),
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[21]),
     					listen_dev(form0, "submit", prevent_default(submit_handler), false, true, false),
-    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[21]),
+    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[22]),
     					listen_dev(form1, "submit", prevent_default(/*updateTab*/ ctx[14]), false, true, false),
     					listen_dev(input2, "input", /*input2_input_handler*/ ctx[25]),
     					listen_dev(form2, "submit", prevent_default(/*addChord*/ ctx[7]), false, true, false),
@@ -8627,6 +8627,29 @@ var app = (function () {
     			if (dirty[0] & /*lesson*/ 4) lessonheader_changes.lesson = /*lesson*/ ctx[2];
     			lessonheader.$set(lessonheader_changes);
 
+    			if (/*addVideos*/ ctx[1]) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+
+    					if (dirty[0] & /*addVideos*/ 2) {
+    						transition_in(if_block0, 1);
+    					}
+    				} else {
+    					if_block0 = create_if_block_6(ctx);
+    					if_block0.c();
+    					transition_in(if_block0, 1);
+    					if_block0.m(t1.parentNode, t1);
+    				}
+    			} else if (if_block0) {
+    				group_outros();
+
+    				transition_out(if_block0, 1, 1, () => {
+    					if_block0 = null;
+    				});
+
+    				check_outros();
+    			}
+
     			if (dirty[0] & /*videoSearch*/ 1 && input0.value !== /*videoSearch*/ ctx[0]) {
     				set_input_value(input0, /*videoSearch*/ ctx[0]);
     			}
@@ -8636,52 +8659,29 @@ var app = (function () {
     			}
 
     			if (/*lesson*/ ctx[2].videos?.length) {
-    				if (if_block0) {
-    					if_block0.p(ctx, dirty);
-    				} else {
-    					if_block0 = create_if_block_6(ctx);
-    					if_block0.c();
-    					if_block0.m(div0, t3);
-    				}
-    			} else if (if_block0) {
-    				if_block0.d(1);
-    				if_block0 = null;
-    			}
-
-    			if (/*lesson*/ ctx[2].tab) {
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
     					if_block1 = create_if_block_5(ctx);
     					if_block1.c();
-    					if_block1.m(div0, null);
+    					if_block1.m(div0, t4);
     				}
     			} else if (if_block1) {
     				if_block1.d(1);
     				if_block1 = null;
     			}
 
-    			if (/*addVideos*/ ctx[1]) {
+    			if (/*lesson*/ ctx[2].tab) {
     				if (if_block2) {
     					if_block2.p(ctx, dirty);
-
-    					if (dirty[0] & /*addVideos*/ 2) {
-    						transition_in(if_block2, 1);
-    					}
     				} else {
     					if_block2 = create_if_block_4(ctx);
     					if_block2.c();
-    					transition_in(if_block2, 1);
-    					if_block2.m(t5.parentNode, t5);
+    					if_block2.m(div0, null);
     				}
     			} else if (if_block2) {
-    				group_outros();
-
-    				transition_out(if_block2, 1, 1, () => {
-    					if_block2 = null;
-    				});
-
-    				check_outros();
+    				if_block2.d(1);
+    				if_block2 = null;
     			}
 
     			if (dirty[0] & /*selectedChord*/ 16 && input2.value !== /*selectedChord*/ ctx[4]) {
@@ -8728,29 +8728,29 @@ var app = (function () {
     				}
     			}
 
-    			if (!current || dirty[0] & /*lesson*/ 4 && button_class_value !== (button_class_value = "" + (null_to_empty(/*lesson*/ ctx[2].finished ? "re-open" : "") + " svelte-14qmrxj"))) {
+    			if (!current || dirty[0] & /*lesson*/ 4 && button_class_value !== (button_class_value = "" + (null_to_empty(/*lesson*/ ctx[2].finished ? "re-open" : "") + " svelte-15tqh3r"))) {
     				attr_dev(button, "class", button_class_value);
     			}
     		},
     		i: function intro(local) {
     			if (current) return;
     			transition_in(lessonheader.$$.fragment, local);
-    			transition_in(if_block2);
+    			transition_in(if_block0);
     			current = true;
     		},
     		o: function outro(local) {
     			transition_out(lessonheader.$$.fragment, local);
-    			transition_out(if_block2);
+    			transition_out(if_block0);
     			current = false;
     		},
     		d: function destroy(detaching) {
     			destroy_component(lessonheader, detaching);
     			if (detaching) detach_dev(t0);
+    			if (if_block0) if_block0.d(detaching);
+    			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(div0);
-    			if (if_block0) if_block0.d();
     			if (if_block1) if_block1.d();
-    			if (detaching) detach_dev(t4);
-    			if (if_block2) if_block2.d(detaching);
+    			if (if_block2) if_block2.d();
     			if (detaching) detach_dev(t5);
     			if (detaching) detach_dev(h20);
     			if (detaching) detach_dev(t7);
@@ -8790,176 +8790,8 @@ var app = (function () {
     	return block;
     }
 
-    // (204:6) {#if lesson.videos?.length}
+    // (192:4) {#if addVideos}
     function create_if_block_6(ctx) {
-    	let div;
-    	let button0;
-    	let i0;
-    	let t0;
-    	let iframe;
-    	let iframe_title_value;
-    	let iframe_src_value;
-    	let t1;
-    	let button1;
-    	let i1;
-    	let mounted;
-    	let dispose;
-
-    	const block = {
-    		c: function create() {
-    			div = element("div");
-    			button0 = element("button");
-    			i0 = element("i");
-    			t0 = space();
-    			iframe = element("iframe");
-    			t1 = space();
-    			button1 = element("button");
-    			i1 = element("i");
-    			this.h();
-    		},
-    		l: function claim(nodes) {
-    			div = claim_element(nodes, "DIV", { class: true });
-    			var div_nodes = children(div);
-    			button0 = claim_element(div_nodes, "BUTTON", { class: true });
-    			var button0_nodes = children(button0);
-    			i0 = claim_element(button0_nodes, "I", { class: true });
-    			children(i0).forEach(detach_dev);
-    			button0_nodes.forEach(detach_dev);
-    			t0 = claim_space(div_nodes);
-    			iframe = claim_element(div_nodes, "IFRAME", { title: true, class: true, src: true });
-    			children(iframe).forEach(detach_dev);
-    			t1 = claim_space(div_nodes);
-    			button1 = claim_element(div_nodes, "BUTTON", { class: true });
-    			var button1_nodes = children(button1);
-    			i1 = claim_element(button1_nodes, "I", { class: true });
-    			children(i1).forEach(detach_dev);
-    			button1_nodes.forEach(detach_dev);
-    			div_nodes.forEach(detach_dev);
-    			this.h();
-    		},
-    		h: function hydrate() {
-    			attr_dev(i0, "class", "fa fa-caret-left");
-    			add_location(i0, file$2, 206, 12, 4943);
-    			attr_dev(button0, "class", "naked-button svelte-14qmrxj");
-    			add_location(button0, file$2, 205, 10, 4868);
-    			attr_dev(iframe, "title", iframe_title_value = `Lesson video of ${/*lesson*/ ctx[2].title}`);
-    			iframe.allowFullscreen = true;
-    			attr_dev(iframe, "class", "video svelte-14qmrxj");
-    			if (!src_url_equal(iframe.src, iframe_src_value = `https://www.youtube.com/embed/${/*lesson*/ ctx[2].videos[/*showVideo*/ ctx[3]]}`)) attr_dev(iframe, "src", iframe_src_value);
-    			add_location(iframe, file$2, 208, 10, 5004);
-    			attr_dev(i1, "class", "fa fa-caret-right");
-    			add_location(i1, file$2, 214, 12, 5285);
-    			attr_dev(button1, "class", "naked-button svelte-14qmrxj");
-    			add_location(button1, file$2, 213, 10, 5211);
-    			attr_dev(div, "class", "iframe-wrapper svelte-14qmrxj");
-    			add_location(div, file$2, 204, 8, 4829);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_hydration_dev(target, div, anchor);
-    			append_hydration_dev(div, button0);
-    			append_hydration_dev(button0, i0);
-    			append_hydration_dev(div, t0);
-    			append_hydration_dev(div, iframe);
-    			append_hydration_dev(div, t1);
-    			append_hydration_dev(div, button1);
-    			append_hydration_dev(button1, i1);
-
-    			if (!mounted) {
-    				dispose = [
-    					listen_dev(button0, "click", /*click_handler*/ ctx[22], false, false, false),
-    					listen_dev(button1, "click", /*click_handler_1*/ ctx[23], false, false, false)
-    				];
-
-    				mounted = true;
-    			}
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*lesson*/ 4 && iframe_title_value !== (iframe_title_value = `Lesson video of ${/*lesson*/ ctx[2].title}`)) {
-    				attr_dev(iframe, "title", iframe_title_value);
-    			}
-
-    			if (dirty[0] & /*lesson, showVideo*/ 12 && !src_url_equal(iframe.src, iframe_src_value = `https://www.youtube.com/embed/${/*lesson*/ ctx[2].videos[/*showVideo*/ ctx[3]]}`)) {
-    				attr_dev(iframe, "src", iframe_src_value);
-    			}
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
-    			mounted = false;
-    			run_all(dispose);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block_6.name,
-    		type: "if",
-    		source: "(204:6) {#if lesson.videos?.length}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (220:6) {#if lesson.tab}
-    function create_if_block_5(ctx) {
-    	let iframe;
-    	let iframe_src_value;
-
-    	const block = {
-    		c: function create() {
-    			iframe = element("iframe");
-    			this.h();
-    		},
-    		l: function claim(nodes) {
-    			iframe = claim_element(nodes, "IFRAME", {
-    				allow: true,
-    				referrerpolicy: true,
-    				loading: true,
-    				height: true,
-    				width: true,
-    				title: true,
-    				src: true
-    			});
-
-    			children(iframe).forEach(detach_dev);
-    			this.h();
-    		},
-    		h: function hydrate() {
-    			attr_dev(iframe, "allow", "fullscreen");
-    			attr_dev(iframe, "referrerpolicy", "no-referrer");
-    			attr_dev(iframe, "loading", "lazy");
-    			attr_dev(iframe, "height", "100%");
-    			attr_dev(iframe, "width", "100%");
-    			attr_dev(iframe, "title", "Hopefully some lyrics");
-    			if (!src_url_equal(iframe.src, iframe_src_value = /*lesson*/ ctx[2].tab || "https://www.guitaretab.com")) attr_dev(iframe, "src", iframe_src_value);
-    			add_location(iframe, file$2, 220, 8, 5396);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_hydration_dev(target, iframe, anchor);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*lesson*/ 4 && !src_url_equal(iframe.src, iframe_src_value = /*lesson*/ ctx[2].tab || "https://www.guitaretab.com")) {
-    				attr_dev(iframe, "src", iframe_src_value);
-    			}
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(iframe);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block_5.name,
-    		type: "if",
-    		source: "(220:6) {#if lesson.tab}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (232:4) {#if addVideos}
-    function create_if_block_4(ctx) {
     	let ul;
     	let current;
     	let each_value_3 = /*addVideos*/ ctx[1];
@@ -8996,8 +8828,8 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(ul, "class", "video-container svelte-14qmrxj");
-    			add_location(ul, file$2, 232, 6, 5696);
+    			attr_dev(ul, "class", "video-container svelte-15tqh3r");
+    			add_location(ul, file$2, 192, 6, 4448);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, ul, anchor);
@@ -9063,16 +8895,16 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_4.name,
+    		id: create_if_block_6.name,
     		type: "if",
-    		source: "(232:4) {#if addVideos}",
+    		source: "(192:4) {#if addVideos}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (234:8) {#each addVideos as video}
+    // (194:8) {#each addVideos as video}
     function create_each_block_3(ctx) {
     	let li;
     	let videosnippet;
@@ -9086,8 +8918,8 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	function click_handler_2() {
-    		return /*click_handler_2*/ ctx[24](/*video*/ ctx[38]);
+    	function click_handler() {
+    		return /*click_handler*/ ctx[20](/*video*/ ctx[38]);
     	}
 
     	const block = {
@@ -9107,8 +8939,8 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(li, "role", "button");
-    			attr_dev(li, "class", "svelte-14qmrxj");
-    			add_location(li, file$2, 234, 10, 5770);
+    			attr_dev(li, "class", "svelte-15tqh3r");
+    			add_location(li, file$2, 194, 10, 4522);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, li, anchor);
@@ -9117,7 +8949,7 @@ var app = (function () {
     			current = true;
 
     			if (!mounted) {
-    				dispose = listen_dev(li, "click", click_handler_2, false, false, false);
+    				dispose = listen_dev(li, "click", click_handler, false, false, false);
     				mounted = true;
     			}
     		},
@@ -9148,7 +8980,175 @@ var app = (function () {
     		block,
     		id: create_each_block_3.name,
     		type: "each",
-    		source: "(234:8) {#each addVideos as video}",
+    		source: "(194:8) {#each addVideos as video}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (214:6) {#if lesson.videos?.length}
+    function create_if_block_5(ctx) {
+    	let div;
+    	let button0;
+    	let i0;
+    	let t0;
+    	let iframe;
+    	let iframe_title_value;
+    	let iframe_src_value;
+    	let t1;
+    	let button1;
+    	let i1;
+    	let mounted;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			button0 = element("button");
+    			i0 = element("i");
+    			t0 = space();
+    			iframe = element("iframe");
+    			t1 = space();
+    			button1 = element("button");
+    			i1 = element("i");
+    			this.h();
+    		},
+    		l: function claim(nodes) {
+    			div = claim_element(nodes, "DIV", { class: true });
+    			var div_nodes = children(div);
+    			button0 = claim_element(div_nodes, "BUTTON", { class: true });
+    			var button0_nodes = children(button0);
+    			i0 = claim_element(button0_nodes, "I", { class: true });
+    			children(i0).forEach(detach_dev);
+    			button0_nodes.forEach(detach_dev);
+    			t0 = claim_space(div_nodes);
+    			iframe = claim_element(div_nodes, "IFRAME", { title: true, class: true, src: true });
+    			children(iframe).forEach(detach_dev);
+    			t1 = claim_space(div_nodes);
+    			button1 = claim_element(div_nodes, "BUTTON", { class: true });
+    			var button1_nodes = children(button1);
+    			i1 = claim_element(button1_nodes, "I", { class: true });
+    			children(i1).forEach(detach_dev);
+    			button1_nodes.forEach(detach_dev);
+    			div_nodes.forEach(detach_dev);
+    			this.h();
+    		},
+    		h: function hydrate() {
+    			attr_dev(i0, "class", "fa fa-caret-left");
+    			add_location(i0, file$2, 216, 12, 5214);
+    			attr_dev(button0, "class", "naked-button svelte-15tqh3r");
+    			add_location(button0, file$2, 215, 10, 5139);
+    			attr_dev(iframe, "title", iframe_title_value = `Lesson video of ${/*lesson*/ ctx[2].title}`);
+    			iframe.allowFullscreen = true;
+    			attr_dev(iframe, "class", "video svelte-15tqh3r");
+    			if (!src_url_equal(iframe.src, iframe_src_value = `https://www.youtube.com/embed/${/*lesson*/ ctx[2].videos[/*showVideo*/ ctx[3]]}`)) attr_dev(iframe, "src", iframe_src_value);
+    			add_location(iframe, file$2, 218, 10, 5275);
+    			attr_dev(i1, "class", "fa fa-caret-right");
+    			add_location(i1, file$2, 224, 12, 5556);
+    			attr_dev(button1, "class", "naked-button svelte-15tqh3r");
+    			add_location(button1, file$2, 223, 10, 5482);
+    			attr_dev(div, "class", "iframe-wrapper svelte-15tqh3r");
+    			add_location(div, file$2, 214, 8, 5100);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_hydration_dev(target, div, anchor);
+    			append_hydration_dev(div, button0);
+    			append_hydration_dev(button0, i0);
+    			append_hydration_dev(div, t0);
+    			append_hydration_dev(div, iframe);
+    			append_hydration_dev(div, t1);
+    			append_hydration_dev(div, button1);
+    			append_hydration_dev(button1, i1);
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(button0, "click", /*click_handler_1*/ ctx[23], false, false, false),
+    					listen_dev(button1, "click", /*click_handler_2*/ ctx[24], false, false, false)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*lesson*/ 4 && iframe_title_value !== (iframe_title_value = `Lesson video of ${/*lesson*/ ctx[2].title}`)) {
+    				attr_dev(iframe, "title", iframe_title_value);
+    			}
+
+    			if (dirty[0] & /*lesson, showVideo*/ 12 && !src_url_equal(iframe.src, iframe_src_value = `https://www.youtube.com/embed/${/*lesson*/ ctx[2].videos[/*showVideo*/ ctx[3]]}`)) {
+    				attr_dev(iframe, "src", iframe_src_value);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_5.name,
+    		type: "if",
+    		source: "(214:6) {#if lesson.videos?.length}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (230:6) {#if lesson.tab}
+    function create_if_block_4(ctx) {
+    	let iframe;
+    	let iframe_src_value;
+
+    	const block = {
+    		c: function create() {
+    			iframe = element("iframe");
+    			this.h();
+    		},
+    		l: function claim(nodes) {
+    			iframe = claim_element(nodes, "IFRAME", {
+    				allow: true,
+    				referrerpolicy: true,
+    				loading: true,
+    				height: true,
+    				width: true,
+    				title: true,
+    				src: true
+    			});
+
+    			children(iframe).forEach(detach_dev);
+    			this.h();
+    		},
+    		h: function hydrate() {
+    			attr_dev(iframe, "allow", "fullscreen");
+    			attr_dev(iframe, "referrerpolicy", "no-referrer");
+    			attr_dev(iframe, "loading", "lazy");
+    			attr_dev(iframe, "height", "100%");
+    			attr_dev(iframe, "width", "100%");
+    			attr_dev(iframe, "title", "Hopefully some lyrics");
+    			if (!src_url_equal(iframe.src, iframe_src_value = /*lesson*/ ctx[2].tab || "https://www.guitaretab.com")) attr_dev(iframe, "src", iframe_src_value);
+    			add_location(iframe, file$2, 230, 8, 5667);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_hydration_dev(target, iframe, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*lesson*/ 4 && !src_url_equal(iframe.src, iframe_src_value = /*lesson*/ ctx[2].tab || "https://www.guitaretab.com")) {
+    				attr_dev(iframe, "src", iframe_src_value);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(iframe);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_4.name,
+    		type: "if",
+    		source: "(230:6) {#if lesson.tab}",
     		ctx
     	});
 
@@ -9188,7 +9188,7 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(div, "class", "chord-wrapper svelte-14qmrxj");
+    			attr_dev(div, "class", "chord-wrapper svelte-15tqh3r");
     			add_location(div, file$2, 248, 6, 6124);
     		},
     		m: function mount(target, anchor) {
@@ -9288,12 +9288,12 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(i_1, "class", "fa fa-times");
     			add_location(i_1, file$2, 252, 14, 6319);
-    			attr_dev(button, "class", "naked-button svelte-14qmrxj");
+    			attr_dev(button, "class", "naked-button svelte-15tqh3r");
     			add_location(button, file$2, 251, 12, 6243);
     			attr_dev(div0, "id", `chord-${/*i*/ ctx[33]}`);
-    			attr_dev(div0, "class", "svelte-14qmrxj");
+    			attr_dev(div0, "class", "svelte-15tqh3r");
     			add_location(div0, file$2, 254, 12, 6379);
-    			attr_dev(div1, "class", "chord-holder svelte-14qmrxj");
+    			attr_dev(div1, "class", "chord-holder svelte-15tqh3r");
     			add_location(div1, file$2, 250, 10, 6204);
     		},
     		m: function mount(target, anchor) {
@@ -9400,7 +9400,7 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(ul, "class", "svelte-14qmrxj");
+    			attr_dev(ul, "class", "svelte-15tqh3r");
     			add_location(ul, file$2, 273, 8, 6933);
     		},
     		m: function mount(target, anchor) {
@@ -9493,7 +9493,7 @@ var app = (function () {
     			attr_dev(img, "alt", "Arrow");
     			attr_dev(img, "width", 60);
     			attr_dev(img, "height", 80);
-    			attr_dev(img, "class", img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[31]}`) + " svelte-14qmrxj"));
+    			attr_dev(img, "class", img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[31]}`) + " svelte-15tqh3r"));
     			if (!src_url_equal(img.src, img_src_value = ARROW_SRC)) attr_dev(img, "src", img_src_value);
     			add_location(img, file$2, 276, 14, 7016);
     			add_location(li, file$2, 275, 12, 6997);
@@ -9511,7 +9511,7 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (dirty[0] & /*lesson*/ 4 && img_class_value !== (img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[31]}`) + " svelte-14qmrxj"))) {
+    			if (dirty[0] & /*lesson*/ 4 && img_class_value !== (img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[31]}`) + " svelte-15tqh3r"))) {
     				attr_dev(img, "class", img_class_value);
     			}
     		},
@@ -9625,7 +9625,7 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(section, "class", "svelte-14qmrxj");
+    			attr_dev(section, "class", "svelte-15tqh3r");
     			add_location(section, file$2, 187, 0, 4302);
     		},
     		m: function mount(target, anchor) {
@@ -9895,6 +9895,8 @@ var app = (function () {
     		bubble.call(this, $$self, event);
     	}
 
+    	const click_handler = video => addVideo(video.id.videoId);
+
     	function input0_input_handler() {
     		videoSearch = this.value;
     		$$invalidate(0, videoSearch);
@@ -9905,9 +9907,8 @@ var app = (function () {
     		$$invalidate(6, tab);
     	}
 
-    	const click_handler = () => changeVideo(-1);
-    	const click_handler_1 = () => changeVideo(1);
-    	const click_handler_2 = video => addVideo(video.id.videoId);
+    	const click_handler_1 = () => changeVideo(-1);
+    	const click_handler_2 = () => changeVideo(1);
 
     	function input2_input_handler() {
     		selectedChord = this.value;
@@ -9993,9 +9994,9 @@ var app = (function () {
     		id,
     		dragover_handler,
     		dragover_handler_1,
+    		click_handler,
     		input0_input_handler,
     		input1_input_handler,
-    		click_handler,
     		click_handler_1,
     		click_handler_2,
     		input2_input_handler,
