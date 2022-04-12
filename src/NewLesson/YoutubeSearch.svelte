@@ -13,17 +13,14 @@
   async function searchYoutube() {
     if (videoSearch?.length > 2) {
       try {
-        const res = await apiCall(
-          "https://www.googleapis.com/youtube/v3/search",
-          {
-            q: videoSearch,
-            type: "video",
-            key: YOUTUBE_API,
-            part: "snippet",
-            maxResults: 7,
-            topicId: "/m/04rlf",
-          }
-        );
+        const res = await apiCall("https://www.googleapis.com/youtube/v3/search", {
+          q: videoSearch,
+          type: "video",
+          key: YOUTUBE_API,
+          part: "snippet",
+          maxResults: 7,
+          topicId: "/m/04rlf",
+        });
 
         searchResult = res.items;
         videoError = null;
@@ -55,8 +52,7 @@
 <Input
   bind:value={videoSearch}
   label="Search Youtube"
-  onInput={debounce(searchYoutube)}
-/>
+  onInput={debounce(searchYoutube)} />
 
 <Error error={videoError} />
 
@@ -67,8 +63,7 @@
       class="empty-button"
       class:selected={findID(video.id.videoId)}
       role="button"
-      on:click={() => handleClick(video)}
-    >
+      on:click={() => handleClick(video)}>
       <VideoSnippet snippet={video.snippet} />
     </li>
   {/each}

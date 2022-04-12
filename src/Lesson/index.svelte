@@ -189,6 +189,16 @@
   {#if lesson}
     <LessonHeader {lesson} />
 
+    {#if addVideos}
+      <ul class="video-container">
+        {#each addVideos as video}
+          <li role="button" on:click={() => addVideo(video.id.videoId)}>
+            <VideoSnippet snippet={video.snippet} />
+          </li>
+        {/each}
+      </ul>
+    {/if}
+
     <div class="media-wrapper">
       <form on:submit|preventDefault={() => {}}>
         <input
@@ -228,16 +238,6 @@
           src={lesson.tab || "https://www.guitaretab.com"} />
       {/if}
     </div>
-
-    {#if addVideos}
-      <ul class="video-container">
-        {#each addVideos as video}
-          <li role="button" on:click={() => addVideo(video.id.videoId)}>
-            <VideoSnippet snippet={video.snippet} />
-          </li>
-        {/each}
-      </ul>
-    {/if}
 
     <h2>Chords</h2>
 
@@ -322,9 +322,8 @@
     position: relative;
     display: flex;
     flex-flow: column;
-    height: 100%;
     justify-content: space-between;
-    grid-row-gap: 10px;
+    gap: 1rem;
   }
 
   h2 {
@@ -360,8 +359,7 @@
 
   .video-container {
     display: flex;
-    max-width: 93vw;
-    overflow: auto;
+    overflow-x: auto;
 
     li:not(:last-of-type) {
       margin-right: 50px;
