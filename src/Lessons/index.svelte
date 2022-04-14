@@ -5,6 +5,9 @@
   export let navigate;
   let lessons;
   let error = null;
+  let value = "";
+  let sortOption = "Song-down";
+  const sortOptions = ["Song", "Artist"];
 
   function computePracticeTime(totalTime) {
     const time = {
@@ -74,14 +77,6 @@
     }
   }
 
-  onMount(() => {
-    const stringifiedLessons = localStorage.getItem(LESSONS);
-
-    if (stringifiedLessons) {
-      renderLessons(stringifiedLessons);
-    }
-  });
-
   function renderLessons(stringifiedLessons) {
     lessons = JSON.parse(stringifiedLessons);
     lessons.sort((a, b) => {
@@ -104,13 +99,72 @@
     lessons = newLessons;
     localStorage.setItem(LESSONS, JSON.stringify(newLessons));
   }
+
+  const setSortOption = option => (sortOption = option);
+  function renderButton(option) {
+    return `<button
+        aria-label="Sort ${option} a-z"
+        title="Sort ${option} a-z"
+        on:click="${() => setSortOption(`${option}-down`)}"
+        class="naked-button">
+        <i class="fa-solid fa-arrow-down-a-z" />
+      </button>`;
+  }
+
+  onMount(() => {
+    (async function setup() {
+      const stringifiedLessons = await localStorage.getItem(LESSONS);
+
+      if (stringifiedLessons) {
+        renderLessons(stringifiedLessons);
+      }
+    })();
+  });
+
+  function sortSongs(a, b) {
+    const itemA = a[sortOption.includes("Song") ? "title" : "artist"].toLowerCase();
+    const itemB = b[sortOption.includes("Song") ? "title" : "artist"].toLowerCase();
+
+    if (itemA < itemB) {
+      return -1;
+    }
+
+    if (itemA > itemB) {
+      return 1;
+    }
+
+    return 0;
+  }
+
+  $: filteredSongs =
+    lessons
+      ?.sort(sortSongs)
+      .filter(lesson => lesson.title?.toLowerCase().includes(value)) || [];
 </script>
 
 <section>
   <h1>Click a Lesson to start practicing</h1>
   {#if lessons && lessons.length > 0}
+    <div class="filter-sort">
+      <input placeholder="Filter Songs" bind:value />
+      <span>Sort By: </span>
+      <div class="sort">
+        {#each sortOptions as option}
+          <span>{option}</span>
+          {@html renderButton(option)}
+          <button
+            class="naked-button"
+            aria-label={`Sort ${option} z-a`}
+            on:click={() => setSortOption(`${option}-up`)}
+            title={`Sort ${option} z-a`}>
+            <i class="fa-solid fa-arrow-up-a-z" />
+          </button>
+        {/each}
+      </div>
+    </div>
+
     <ul>
-      {#each lessons as { id, title, totalTime, artist, finished }}
+      {#each filteredSongs as { id, title, totalTime, artist, finished }}
         <li class="lesson">
           <button class="fancy-link" on:click={() => navigate("lesson", id)}>
             {title} - {artist}
@@ -122,23 +176,18 @@
             {:else if finished}
               <i
                 title="Keep goin. The way to mastery is long."
-                class="fa fa-hourglass-end"
-              />
+                class="fa fa-hourglass-end" />
             {:else}
               <i title="Start practicing" class="fa fa-hourglass-start" />
             {/if}
           </div>
           {#if finished}
-            <i
-              title="Congrats, you finished this lesson"
-              class="fa fa-trophy"
-            />
+            <i title="Congrats, you finished this lesson" class="fa fa-trophy" />
           {/if}
           <button
             on:click={() => deleteLesson(id)}
             title="Delete Lesson"
-            class="naked-button"
-          >
+            class="naked-button">
             <i class="fa fa-trash-alt" />
           </button>
         </li>
@@ -153,9 +202,7 @@
     >Import lessons: <input
       on:change|preventDefault={importData}
       accept=".json"
-      type="file"
-    /></label
-  >
+      type="file" /></label>
 
   {#if error}
     <div class="error">{error}</div>
@@ -194,5 +241,12 @@
   .fancy-link {
     background-color: unset;
     padding: 0;
+  }
+
+  .filter-sort,
+  .sort {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
 </style>
