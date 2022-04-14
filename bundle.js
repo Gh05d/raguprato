@@ -179,6 +179,9 @@ var app = (function () {
             target.appendChild(node);
         }
     }
+    function insert(target, node, anchor) {
+        target.insertBefore(node, anchor || null);
+    }
     function insert_hydration(target, node, anchor) {
         if (is_hydrating && !anchor) {
             append_hydration(target, node);
@@ -326,6 +329,33 @@ var app = (function () {
     function claim_space(nodes) {
         return claim_text(nodes, ' ');
     }
+    function find_comment(nodes, text, start) {
+        for (let i = start; i < nodes.length; i += 1) {
+            const node = nodes[i];
+            if (node.nodeType === 8 /* comment node */ && node.textContent.trim() === text) {
+                return i;
+            }
+        }
+        return nodes.length;
+    }
+    function claim_html_tag(nodes) {
+        // find html opening tag
+        const start_index = find_comment(nodes, 'HTML_TAG_START', 0);
+        const end_index = find_comment(nodes, 'HTML_TAG_END', start_index);
+        if (start_index === end_index) {
+            return new HtmlTagHydration();
+        }
+        init_claim_info(nodes);
+        const html_tag_nodes = nodes.splice(start_index, end_index - start_index + 1);
+        detach(html_tag_nodes[0]);
+        detach(html_tag_nodes[html_tag_nodes.length - 1]);
+        const claimed_nodes = html_tag_nodes.slice(1, html_tag_nodes.length - 1);
+        for (const n of claimed_nodes) {
+            n.claim_order = nodes.claim_info.total_claimed;
+            nodes.claim_info.total_claimed += 1;
+        }
+        return new HtmlTagHydration(claimed_nodes);
+    }
     function set_input_value(input, value) {
         input.value = value == null ? '' : value;
     }
@@ -339,6 +369,59 @@ var app = (function () {
     }
     function query_selector_all(selector, parent = document.body) {
         return Array.from(parent.querySelectorAll(selector));
+    }
+    class HtmlTag {
+        constructor() {
+            this.e = this.n = null;
+        }
+        c(html) {
+            this.h(html);
+        }
+        m(html, target, anchor = null) {
+            if (!this.e) {
+                this.e = element(target.nodeName);
+                this.t = target;
+                this.c(html);
+            }
+            this.i(anchor);
+        }
+        h(html) {
+            this.e.innerHTML = html;
+            this.n = Array.from(this.e.childNodes);
+        }
+        i(anchor) {
+            for (let i = 0; i < this.n.length; i += 1) {
+                insert(this.t, this.n[i], anchor);
+            }
+        }
+        p(html) {
+            this.d();
+            this.h(html);
+            this.i(this.a);
+        }
+        d() {
+            this.n.forEach(detach);
+        }
+    }
+    class HtmlTagHydration extends HtmlTag {
+        constructor(claimed_nodes) {
+            super();
+            this.e = this.n = null;
+            this.l = claimed_nodes;
+        }
+        c(html) {
+            if (this.l) {
+                this.n = this.l;
+            }
+            else {
+                super.c(html);
+            }
+        }
+        i(anchor) {
+            for (let i = 0; i < this.n.length; i += 1) {
+                insert_hydration(this.t, this.n[i], anchor);
+            }
+        }
     }
 
     let current_component;
@@ -399,22 +482,40 @@ var app = (function () {
     function add_flush_callback(fn) {
         flush_callbacks.push(fn);
     }
-    let flushing = false;
+    // flush() calls callbacks in this order:
+    // 1. All beforeUpdate callbacks, in order: parents before children
+    // 2. All bind:this callbacks, in reverse order: children before parents.
+    // 3. All afterUpdate callbacks, in order: parents before children. EXCEPT
+    //    for afterUpdates called during the initial onMount, which are called in
+    //    reverse order: children before parents.
+    // Since callbacks might update component values, which could trigger another
+    // call to flush(), the following steps guard against this:
+    // 1. During beforeUpdate, any updated components will be added to the
+    //    dirty_components array and will cause a reentrant call to flush(). Because
+    //    the flush index is kept outside the function, the reentrant call will pick
+    //    up where the earlier call left off and go through all dirty components. The
+    //    current_component value is saved and restored so that the reentrant call will
+    //    not interfere with the "parent" flush() call.
+    // 2. bind:this callbacks cannot trigger new flush() calls.
+    // 3. During afterUpdate, any updated components will NOT have their afterUpdate
+    //    callback called a second time; the seen_callbacks set, outside the flush()
+    //    function, guarantees this behavior.
     const seen_callbacks = new Set();
+    let flushidx = 0; // Do *not* move this inside the flush() function
     function flush() {
-        if (flushing)
-            return;
-        flushing = true;
+        const saved_component = current_component;
         do {
             // first, call beforeUpdate functions
             // and update components
-            for (let i = 0; i < dirty_components.length; i += 1) {
-                const component = dirty_components[i];
+            while (flushidx < dirty_components.length) {
+                const component = dirty_components[flushidx];
+                flushidx++;
                 set_current_component(component);
                 update(component.$$);
             }
             set_current_component(null);
             dirty_components.length = 0;
+            flushidx = 0;
             while (binding_callbacks.length)
                 binding_callbacks.pop()();
             // then, once components are updated, call
@@ -434,8 +535,8 @@ var app = (function () {
             flush_callbacks.pop()();
         }
         update_scheduled = false;
-        flushing = false;
         seen_callbacks.clear();
+        set_current_component(saved_component);
     }
     function update($$) {
         if ($$.fragment !== null) {
@@ -633,7 +734,7 @@ var app = (function () {
     }
 
     function dispatch_dev(type, detail) {
-        document.dispatchEvent(custom_event(type, Object.assign({ version: '3.43.2' }, detail), true));
+        document.dispatchEvent(custom_event(type, Object.assign({ version: '3.47.0' }, detail), true));
     }
     function append_hydration_dev(target, node) {
         dispatch_dev('SvelteDOMInsert', { target, node });
@@ -714,7 +815,7 @@ var app = (function () {
         $inject_state() { }
     }
 
-    /* src/components/Navigation.svelte generated by Svelte v3.43.2 */
+    /* src/components/Navigation.svelte generated by Svelte v3.47.0 */
 
     const file$e = "src/components/Navigation.svelte";
 
@@ -2638,17 +2739,12 @@ var app = (function () {
      * @param {number} [wait] The time after which the function should be executed. Defaults to 300ms
      * @returns {fn} The debounced function
      */
-    function debounce(fn, wait = 300) {
+    function debounce(callback, wait = 300) {
       let timeout;
 
-      return function debounced(...args) {
+      return (...args) => {
         clearTimeout(timeout);
-
-        timeout = setTimeout(() => {
-          timeout = null;
-
-          fn.apply(this, args);
-        }, wait);
+        timeout = setTimeout(() => callback.apply(this, args), wait);
       };
     }
 
@@ -2674,10 +2770,7 @@ var app = (function () {
         const lessons = JSON.parse(stringifiedLessons);
 
         const newLessons = lessons.filter(item => item.id != lesson.id);
-        await localStorage.setItem(
-          LESSONS,
-          JSON.stringify([...newLessons, lesson])
-        );
+        await localStorage.setItem(LESSONS, JSON.stringify([...newLessons, lesson]));
       } catch (error) {
         console.error(error);
       }
@@ -2715,22 +2808,28 @@ var app = (function () {
       }
     }
 
-    /* src/Lessons/index.svelte generated by Svelte v3.43.2 */
+    /* src/Lessons/index.svelte generated by Svelte v3.47.0 */
 
     const { Error: Error_1$3, Object: Object_1 } = globals;
     const file$d = "src/Lessons/index.svelte";
 
     function get_each_context$6(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[10] = list[i].id;
-    	child_ctx[11] = list[i].title;
-    	child_ctx[12] = list[i].totalTime;
-    	child_ctx[13] = list[i].artist;
-    	child_ctx[14] = list[i].finished;
+    	child_ctx[19] = list[i].id;
+    	child_ctx[20] = list[i].title;
+    	child_ctx[21] = list[i].totalTime;
+    	child_ctx[22] = list[i].artist;
+    	child_ctx[23] = list[i].finished;
     	return child_ctx;
     }
 
-    // (148:2) {:else}
+    function get_each_context_1$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[26] = list[i];
+    	return child_ctx;
+    }
+
+    // (197:2) {:else}
     function create_else_block_1$3(ctx) {
     	let div;
     	let t0;
@@ -2762,8 +2861,8 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			add_location(div, file$d, 148, 4, 3947);
-    			add_location(button, file$d, 149, 4, 3977);
+    			add_location(div, file$d, 197, 4, 5389);
+    			add_location(button, file$d, 198, 4, 5419);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, div, anchor);
@@ -2773,7 +2872,7 @@ var app = (function () {
     			append_hydration_dev(button, t2);
 
     			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*click_handler_2*/ ctx[8], false, false, false);
+    				dispose = listen_dev(button, "click", /*click_handler_3*/ ctx[15], false, false, false);
     				mounted = true;
     			}
     		},
@@ -2791,22 +2890,38 @@ var app = (function () {
     		block,
     		id: create_else_block_1$3.name,
     		type: "else",
-    		source: "(148:2) {:else}",
+    		source: "(197:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (111:2) {#if lessons && lessons.length > 0}
+    // (147:2) {#if lessons && lessons.length > 0}
     function create_if_block_1$4(ctx) {
-    	let ul;
+    	let div1;
+    	let input;
     	let t0;
-    	let button;
+    	let span;
     	let t1;
+    	let t2;
+    	let div0;
+    	let t3;
+    	let ul;
+    	let t4;
+    	let button;
+    	let t5;
     	let mounted;
     	let dispose;
-    	let each_value = /*lessons*/ ctx[1];
+    	let each_value_1 = /*sortOptions*/ ctx[5];
+    	validate_each_argument(each_value_1);
+    	let each_blocks_1 = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks_1[i] = create_each_block_1$1(get_each_context_1$1(ctx, each_value_1, i));
+    	}
+
+    	let each_value = /*filteredSongs*/ ctx[4];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -2816,18 +2931,50 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
+    			div1 = element("div");
+    			input = element("input");
+    			t0 = space();
+    			span = element("span");
+    			t1 = text("Sort By:");
+    			t2 = space();
+    			div0 = element("div");
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].c();
+    			}
+
+    			t3 = space();
     			ul = element("ul");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			t0 = space();
+    			t4 = space();
     			button = element("button");
-    			t1 = text("Export Data");
+    			t5 = text("Export Data");
     			this.h();
     		},
     		l: function claim(nodes) {
+    			div1 = claim_element(nodes, "DIV", { class: true });
+    			var div1_nodes = children(div1);
+    			input = claim_element(div1_nodes, "INPUT", { placeholder: true });
+    			t0 = claim_space(div1_nodes);
+    			span = claim_element(div1_nodes, "SPAN", {});
+    			var span_nodes = children(span);
+    			t1 = claim_text(span_nodes, "Sort By:");
+    			span_nodes.forEach(detach_dev);
+    			t2 = claim_space(div1_nodes);
+    			div0 = claim_element(div1_nodes, "DIV", { class: true });
+    			var div0_nodes = children(div0);
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].l(div0_nodes);
+    			}
+
+    			div0_nodes.forEach(detach_dev);
+    			div1_nodes.forEach(detach_dev);
+    			t3 = claim_space(nodes);
     			ul = claim_element(nodes, "UL", {});
     			var ul_nodes = children(ul);
 
@@ -2836,36 +2983,89 @@ var app = (function () {
     			}
 
     			ul_nodes.forEach(detach_dev);
-    			t0 = claim_space(nodes);
+    			t4 = claim_space(nodes);
     			button = claim_element(nodes, "BUTTON", {});
     			var button_nodes = children(button);
-    			t1 = claim_text(button_nodes, "Export Data");
+    			t5 = claim_text(button_nodes, "Export Data");
     			button_nodes.forEach(detach_dev);
     			this.h();
     		},
     		h: function hydrate() {
-    			add_location(ul, file$d, 111, 4, 2762);
-    			add_location(button, file$d, 146, 4, 3882);
+    			attr_dev(input, "placeholder", "Filter Songs");
+    			add_location(input, file$d, 148, 6, 3738);
+    			add_location(span, file$d, 149, 6, 3792);
+    			attr_dev(div0, "class", "sort svelte-1pn6w3t");
+    			add_location(div0, file$d, 150, 6, 3821);
+    			attr_dev(div1, "class", "filter-sort svelte-1pn6w3t");
+    			add_location(div1, file$d, 147, 4, 3706);
+    			add_location(ul, file$d, 165, 4, 4263);
+    			add_location(button, file$d, 195, 4, 5324);
     		},
     		m: function mount(target, anchor) {
+    			insert_hydration_dev(target, div1, anchor);
+    			append_hydration_dev(div1, input);
+    			set_input_value(input, /*value*/ ctx[2]);
+    			append_hydration_dev(div1, t0);
+    			append_hydration_dev(div1, span);
+    			append_hydration_dev(span, t1);
+    			append_hydration_dev(div1, t2);
+    			append_hydration_dev(div1, div0);
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].m(div0, null);
+    			}
+
+    			insert_hydration_dev(target, t3, anchor);
     			insert_hydration_dev(target, ul, anchor);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(ul, null);
     			}
 
-    			insert_hydration_dev(target, t0, anchor);
+    			insert_hydration_dev(target, t4, anchor);
     			insert_hydration_dev(target, button, anchor);
-    			append_hydration_dev(button, t1);
+    			append_hydration_dev(button, t5);
 
     			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*exportData*/ ctx[3], false, false, false);
+    				dispose = [
+    					listen_dev(input, "input", /*input_input_handler*/ ctx[11]),
+    					listen_dev(button, "click", /*exportData*/ ctx[6], false, false, false)
+    				];
+
     				mounted = true;
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*deleteLesson, lessons, computePracticeTime, navigate*/ 35) {
-    				each_value = /*lessons*/ ctx[1];
+    			if (dirty & /*value*/ 4 && input.value !== /*value*/ ctx[2]) {
+    				set_input_value(input, /*value*/ ctx[2]);
+    			}
+
+    			if (dirty & /*sortOptions, setSortOption, renderButton*/ 1568) {
+    				each_value_1 = /*sortOptions*/ ctx[5];
+    				validate_each_argument(each_value_1);
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1$1(ctx, each_value_1, i);
+
+    					if (each_blocks_1[i]) {
+    						each_blocks_1[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks_1[i] = create_each_block_1$1(child_ctx);
+    						each_blocks_1[i].c();
+    						each_blocks_1[i].m(div0, null);
+    					}
+    				}
+
+    				for (; i < each_blocks_1.length; i += 1) {
+    					each_blocks_1[i].d(1);
+    				}
+
+    				each_blocks_1.length = each_value_1.length;
+    			}
+
+    			if (dirty & /*deleteLesson, filteredSongs, computePracticeTime, navigate*/ 273) {
+    				each_value = /*filteredSongs*/ ctx[4];
     				validate_each_argument(each_value);
     				let i;
 
@@ -2889,9 +3089,115 @@ var app = (function () {
     			}
     		},
     		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div1);
+    			destroy_each(each_blocks_1, detaching);
+    			if (detaching) detach_dev(t3);
     			if (detaching) detach_dev(ul);
     			destroy_each(each_blocks, detaching);
-    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(t4);
+    			if (detaching) detach_dev(button);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1$4.name,
+    		type: "if",
+    		source: "(147:2) {#if lessons && lessons.length > 0}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (152:8) {#each sortOptions as option}
+    function create_each_block_1$1(ctx) {
+    	let span;
+    	let t0_value = /*option*/ ctx[26] + "";
+    	let t0;
+    	let t1;
+    	let html_tag;
+    	let raw_value = /*renderButton*/ ctx[10](/*option*/ ctx[26]) + "";
+    	let t2;
+    	let button;
+    	let i;
+    	let t3;
+    	let mounted;
+    	let dispose;
+
+    	function click_handler() {
+    		return /*click_handler*/ ctx[12](/*option*/ ctx[26]);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			span = element("span");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			html_tag = new HtmlTagHydration();
+    			t2 = space();
+    			button = element("button");
+    			i = element("i");
+    			t3 = space();
+    			this.h();
+    		},
+    		l: function claim(nodes) {
+    			span = claim_element(nodes, "SPAN", {});
+    			var span_nodes = children(span);
+    			t0 = claim_text(span_nodes, t0_value);
+    			span_nodes.forEach(detach_dev);
+    			t1 = claim_space(nodes);
+    			html_tag = claim_html_tag(nodes);
+    			t2 = claim_space(nodes);
+
+    			button = claim_element(nodes, "BUTTON", {
+    				class: true,
+    				"aria-label": true,
+    				title: true
+    			});
+
+    			var button_nodes = children(button);
+    			i = claim_element(button_nodes, "I", { class: true });
+    			children(i).forEach(detach_dev);
+    			t3 = claim_space(button_nodes);
+    			button_nodes.forEach(detach_dev);
+    			this.h();
+    		},
+    		h: function hydrate() {
+    			add_location(span, file$d, 152, 10, 3888);
+    			html_tag.a = t2;
+    			attr_dev(i, "class", "fa-solid fa-arrow-up-a-z");
+    			add_location(i, file$d, 159, 12, 4159);
+    			attr_dev(button, "class", "naked-button svelte-1pn6w3t");
+    			attr_dev(button, "aria-label", `Sort ${/*option*/ ctx[26]} z-a`);
+    			attr_dev(button, "title", `Sort ${/*option*/ ctx[26]} z-a`);
+    			add_location(button, file$d, 154, 10, 3959);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_hydration_dev(target, span, anchor);
+    			append_hydration_dev(span, t0);
+    			insert_hydration_dev(target, t1, anchor);
+    			html_tag.m(raw_value, target, anchor);
+    			insert_hydration_dev(target, t2, anchor);
+    			insert_hydration_dev(target, button, anchor);
+    			append_hydration_dev(button, i);
+    			append_hydration_dev(button, t3);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", click_handler, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    			if (detaching) detach_dev(t1);
+    			if (detaching) html_tag.d();
+    			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(button);
     			mounted = false;
     			dispose();
@@ -2900,16 +3206,16 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1$4.name,
-    		type: "if",
-    		source: "(111:2) {#if lessons && lessons.length > 0}",
+    		id: create_each_block_1$1.name,
+    		type: "each",
+    		source: "(152:8) {#each sortOptions as option}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (127:12) {:else}
+    // (180:12) {:else}
     function create_else_block$4(ctx) {
     	let i;
 
@@ -2926,7 +3232,7 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(i, "title", "Start practicing");
     			attr_dev(i, "class", "fa fa-hourglass-start");
-    			add_location(i, file$d, 127, 14, 3376);
+    			add_location(i, file$d, 180, 14, 4869);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, i, anchor);
@@ -2941,14 +3247,14 @@ var app = (function () {
     		block,
     		id: create_else_block$4.name,
     		type: "else",
-    		source: "(127:12) {:else}",
+    		source: "(180:12) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (122:31) 
+    // (176:31) 
     function create_if_block_4$2(ctx) {
     	let i;
 
@@ -2965,7 +3271,7 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(i, "title", "Keep goin. The way to mastery is long.");
     			attr_dev(i, "class", "fa fa-hourglass-end");
-    			add_location(i, file$d, 122, 14, 3215);
+    			add_location(i, file$d, 176, 14, 4722);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, i, anchor);
@@ -2980,18 +3286,18 @@ var app = (function () {
     		block,
     		id: create_if_block_4$2.name,
     		type: "if",
-    		source: "(122:31) ",
+    		source: "(176:31) ",
     		ctx
     	});
 
     	return block;
     }
 
-    // (119:12) {#if totalTime}
+    // (173:12) {#if totalTime}
     function create_if_block_3$3(ctx) {
     	let i;
     	let t0;
-    	let t1_value = computePracticeTime(/*totalTime*/ ctx[12]) + "";
+    	let t1_value = computePracticeTime(/*totalTime*/ ctx[21]) + "";
     	let t1;
 
     	const block = {
@@ -3011,7 +3317,7 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(i, "title", "Keep practicing");
     			attr_dev(i, "class", "fa fa-hourglass-half");
-    			add_location(i, file$d, 119, 14, 3063);
+    			add_location(i, file$d, 173, 14, 4570);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, i, anchor);
@@ -3019,7 +3325,7 @@ var app = (function () {
     			insert_hydration_dev(target, t1, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*lessons*/ 2 && t1_value !== (t1_value = computePracticeTime(/*totalTime*/ ctx[12]) + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*filteredSongs*/ 16 && t1_value !== (t1_value = computePracticeTime(/*totalTime*/ ctx[21]) + "")) set_data_dev(t1, t1_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(i);
@@ -3032,14 +3338,14 @@ var app = (function () {
     		block,
     		id: create_if_block_3$3.name,
     		type: "if",
-    		source: "(119:12) {#if totalTime}",
+    		source: "(173:12) {#if totalTime}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (131:10) {#if finished}
+    // (184:10) {#if finished}
     function create_if_block_2$3(ctx) {
     	let i;
 
@@ -3055,8 +3361,8 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(i, "title", "Congrats, you finished this lesson");
-    			attr_dev(i, "class", "fa fa-trophy svelte-lc5wwu");
-    			add_location(i, file$d, 131, 12, 3509);
+    			attr_dev(i, "class", "fa fa-trophy svelte-1pn6w3t");
+    			add_location(i, file$d, 184, 12, 5002);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, i, anchor);
@@ -3070,21 +3376,21 @@ var app = (function () {
     		block,
     		id: create_if_block_2$3.name,
     		type: "if",
-    		source: "(131:10) {#if finished}",
+    		source: "(184:10) {#if finished}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (113:6) {#each lessons as { id, title, totalTime, artist, finished }}
+    // (167:6) {#each filteredSongs as { id, title, totalTime, artist, finished }}
     function create_each_block$6(ctx) {
     	let li;
     	let button0;
-    	let t0_value = /*title*/ ctx[11] + "";
+    	let t0_value = /*title*/ ctx[20] + "";
     	let t0;
     	let t1;
-    	let t2_value = /*artist*/ ctx[13] + "";
+    	let t2_value = /*artist*/ ctx[22] + "";
     	let t2;
     	let t3;
     	let div;
@@ -3096,22 +3402,22 @@ var app = (function () {
     	let mounted;
     	let dispose;
 
-    	function click_handler() {
-    		return /*click_handler*/ ctx[6](/*id*/ ctx[10]);
+    	function click_handler_1() {
+    		return /*click_handler_1*/ ctx[13](/*id*/ ctx[19]);
     	}
 
     	function select_block_type_1(ctx, dirty) {
-    		if (/*totalTime*/ ctx[12]) return create_if_block_3$3;
-    		if (/*finished*/ ctx[14]) return create_if_block_4$2;
+    		if (/*totalTime*/ ctx[21]) return create_if_block_3$3;
+    		if (/*finished*/ ctx[23]) return create_if_block_4$2;
     		return create_else_block$4;
     	}
 
     	let current_block_type = select_block_type_1(ctx);
     	let if_block0 = current_block_type(ctx);
-    	let if_block1 = /*finished*/ ctx[14] && create_if_block_2$3(ctx);
+    	let if_block1 = /*finished*/ ctx[23] && create_if_block_2$3(ctx);
 
-    	function click_handler_1() {
-    		return /*click_handler_1*/ ctx[7](/*id*/ ctx[10]);
+    	function click_handler_2() {
+    		return /*click_handler_2*/ ctx[14](/*id*/ ctx[19]);
     	}
 
     	const block = {
@@ -3159,17 +3465,17 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(button0, "class", "fancy-link svelte-lc5wwu");
-    			add_location(button0, file$d, 114, 10, 2873);
+    			attr_dev(button0, "class", "fancy-link svelte-1pn6w3t");
+    			add_location(button0, file$d, 168, 10, 4380);
     			attr_dev(div, "class", "time");
-    			add_location(div, file$d, 117, 10, 3002);
+    			add_location(div, file$d, 171, 10, 4509);
     			attr_dev(i, "class", "fa fa-trash-alt");
-    			add_location(i, file$d, 141, 12, 3790);
+    			add_location(i, file$d, 190, 12, 5232);
     			attr_dev(button1, "title", "Delete Lesson");
-    			attr_dev(button1, "class", "naked-button svelte-lc5wwu");
-    			add_location(button1, file$d, 136, 10, 3645);
-    			attr_dev(li, "class", "lesson svelte-lc5wwu");
-    			add_location(li, file$d, 113, 8, 2843);
+    			attr_dev(button1, "class", "naked-button svelte-1pn6w3t");
+    			add_location(button1, file$d, 186, 10, 5098);
+    			attr_dev(li, "class", "lesson svelte-1pn6w3t");
+    			add_location(li, file$d, 167, 8, 4350);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, li, anchor);
@@ -3189,8 +3495,8 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(button0, "click", click_handler, false, false, false),
-    					listen_dev(button1, "click", click_handler_1, false, false, false)
+    					listen_dev(button0, "click", click_handler_1, false, false, false),
+    					listen_dev(button1, "click", click_handler_2, false, false, false)
     				];
 
     				mounted = true;
@@ -3198,8 +3504,8 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty & /*lessons*/ 2 && t0_value !== (t0_value = /*title*/ ctx[11] + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*lessons*/ 2 && t2_value !== (t2_value = /*artist*/ ctx[13] + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*filteredSongs*/ 16 && t0_value !== (t0_value = /*title*/ ctx[20] + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*filteredSongs*/ 16 && t2_value !== (t2_value = /*artist*/ ctx[22] + "")) set_data_dev(t2, t2_value);
 
     			if (current_block_type === (current_block_type = select_block_type_1(ctx)) && if_block0) {
     				if_block0.p(ctx, dirty);
@@ -3213,7 +3519,7 @@ var app = (function () {
     				}
     			}
 
-    			if (/*finished*/ ctx[14]) {
+    			if (/*finished*/ ctx[23]) {
     				if (if_block1) ; else {
     					if_block1 = create_if_block_2$3(ctx);
     					if_block1.c();
@@ -3237,14 +3543,14 @@ var app = (function () {
     		block,
     		id: create_each_block$6.name,
     		type: "each",
-    		source: "(113:6) {#each lessons as { id, title, totalTime, artist, finished }}",
+    		source: "(167:6) {#each filteredSongs as { id, title, totalTime, artist, finished }}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (160:2) {#if error}
+    // (207:2) {#if error}
     function create_if_block$7(ctx) {
     	let div;
     	let t;
@@ -3252,26 +3558,26 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			t = text(/*error*/ ctx[2]);
+    			t = text(/*error*/ ctx[3]);
     			this.h();
     		},
     		l: function claim(nodes) {
     			div = claim_element(nodes, "DIV", { class: true });
     			var div_nodes = children(div);
-    			t = claim_text(div_nodes, /*error*/ ctx[2]);
+    			t = claim_text(div_nodes, /*error*/ ctx[3]);
     			div_nodes.forEach(detach_dev);
     			this.h();
     		},
     		h: function hydrate() {
     			attr_dev(div, "class", "error");
-    			add_location(div, file$d, 160, 4, 4209);
+    			add_location(div, file$d, 207, 4, 5644);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, div, anchor);
     			append_hydration_dev(div, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*error*/ 4) set_data_dev(t, /*error*/ ctx[2]);
+    			if (dirty & /*error*/ 8) set_data_dev(t, /*error*/ ctx[3]);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
@@ -3282,7 +3588,7 @@ var app = (function () {
     		block,
     		id: create_if_block$7.name,
     		type: "if",
-    		source: "(160:2) {#if error}",
+    		source: "(207:2) {#if error}",
     		ctx
     	});
 
@@ -3309,7 +3615,7 @@ var app = (function () {
 
     	let current_block_type = select_block_type(ctx);
     	let if_block0 = current_block_type(ctx);
-    	let if_block1 = /*error*/ ctx[2] && create_if_block$7(ctx);
+    	let if_block1 = /*error*/ ctx[3] && create_if_block$7(ctx);
 
     	const block = {
     		c: function create() {
@@ -3347,13 +3653,13 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(h1, "class", "svelte-lc5wwu");
-    			add_location(h1, file$d, 109, 2, 2676);
+    			attr_dev(h1, "class", "svelte-1pn6w3t");
+    			add_location(h1, file$d, 145, 2, 3620);
     			attr_dev(input, "accept", ".json");
     			attr_dev(input, "type", "file");
-    			add_location(input, file$d, 152, 21, 4082);
-    			add_location(label, file$d, 151, 2, 4054);
-    			add_location(section, file$d, 108, 0, 2664);
+    			add_location(input, file$d, 201, 21, 5524);
+    			add_location(label, file$d, 200, 2, 5496);
+    			add_location(section, file$d, 144, 0, 3608);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, section, anchor);
@@ -3369,7 +3675,7 @@ var app = (function () {
     			if (if_block1) if_block1.m(section, null);
 
     			if (!mounted) {
-    				dispose = listen_dev(input, "change", prevent_default(/*importData*/ ctx[4]), false, true, false);
+    				dispose = listen_dev(input, "change", prevent_default(/*importData*/ ctx[7]), false, true, false);
     				mounted = true;
     			}
     		},
@@ -3386,7 +3692,7 @@ var app = (function () {
     				}
     			}
 
-    			if (/*error*/ ctx[2]) {
+    			if (/*error*/ ctx[3]) {
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
@@ -3438,11 +3744,15 @@ var app = (function () {
     }
 
     function instance$d($$self, $$props, $$invalidate) {
+    	let filteredSongs;
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Lessons', slots, []);
     	let { navigate } = $$props;
     	let lessons;
     	let error = null;
+    	let value = "";
+    	let sortOption = "Song-down";
+    	const sortOptions = ["Song", "Artist"];
 
     	async function exportData() {
     		try {
@@ -3463,13 +3773,13 @@ var app = (function () {
     			link.dispatchEvent(evt);
     			link.remove();
     		} catch(err) {
-    			$$invalidate(2, error = err.message);
+    			$$invalidate(3, error = err.message);
     		}
     	}
 
     	async function importData(e) {
     		try {
-    			$$invalidate(2, error = null);
+    			$$invalidate(3, error = null);
     			const files = e.target.files;
 
     			if (files.length == 0) {
@@ -3496,17 +3806,9 @@ var app = (function () {
 
     			reader.readAsText(file);
     		} catch(err) {
-    			$$invalidate(2, error = err.message);
+    			$$invalidate(3, error = err.message);
     		}
     	}
-
-    	onMount(() => {
-    		const stringifiedLessons = localStorage.getItem(LESSONS);
-
-    		if (stringifiedLessons) {
-    			renderLessons(stringifiedLessons);
-    		}
-    	});
 
     	function renderLessons(stringifiedLessons) {
     		$$invalidate(1, lessons = JSON.parse(stringifiedLessons));
@@ -3532,15 +3834,58 @@ var app = (function () {
     		localStorage.setItem(LESSONS, JSON.stringify(newLessons));
     	}
 
+    	const setSortOption = option => sortOption = option;
+
+    	function renderButton(option) {
+    		return `<button
+        aria-label="Sort ${option} a-z"
+        title="Sort ${option} a-z"
+        on:click="${() => setSortOption(`${option}-down`)}"
+        class="naked-button">
+        <i class="fa-solid fa-arrow-down-a-z" />
+      </button>`;
+    	}
+
+    	onMount(() => {
+    		(async function setup() {
+    			const stringifiedLessons = await localStorage.getItem(LESSONS);
+
+    			if (stringifiedLessons) {
+    				renderLessons(stringifiedLessons);
+    			}
+    		})();
+    	});
+
+    	function sortSongs(a, b) {
+    		const itemA = a[sortOption.includes("Song") ? "title" : "artist"].toLowerCase();
+    		const itemB = b[sortOption.includes("Song") ? "title" : "artist"].toLowerCase();
+
+    		if (itemA < itemB) {
+    			return -1;
+    		}
+
+    		if (itemA > itemB) {
+    			return 1;
+    		}
+
+    		return 0;
+    	}
+
     	const writable_props = ['navigate'];
 
     	Object_1.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Lessons> was created with unknown prop '${key}'`);
     	});
 
-    	const click_handler = id => navigate("lesson", id);
-    	const click_handler_1 = id => deleteLesson(id);
-    	const click_handler_2 = () => navigate("new");
+    	function input_input_handler() {
+    		value = this.value;
+    		$$invalidate(2, value);
+    	}
+
+    	const click_handler = option => setSortOption(`${option}-up`);
+    	const click_handler_1 = id => navigate("lesson", id);
+    	const click_handler_2 = id => deleteLesson(id);
+    	const click_handler_3 = () => navigate("new");
 
     	$$self.$$set = $$props => {
     		if ('navigate' in $$props) $$invalidate(0, navigate = $$props.navigate);
@@ -3552,33 +3897,56 @@ var app = (function () {
     		navigate,
     		lessons,
     		error,
+    		value,
+    		sortOption,
+    		sortOptions,
     		computePracticeTime,
     		exportData,
     		importData,
     		renderLessons,
-    		deleteLesson
+    		deleteLesson,
+    		setSortOption,
+    		renderButton,
+    		sortSongs,
+    		filteredSongs
     	});
 
     	$$self.$inject_state = $$props => {
     		if ('navigate' in $$props) $$invalidate(0, navigate = $$props.navigate);
     		if ('lessons' in $$props) $$invalidate(1, lessons = $$props.lessons);
-    		if ('error' in $$props) $$invalidate(2, error = $$props.error);
+    		if ('error' in $$props) $$invalidate(3, error = $$props.error);
+    		if ('value' in $$props) $$invalidate(2, value = $$props.value);
+    		if ('sortOption' in $$props) sortOption = $$props.sortOption;
+    		if ('filteredSongs' in $$props) $$invalidate(4, filteredSongs = $$props.filteredSongs);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*lessons, value*/ 6) {
+    			$$invalidate(4, filteredSongs = lessons?.sort(sortSongs).filter(lesson => lesson.title?.toLowerCase().includes(value)) || []);
+    		}
+    	};
+
     	return [
     		navigate,
     		lessons,
+    		value,
     		error,
+    		filteredSongs,
+    		sortOptions,
     		exportData,
     		importData,
     		deleteLesson,
+    		setSortOption,
+    		renderButton,
+    		input_input_handler,
     		click_handler,
     		click_handler_1,
-    		click_handler_2
+    		click_handler_2,
+    		click_handler_3
     	];
     }
 
@@ -3661,7 +4029,7 @@ var app = (function () {
 
     const spotifyToken = writable();
 
-    /* src/NewLesson/SpotifyResponse.svelte generated by Svelte v3.43.2 */
+    /* src/NewLesson/SpotifyResponse.svelte generated by Svelte v3.47.0 */
     const file$c = "src/NewLesson/SpotifyResponse.svelte";
 
     function get_each_context$5(ctx, list, i) {
@@ -4055,7 +4423,7 @@ var app = (function () {
     	}
     }
 
-    /* src/components/Input.svelte generated by Svelte v3.43.2 */
+    /* src/components/Input.svelte generated by Svelte v3.47.0 */
     const file$b = "src/components/Input.svelte";
 
     // (16:2) {#if error}
@@ -4332,7 +4700,7 @@ var app = (function () {
     	}
     }
 
-    /* src/components/Loading.svelte generated by Svelte v3.43.2 */
+    /* src/components/Loading.svelte generated by Svelte v3.47.0 */
 
     const file$a = "src/components/Loading.svelte";
 
@@ -4449,7 +4817,7 @@ var app = (function () {
     	}
     }
 
-    /* src/components/Error.svelte generated by Svelte v3.43.2 */
+    /* src/components/Error.svelte generated by Svelte v3.47.0 */
 
     const { Error: Error_1$2, console: console_1$3 } = globals;
     const file$9 = "src/components/Error.svelte";
@@ -4571,7 +4939,7 @@ var app = (function () {
     	}
     }
 
-    /* src/NewLesson/SpotifySearch.svelte generated by Svelte v3.43.2 */
+    /* src/NewLesson/SpotifySearch.svelte generated by Svelte v3.47.0 */
 
     const { Error: Error_1$1 } = globals;
     const file$8 = "src/NewLesson/SpotifySearch.svelte";
@@ -4979,7 +5347,7 @@ var app = (function () {
     	}
     }
 
-    /* src/components/VideoSnippet.svelte generated by Svelte v3.43.2 */
+    /* src/components/VideoSnippet.svelte generated by Svelte v3.47.0 */
 
     const file$7 = "src/components/VideoSnippet.svelte";
 
@@ -5215,18 +5583,18 @@ var app = (function () {
     	}
     }
 
-    /* src/NewLesson/YoutubeSearch.svelte generated by Svelte v3.43.2 */
+    /* src/NewLesson/YoutubeSearch.svelte generated by Svelte v3.47.0 */
 
     const { Error: Error_1 } = globals;
     const file$6 = "src/NewLesson/YoutubeSearch.svelte";
 
     function get_each_context$4(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[10] = list[i];
+    	child_ctx[11] = list[i];
     	return child_ctx;
     }
 
-    // (60:2) {#each searchResult as video}
+    // (58:2) {#each searchResult as video}
     function create_each_block$4(ctx) {
     	let li;
     	let videosnippet;
@@ -5237,12 +5605,12 @@ var app = (function () {
     	let dispose;
 
     	videosnippet = new VideoSnippet({
-    			props: { snippet: /*video*/ ctx[10].snippet },
+    			props: { snippet: /*video*/ ctx[11].snippet },
     			$$inline: true
     		});
 
     	function click_handler() {
-    		return /*click_handler*/ ctx[9](/*video*/ ctx[10]);
+    		return /*click_handler*/ ctx[9](/*video*/ ctx[11]);
     	}
 
     	const block = {
@@ -5261,14 +5629,14 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(li, "title", li_title_value = `Click to ${/*findID*/ ctx[3](/*video*/ ctx[10].id.videoId)
+    			attr_dev(li, "title", li_title_value = `Click to ${/*findID*/ ctx[3](/*video*/ ctx[11].id.videoId)
 			? "un"
 			: ""}select`);
 
     			attr_dev(li, "class", "empty-button svelte-krholc");
     			attr_dev(li, "role", "button");
-    			toggle_class(li, "selected", /*findID*/ ctx[3](/*video*/ ctx[10].id.videoId));
-    			add_location(li, file$6, 60, 4, 1535);
+    			toggle_class(li, "selected", /*findID*/ ctx[3](/*video*/ ctx[11].id.videoId));
+    			add_location(li, file$6, 58, 4, 1572);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, li, anchor);
@@ -5284,17 +5652,17 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
     			const videosnippet_changes = {};
-    			if (dirty & /*searchResult*/ 2) videosnippet_changes.snippet = /*video*/ ctx[10].snippet;
+    			if (dirty & /*searchResult*/ 2) videosnippet_changes.snippet = /*video*/ ctx[11].snippet;
     			videosnippet.$set(videosnippet_changes);
 
-    			if (!current || dirty & /*findID, searchResult*/ 10 && li_title_value !== (li_title_value = `Click to ${/*findID*/ ctx[3](/*video*/ ctx[10].id.videoId)
+    			if (!current || dirty & /*findID, searchResult*/ 10 && li_title_value !== (li_title_value = `Click to ${/*findID*/ ctx[3](/*video*/ ctx[11].id.videoId)
 			? "un"
 			: ""}select`)) {
     				attr_dev(li, "title", li_title_value);
     			}
 
     			if (dirty & /*findID, searchResult*/ 10) {
-    				toggle_class(li, "selected", /*findID*/ ctx[3](/*video*/ ctx[10].id.videoId));
+    				toggle_class(li, "selected", /*findID*/ ctx[3](/*video*/ ctx[11].id.videoId));
     			}
     		},
     		i: function intro(local) {
@@ -5318,7 +5686,7 @@ var app = (function () {
     		block,
     		id: create_each_block$4.name,
     		type: "each",
-    		source: "(60:2) {#each searchResult as video}",
+    		source: "(58:2) {#each searchResult as video}",
     		ctx
     	});
 
@@ -5340,7 +5708,7 @@ var app = (function () {
 
     	let input_props = {
     		label: "Search Youtube",
-    		onInput: debounce(/*searchYoutube*/ ctx[4])
+    		onInput: /*debouncedSearch*/ ctx[5]
     	};
 
     	if (/*videoSearch*/ ctx[0] !== void 0) {
@@ -5399,7 +5767,7 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(ul, "class", "search-result svelte-krholc");
     			toggle_class(ul, "show", /*searchResult*/ ctx[1]);
-    			add_location(ul, file$6, 58, 0, 1446);
+    			add_location(ul, file$6, 56, 0, 1483);
     		},
     		m: function mount(target, anchor) {
     			mount_component(input, target, anchor);
@@ -5428,7 +5796,7 @@ var app = (function () {
     			if (dirty & /*videoError*/ 4) error_changes.error = /*videoError*/ ctx[2];
     			error.$set(error_changes);
 
-    			if (dirty & /*findID, searchResult, handleClick*/ 42) {
+    			if (dirty & /*findID, searchResult, handleClick*/ 26) {
     				each_value = /*searchResult*/ ctx[1];
     				validate_each_argument(each_value);
     				let i;
@@ -5548,6 +5916,7 @@ var app = (function () {
     		}
     	}
 
+    	const debouncedSearch = debounce(searchYoutube);
     	const writable_props = ['videos', 'videoSearch', 'startSearch'];
 
     	Object.keys($$props).forEach(key => {
@@ -5580,6 +5949,7 @@ var app = (function () {
     		videoError,
     		searchYoutube,
     		handleClick,
+    		debouncedSearch,
     		findID
     	});
 
@@ -5611,8 +5981,8 @@ var app = (function () {
     		searchResult,
     		videoError,
     		findID,
-    		searchYoutube,
     		handleClick,
+    		debouncedSearch,
     		videos,
     		startSearch,
     		input_value_binding,
@@ -5674,12 +6044,12 @@ var app = (function () {
     	}
     }
 
-    /* src/NewLesson/index.svelte generated by Svelte v3.43.2 */
+    /* src/NewLesson/index.svelte generated by Svelte v3.47.0 */
 
     const { console: console_1$2 } = globals;
     const file$5 = "src/NewLesson/index.svelte";
 
-    // (153:6) {:else}
+    // (147:6) {:else}
     function create_else_block$3(ctx) {
     	let span;
     	let t;
@@ -5698,7 +6068,7 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			add_location(span, file$5, 153, 8, 4044);
+    			add_location(span, file$5, 147, 8, 4015);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, span, anchor);
@@ -5715,14 +6085,14 @@ var app = (function () {
     		block,
     		id: create_else_block$3.name,
     		type: "else",
-    		source: "(153:6) {:else}",
+    		source: "(147:6) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (151:6) {#if loading}
+    // (145:6) {#if loading}
     function create_if_block$3(ctx) {
     	let loading_1;
     	let current;
@@ -5757,7 +6127,7 @@ var app = (function () {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(151:6) {#if loading}",
+    		source: "(145:6) {#if loading}",
     		ctx
     	});
 
@@ -5862,7 +6232,9 @@ var app = (function () {
     		/*input1_value_binding*/ ctx[13](value);
     	}
 
-    	let input1_props = { label: "Enter Url of chord site" };
+    	let input1_props = {
+    		label: "Enter Url of chord site like https://azchords.com/"
+    	};
 
     	if (/*songData*/ ctx[3].tab !== void 0) {
     		input1_props.value = /*songData*/ ctx[3].tab;
@@ -5927,15 +6299,15 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			add_location(h1, file$5, 109, 2, 2743);
+    			add_location(h1, file$5, 106, 2, 2701);
     			button.disabled = button_disabled_value = !/*songData*/ ctx[3].title || /*loading*/ ctx[2];
     			attr_dev(button, "type", "submit");
-    			add_location(button, file$5, 149, 4, 3913);
+    			add_location(button, file$5, 143, 4, 3884);
     			attr_dev(form, "class", "svelte-lqnpzt");
-    			add_location(form, file$5, 111, 2, 2775);
+    			add_location(form, file$5, 108, 2, 2733);
     			attr_dev(section, "id", "container");
     			attr_dev(section, "class", "svelte-lqnpzt");
-    			add_location(section, file$5, 108, 0, 2716);
+    			add_location(section, file$5, 105, 0, 2674);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, section, anchor);
@@ -6300,7 +6672,7 @@ var app = (function () {
     	}
     }
 
-    /* src/Lesson/Stopwatch.svelte generated by Svelte v3.43.2 */
+    /* src/Lesson/Stopwatch.svelte generated by Svelte v3.47.0 */
 
     const { document: document_1 } = globals;
     const file$4 = "src/Lesson/Stopwatch.svelte";
@@ -6791,7 +7163,7 @@ var app = (function () {
     	}
     }
 
-    /* src/Lesson/LessonHeader.svelte generated by Svelte v3.43.2 */
+    /* src/Lesson/LessonHeader.svelte generated by Svelte v3.47.0 */
 
     const { console: console_1$1 } = globals;
     const file$3 = "src/Lesson/LessonHeader.svelte";
@@ -8224,38 +8596,38 @@ var app = (function () {
     	}
     }
 
-    /* src/Lesson/index.svelte generated by Svelte v3.43.2 */
+    /* src/Lesson/index.svelte generated by Svelte v3.47.0 */
 
     const { console: console_1 } = globals;
     const file$2 = "src/Lesson/index.svelte";
 
     function get_each_context$2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[31] = list[i];
-    	child_ctx[33] = i;
+    	child_ctx[32] = list[i];
+    	child_ctx[34] = i;
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[33] = list[i];
+    	child_ctx[34] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[36] = list[i];
-    	child_ctx[33] = i;
+    	child_ctx[37] = list[i];
+    	child_ctx[34] = i;
     	return child_ctx;
     }
 
     function get_each_context_3(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[38] = list[i];
+    	child_ctx[39] = list[i];
     	return child_ctx;
     }
 
-    // (314:2) {:else}
+    // (316:2) {:else}
     function create_else_block_1$1(ctx) {
     	let div;
     	let t;
@@ -8274,7 +8646,7 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			add_location(div, file$2, 314, 4, 8122);
+    			add_location(div, file$2, 316, 4, 8193);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, div, anchor);
@@ -8292,14 +8664,14 @@ var app = (function () {
     		block,
     		id: create_else_block_1$1.name,
     		type: "else",
-    		source: "(314:2) {:else}",
+    		source: "(316:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (189:2) {#if lesson}
+    // (191:2) {#if lesson}
     function create_if_block$1(ctx) {
     	let lessonheader;
     	let t0;
@@ -8506,43 +8878,43 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(input0, "placeholder", "Search for another Video");
-    			add_location(input0, file$2, 203, 8, 4782);
+    			add_location(input0, file$2, 205, 8, 4851);
     			attr_dev(form0, "class", "svelte-15tqh3r");
-    			add_location(form0, file$2, 202, 6, 4731);
+    			add_location(form0, file$2, 204, 6, 4793);
     			attr_dev(input1, "placeholder", "Update Guitar Tab");
-    			add_location(input1, file$2, 210, 8, 4984);
+    			add_location(input1, file$2, 212, 8, 5055);
     			attr_dev(form1, "class", "svelte-15tqh3r");
-    			add_location(form1, file$2, 209, 6, 4932);
+    			add_location(form1, file$2, 211, 6, 5003);
     			attr_dev(div0, "class", "media-wrapper svelte-15tqh3r");
-    			add_location(div0, file$2, 201, 4, 4697);
+    			add_location(div0, file$2, 203, 4, 4759);
     			attr_dev(h20, "class", "svelte-15tqh3r");
-    			add_location(h20, file$2, 241, 4, 5945);
+    			add_location(h20, file$2, 243, 4, 6016);
     			attr_dev(input2, "placeholder", "Am");
-    			add_location(input2, file$2, 244, 6, 6015);
+    			add_location(input2, file$2, 246, 6, 6086);
     			attr_dev(form2, "class", "svelte-15tqh3r");
-    			add_location(form2, file$2, 243, 4, 5966);
+    			add_location(form2, file$2, 245, 4, 6037);
     			attr_dev(h21, "class", "svelte-15tqh3r");
-    			add_location(h21, file$2, 266, 4, 6714);
+    			add_location(h21, file$2, 268, 4, 6785);
     			attr_dev(div1, "class", "strumming svelte-15tqh3r");
-    			add_location(div1, file$2, 267, 4, 6745);
-    			add_location(div2, file$2, 288, 4, 7331);
+    			add_location(div1, file$2, 269, 4, 6816);
+    			add_location(div2, file$2, 290, 4, 7402);
     			attr_dev(img0, "alt", "Arrow down");
     			attr_dev(img0, "class", "arrow-down");
     			if (!src_url_equal(img0.src, img0_src_value = ARROW_SRC)) attr_dev(img0, "src", img0_src_value);
-    			add_location(img0, file$2, 290, 6, 7413);
+    			add_location(img0, file$2, 292, 6, 7484);
     			attr_dev(img1, "class", "arrow-up svelte-15tqh3r");
     			attr_dev(img1, "alt", "Arrow down");
     			if (!src_url_equal(img1.src, img1_src_value = ARROW_SRC)) attr_dev(img1, "src", img1_src_value);
-    			add_location(img1, file$2, 295, 6, 7575);
-    			add_location(div3, file$2, 289, 4, 7401);
+    			add_location(img1, file$2, 297, 6, 7646);
+    			add_location(div3, file$2, 291, 4, 7472);
     			attr_dev(label, "for", "notes");
-    			add_location(label, file$2, 302, 4, 7743);
+    			add_location(label, file$2, 304, 4, 7814);
     			attr_dev(textarea, "id", "notes");
     			attr_dev(textarea, "rows", 5);
     			attr_dev(textarea, "placeholder", "Your notes for the song");
-    			add_location(textarea, file$2, 303, 4, 7795);
+    			add_location(textarea, file$2, 305, 4, 7866);
     			attr_dev(button, "class", button_class_value = "" + (null_to_empty(/*lesson*/ ctx[2].finished ? "re-open" : "") + " svelte-15tqh3r"));
-    			add_location(button, file$2, 310, 4, 7962);
+    			add_location(button, file$2, 312, 4, 8033);
     		},
     		m: function mount(target, anchor) {
     			mount_component(lessonheader, target, anchor);
@@ -8603,11 +8975,11 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(input0, "input", /*searchYoutube*/ ctx[13], false, false, false),
+    					listen_dev(input0, "input", /*debouncedSearch*/ ctx[16], false, false, false),
     					listen_dev(input0, "input", /*input0_input_handler*/ ctx[21]),
-    					listen_dev(form0, "submit", prevent_default(submit_handler), false, true, false),
+    					listen_dev(form0, "submit", prevent_default(/*debouncedSearch*/ ctx[16]), false, true, false),
     					listen_dev(input1, "input", /*input1_input_handler*/ ctx[22]),
-    					listen_dev(form1, "submit", prevent_default(/*updateTab*/ ctx[14]), false, true, false),
+    					listen_dev(form1, "submit", prevent_default(/*updateTab*/ ctx[13]), false, true, false),
     					listen_dev(input2, "input", /*input2_input_handler*/ ctx[25]),
     					listen_dev(form2, "submit", prevent_default(/*addChord*/ ctx[7]), false, true, false),
     					listen_dev(div1, "dragover", prevent_default(/*dragover_handler_1*/ ctx[19]), false, true, false),
@@ -8783,14 +9155,14 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(189:2) {#if lesson}",
+    		source: "(191:2) {#if lesson}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (192:4) {#if addVideos}
+    // (194:4) {#if addVideos}
     function create_if_block_6(ctx) {
     	let ul;
     	let current;
@@ -8829,7 +9201,7 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(ul, "class", "video-container svelte-15tqh3r");
-    			add_location(ul, file$2, 192, 6, 4448);
+    			add_location(ul, file$2, 194, 6, 4510);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, ul, anchor);
@@ -8841,7 +9213,7 @@ var app = (function () {
     			current = true;
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*addVideo, addVideos*/ 32770) {
+    			if (dirty[0] & /*addVideo, addVideos*/ 16386) {
     				each_value_3 = /*addVideos*/ ctx[1];
     				validate_each_argument(each_value_3);
     				let i;
@@ -8897,14 +9269,14 @@ var app = (function () {
     		block,
     		id: create_if_block_6.name,
     		type: "if",
-    		source: "(192:4) {#if addVideos}",
+    		source: "(194:4) {#if addVideos}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (194:8) {#each addVideos as video}
+    // (196:8) {#each addVideos as video}
     function create_each_block_3(ctx) {
     	let li;
     	let videosnippet;
@@ -8914,12 +9286,12 @@ var app = (function () {
     	let dispose;
 
     	videosnippet = new VideoSnippet({
-    			props: { snippet: /*video*/ ctx[38].snippet },
+    			props: { snippet: /*video*/ ctx[39].snippet },
     			$$inline: true
     		});
 
     	function click_handler() {
-    		return /*click_handler*/ ctx[20](/*video*/ ctx[38]);
+    		return /*click_handler*/ ctx[20](/*video*/ ctx[39]);
     	}
 
     	const block = {
@@ -8940,7 +9312,7 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(li, "role", "button");
     			attr_dev(li, "class", "svelte-15tqh3r");
-    			add_location(li, file$2, 194, 10, 4522);
+    			add_location(li, file$2, 196, 10, 4584);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, li, anchor);
@@ -8956,7 +9328,7 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
     			const videosnippet_changes = {};
-    			if (dirty[0] & /*addVideos*/ 2) videosnippet_changes.snippet = /*video*/ ctx[38].snippet;
+    			if (dirty[0] & /*addVideos*/ 2) videosnippet_changes.snippet = /*video*/ ctx[39].snippet;
     			videosnippet.$set(videosnippet_changes);
     		},
     		i: function intro(local) {
@@ -8980,14 +9352,14 @@ var app = (function () {
     		block,
     		id: create_each_block_3.name,
     		type: "each",
-    		source: "(194:8) {#each addVideos as video}",
+    		source: "(196:8) {#each addVideos as video}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (214:6) {#if lesson.videos?.length}
+    // (216:6) {#if lesson.videos?.length}
     function create_if_block_5(ctx) {
     	let div;
     	let button0;
@@ -9036,20 +9408,20 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(i0, "class", "fa fa-caret-left");
-    			add_location(i0, file$2, 216, 12, 5214);
+    			add_location(i0, file$2, 218, 12, 5285);
     			attr_dev(button0, "class", "naked-button svelte-15tqh3r");
-    			add_location(button0, file$2, 215, 10, 5139);
+    			add_location(button0, file$2, 217, 10, 5210);
     			attr_dev(iframe, "title", iframe_title_value = `Lesson video of ${/*lesson*/ ctx[2].title}`);
     			iframe.allowFullscreen = true;
     			attr_dev(iframe, "class", "video svelte-15tqh3r");
     			if (!src_url_equal(iframe.src, iframe_src_value = `https://www.youtube.com/embed/${/*lesson*/ ctx[2].videos[/*showVideo*/ ctx[3]]}`)) attr_dev(iframe, "src", iframe_src_value);
-    			add_location(iframe, file$2, 218, 10, 5275);
+    			add_location(iframe, file$2, 220, 10, 5346);
     			attr_dev(i1, "class", "fa fa-caret-right");
-    			add_location(i1, file$2, 224, 12, 5556);
+    			add_location(i1, file$2, 226, 12, 5627);
     			attr_dev(button1, "class", "naked-button svelte-15tqh3r");
-    			add_location(button1, file$2, 223, 10, 5482);
+    			add_location(button1, file$2, 225, 10, 5553);
     			attr_dev(div, "class", "iframe-wrapper svelte-15tqh3r");
-    			add_location(div, file$2, 214, 8, 5100);
+    			add_location(div, file$2, 216, 8, 5171);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, div, anchor);
@@ -9090,14 +9462,14 @@ var app = (function () {
     		block,
     		id: create_if_block_5.name,
     		type: "if",
-    		source: "(214:6) {#if lesson.videos?.length}",
+    		source: "(216:6) {#if lesson.videos?.length}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (230:6) {#if lesson.tab}
+    // (232:6) {#if lesson.tab}
     function create_if_block_4(ctx) {
     	let iframe;
     	let iframe_src_value;
@@ -9129,7 +9501,7 @@ var app = (function () {
     			attr_dev(iframe, "width", "100%");
     			attr_dev(iframe, "title", "Hopefully some lyrics");
     			if (!src_url_equal(iframe.src, iframe_src_value = /*lesson*/ ctx[2].tab || "https://www.guitaretab.com")) attr_dev(iframe, "src", iframe_src_value);
-    			add_location(iframe, file$2, 230, 8, 5667);
+    			add_location(iframe, file$2, 232, 8, 5738);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, iframe, anchor);
@@ -9148,14 +9520,14 @@ var app = (function () {
     		block,
     		id: create_if_block_4.name,
     		type: "if",
-    		source: "(230:6) {#if lesson.tab}",
+    		source: "(232:6) {#if lesson.tab}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (248:4) {#if lesson.chords?.length > 0}
+    // (250:4) {#if lesson.chords?.length > 0}
     function create_if_block_3$1(ctx) {
     	let div;
     	let each_value_2 = /*lesson*/ ctx[2].chords;
@@ -9189,7 +9561,7 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(div, "class", "chord-wrapper svelte-15tqh3r");
-    			add_location(div, file$2, 248, 6, 6124);
+    			add_location(div, file$2, 250, 6, 6195);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, div, anchor);
@@ -9233,28 +9605,28 @@ var app = (function () {
     		block,
     		id: create_if_block_3$1.name,
     		type: "if",
-    		source: "(248:4) {#if lesson.chords?.length > 0}",
+    		source: "(250:4) {#if lesson.chords?.length > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (250:8) {#each lesson.chords as chord, i}
+    // (252:8) {#each lesson.chords as chord, i}
     function create_each_block_2(ctx) {
     	let div1;
     	let button;
     	let i_1;
     	let t0;
     	let div0;
-    	let t1_value = /*chord*/ ctx[36] + "";
+    	let t1_value = /*chord*/ ctx[37] + "";
     	let t1;
     	let t2;
     	let mounted;
     	let dispose;
 
     	function click_handler_3() {
-    		return /*click_handler_3*/ ctx[26](/*i*/ ctx[33]);
+    		return /*click_handler_3*/ ctx[26](/*i*/ ctx[34]);
     	}
 
     	const block = {
@@ -9287,14 +9659,14 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(i_1, "class", "fa fa-times");
-    			add_location(i_1, file$2, 252, 14, 6319);
+    			add_location(i_1, file$2, 254, 14, 6390);
     			attr_dev(button, "class", "naked-button svelte-15tqh3r");
-    			add_location(button, file$2, 251, 12, 6243);
-    			attr_dev(div0, "id", `chord-${/*i*/ ctx[33]}`);
+    			add_location(button, file$2, 253, 12, 6314);
+    			attr_dev(div0, "id", `chord-${/*i*/ ctx[34]}`);
     			attr_dev(div0, "class", "svelte-15tqh3r");
-    			add_location(div0, file$2, 254, 12, 6379);
+    			add_location(div0, file$2, 256, 12, 6450);
     			attr_dev(div1, "class", "chord-holder svelte-15tqh3r");
-    			add_location(div1, file$2, 250, 10, 6204);
+    			add_location(div1, file$2, 252, 10, 6275);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, div1, anchor);
@@ -9312,7 +9684,7 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty[0] & /*lesson*/ 4 && t1_value !== (t1_value = /*chord*/ ctx[36] + "")) set_data_dev(t1, t1_value);
+    			if (dirty[0] & /*lesson*/ 4 && t1_value !== (t1_value = /*chord*/ ctx[37] + "")) set_data_dev(t1, t1_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div1);
@@ -9325,14 +9697,14 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(250:8) {#each lesson.chords as chord, i}",
+    		source: "(252:8) {#each lesson.chords as chord, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (269:6) {#each [...Array(6)] as i}
+    // (271:6) {#each [...Array(6)] as i}
     function create_each_block_1(ctx) {
     	let hr;
 
@@ -9346,11 +9718,12 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			add_location(hr, file$2, 269, 8, 6873);
+    			add_location(hr, file$2, 271, 8, 6944);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, hr, anchor);
     		},
+    		p: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(hr);
     		}
@@ -9360,14 +9733,14 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(269:6) {#each [...Array(6)] as i}",
+    		source: "(271:6) {#each [...Array(6)] as i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (273:6) {#if lesson?.strumming}
+    // (275:6) {#if lesson?.strumming}
     function create_if_block_2$1(ctx) {
     	let ul;
     	let each_value = /*lesson*/ ctx[2].strumming;
@@ -9401,7 +9774,7 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(ul, "class", "svelte-15tqh3r");
-    			add_location(ul, file$2, 273, 8, 6933);
+    			add_location(ul, file$2, 275, 8, 7004);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, ul, anchor);
@@ -9445,14 +9818,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2$1.name,
     		type: "if",
-    		source: "(273:6) {#if lesson?.strumming}",
+    		source: "(275:6) {#if lesson?.strumming}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (275:10) {#each lesson.strumming as strum, i}
+    // (277:10) {#each lesson.strumming as strum, i}
     function create_each_block$2(ctx) {
     	let li;
     	let img;
@@ -9463,7 +9836,7 @@ var app = (function () {
     	let dispose;
 
     	function dragstart_handler(...args) {
-    		return /*dragstart_handler*/ ctx[27](/*i*/ ctx[33], ...args);
+    		return /*dragstart_handler*/ ctx[27](/*i*/ ctx[34], ...args);
     	}
 
     	const block = {
@@ -9493,10 +9866,10 @@ var app = (function () {
     			attr_dev(img, "alt", "Arrow");
     			attr_dev(img, "width", 60);
     			attr_dev(img, "height", 80);
-    			attr_dev(img, "class", img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[31]}`) + " svelte-15tqh3r"));
+    			attr_dev(img, "class", img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[32]}`) + " svelte-15tqh3r"));
     			if (!src_url_equal(img.src, img_src_value = ARROW_SRC)) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$2, 276, 14, 7016);
-    			add_location(li, file$2, 275, 12, 6997);
+    			add_location(img, file$2, 278, 14, 7087);
+    			add_location(li, file$2, 277, 12, 7068);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, li, anchor);
@@ -9511,7 +9884,7 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (dirty[0] & /*lesson*/ 4 && img_class_value !== (img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[31]}`) + " svelte-15tqh3r"))) {
+    			if (dirty[0] & /*lesson*/ 4 && img_class_value !== (img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[32]}`) + " svelte-15tqh3r"))) {
     				attr_dev(img, "class", img_class_value);
     			}
     		},
@@ -9526,14 +9899,14 @@ var app = (function () {
     		block,
     		id: create_each_block$2.name,
     		type: "each",
-    		source: "(275:10) {#each lesson.strumming as strum, i}",
+    		source: "(277:10) {#each lesson.strumming as strum, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (312:38) {:else}
+    // (314:38) {:else}
     function create_else_block$1(ctx) {
     	let t;
 
@@ -9556,14 +9929,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(312:38) {:else}",
+    		source: "(314:38) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (312:6) {#if lesson.finished}
+    // (314:6) {#if lesson.finished}
     function create_if_block_1$1(ctx) {
     	let t;
 
@@ -9586,7 +9959,7 @@ var app = (function () {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(312:6) {#if lesson.finished}",
+    		source: "(314:6) {#if lesson.finished}",
     		ctx
     	});
 
@@ -9626,7 +9999,7 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(section, "class", "svelte-15tqh3r");
-    			add_location(section, file$2, 187, 0, 4302);
+    			add_location(section, file$2, 189, 0, 4364);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, section, anchor);
@@ -9696,10 +10069,6 @@ var app = (function () {
 
     	return block;
     }
-
-    const submit_handler = () => {
-    	
-    };
 
     const dragstart_handler_1 = e => e.dataTransfer.setData("direction", "down");
     const dragstart_handler_2 = e => e.dataTransfer.setData("direction", "up");
@@ -9881,6 +10250,7 @@ var app = (function () {
     		}
     	});
 
+    	const debouncedSearch = debounce(searchYoutube);
     	const writable_props = ['id'];
 
     	Object.keys($$props).forEach(key => {
@@ -9934,6 +10304,7 @@ var app = (function () {
     		apiCall,
     		LESSONS,
     		ARROW_SRC,
+    		debounce,
     		updateLesson,
     		VideoSnippet,
     		LessonHeader,
@@ -9955,7 +10326,8 @@ var app = (function () {
     		updateTab,
     		addVideo,
     		changeVideo,
-    		renderChords
+    		renderChords,
+    		debouncedSearch
     	});
 
     	$$self.$inject_state = $$props => {
@@ -9987,10 +10359,10 @@ var app = (function () {
     		handleDrop,
     		removeStrum,
     		finish,
-    		searchYoutube,
     		updateTab,
     		addVideo,
     		changeVideo,
+    		debouncedSearch,
     		id,
     		dragover_handler,
     		dragover_handler_1,
@@ -10036,7 +10408,7 @@ var app = (function () {
     	}
     }
 
-    /* src/components/NavItems.svelte generated by Svelte v3.43.2 */
+    /* src/components/NavItems.svelte generated by Svelte v3.47.0 */
 
     const file$1 = "src/components/NavItems.svelte";
 
@@ -10325,7 +10697,7 @@ var app = (function () {
     	}
     }
 
-    /* src/App.svelte generated by Svelte v3.43.2 */
+    /* src/App.svelte generated by Svelte v3.47.0 */
     const file = "src/App.svelte";
 
     function get_each_context(ctx, list, i) {
