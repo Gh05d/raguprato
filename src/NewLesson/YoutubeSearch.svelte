@@ -47,12 +47,10 @@
 
   $: findID = id => videos?.find(videoID => id == videoID);
   $: startSearch ? searchYoutube() : null;
+  const debouncedSearch = debounce(searchYoutube);
 </script>
 
-<Input
-  bind:value={videoSearch}
-  label="Search Youtube"
-  onInput={debounce(searchYoutube)} />
+<Input bind:value={videoSearch} label="Search Youtube" onInput={debouncedSearch} />
 
 <Error error={videoError} />
 

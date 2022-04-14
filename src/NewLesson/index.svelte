@@ -56,16 +56,13 @@
     if ($spotifyToken) {
       try {
         loading = true;
-        const { data } = await axios(
-          "https://api.spotify.com/v1/audio-features",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Authorization: Bearer ${$spotifyToken}`,
-            },
-            params: { ids: songData.spotifyID },
-          }
-        );
+        const { data } = await axios("https://api.spotify.com/v1/audio-features", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Authorization: Bearer ${$spotifyToken}`,
+          },
+          params: { ids: songData.spotifyID },
+        });
 
         if (data?.audio_features[0]) {
           songData = { ...songData, audioFeatures: data?.audio_features[0] };
@@ -112,15 +109,12 @@
   <form on:submit|preventDefault={handleSubmit}>
     <SpotifySearch
       bind:songName={songData.title}
-      on:song={e => handleSpotifySearchClick(e.detail)}
-    />
+      on:song={e => handleSpotifySearchClick(e.detail)} />
     <Input bind:value={songData.artist} label="Artist" />
-    <YoutubeSearch
-      bind:videoSearch
-      bind:startSearch
-      bind:videos={songData.videos}
-    />
-    <Input bind:value={songData.tab} label="Enter Url of chord site" />
+    <YoutubeSearch bind:videoSearch bind:startSearch bind:videos={songData.videos} />
+    <Input
+      bind:value={songData.tab}
+      label="Enter Url of chord site like https://azchords.com/" />
 
     <!-- <ul class="search-result" class:search-result-show={tabs}>
       {#if tabs}

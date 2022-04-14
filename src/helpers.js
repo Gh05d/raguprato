@@ -9,17 +9,12 @@ import axios from "axios";
  * @param {number} [wait] The time after which the function should be executed. Defaults to 300ms
  * @returns {fn} The debounced function
  */
-export function debounce(fn, wait = 300) {
+export function debounce(callback, wait = 300) {
   let timeout;
 
-  return function debounced(...args) {
+  return (...args) => {
     clearTimeout(timeout);
-
-    timeout = setTimeout(() => {
-      timeout = null;
-
-      fn.apply(this, args);
-    }, wait);
+    timeout = setTimeout(() => callback.apply(this, args), wait);
   };
 }
 
@@ -45,10 +40,7 @@ export async function updateLesson(lesson) {
     const lessons = JSON.parse(stringifiedLessons);
 
     const newLessons = lessons.filter(item => item.id != lesson.id);
-    await localStorage.setItem(
-      LESSONS,
-      JSON.stringify([...newLessons, lesson])
-    );
+    await localStorage.setItem(LESSONS, JSON.stringify([...newLessons, lesson]));
   } catch (error) {
     console.error(error);
   }

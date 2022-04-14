@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { apiCall, LESSONS, ARROW_SRC, updateLesson } from "../helpers.js";
+  import { apiCall, LESSONS, ARROW_SRC, debounce, updateLesson } from "../helpers.js";
   //import ChordGrid from "./ChordGrid.svelte";
   import VideoSnippet from "../components/VideoSnippet.svelte";
   import LessonHeader from "./LessonHeader.svelte";
@@ -183,6 +183,8 @@
       console.error(error);
     }
   });
+
+  const debouncedSearch = debounce(searchYoutube);
 </script>
 
 <section on:dragover|preventDefault on:drop|preventDefault={removeStrum}>
@@ -200,10 +202,10 @@
     {/if}
 
     <div class="media-wrapper">
-      <form on:submit|preventDefault={() => {}}>
+      <form on:submit|preventDefault={debouncedSearch}>
         <input
           placeholder="Search for another Video"
-          on:input={searchYoutube}
+          on:input={debouncedSearch}
           bind:value={videoSearch} />
       </form>
 
