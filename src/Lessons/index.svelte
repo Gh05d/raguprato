@@ -100,17 +100,6 @@
     localStorage.setItem(LESSONS, JSON.stringify(newLessons));
   }
 
-  const setSortOption = option => (sortOption = option);
-  function renderButton(option) {
-    return `<button
-        aria-label="Sort ${option} a-z"
-        title="Sort ${option} a-z"
-        on:click="${() => setSortOption(`${option}-down`)}"
-        class="naked-button">
-        <i class="fa-solid fa-arrow-down-a-z" />
-      </button>`;
-  }
-
   onMount(() => {
     (async function setup() {
       const stringifiedLessons = await localStorage.getItem(LESSONS);
@@ -121,24 +110,23 @@
     })();
   });
 
-  function sortSongs(a, b) {
-    const itemA = a[sortOption.includes("Song") ? "title" : "artist"].toLowerCase();
-    const itemB = b[sortOption.includes("Song") ? "title" : "artist"].toLowerCase();
-
-    if (itemA < itemB) {
-      return -1;
-    }
-
-    if (itemA > itemB) {
-      return 1;
-    }
-
-    return 0;
-  }
-
   $: filteredSongs =
     lessons
-      ?.sort(sortSongs)
+      ?.sort((a, b) => {
+        const [option, direction] = sortOption.split("-");
+        const itemA = a[option == "Song" ? "title" : "artist"].toLowerCase();
+        const itemB = b[option == "Song" ? "title" : "artist"].toLowerCase();
+
+        if (itemA < itemB) {
+          return direction == "up" ? 1 : -1;
+        }
+
+        if (itemA > itemB) {
+          return direction == "up" ? -1 : 1;
+        }
+
+        return 0;
+      })
       .filter(lesson => lesson.title?.toLowerCase().includes(value)) || [];
 </script>
 
@@ -151,14 +139,16 @@
       <div class="sort">
         {#each sortOptions as option}
           <span>{option}</span>
-          {@html renderButton(option)}
-          <button
-            class="naked-button"
-            aria-label={`Sort ${option} z-a`}
-            on:click={() => setSortOption(`${option}-up`)}
-            title={`Sort ${option} z-a`}>
-            <i class="fa-solid fa-arrow-up-a-z" />
-          </button>
+          {#each ["down", "up"] as direction}
+            <button
+              aria-label={`Sort ${option} a-z`}
+              title={`Sort ${option} a-z`}
+              on:click={() => (sortOption = `${option}-${direction}`)}
+              class="naked-button"
+              class:button-active={sortOption == `${option}-${direction}`}>
+              <i class={`fa-solid fa-arrow-${direction}-a-z`} />
+            </button>
+          {/each}
         {/each}
       </div>
     </div>
@@ -248,5 +238,9 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+  }
+
+  .button-active {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
   }
 </style>
