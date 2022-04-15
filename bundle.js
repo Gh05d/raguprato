@@ -179,9 +179,6 @@ var app = (function () {
             target.appendChild(node);
         }
     }
-    function insert(target, node, anchor) {
-        target.insertBefore(node, anchor || null);
-    }
     function insert_hydration(target, node, anchor) {
         if (is_hydrating && !anchor) {
             append_hydration(target, node);
@@ -329,33 +326,6 @@ var app = (function () {
     function claim_space(nodes) {
         return claim_text(nodes, ' ');
     }
-    function find_comment(nodes, text, start) {
-        for (let i = start; i < nodes.length; i += 1) {
-            const node = nodes[i];
-            if (node.nodeType === 8 /* comment node */ && node.textContent.trim() === text) {
-                return i;
-            }
-        }
-        return nodes.length;
-    }
-    function claim_html_tag(nodes) {
-        // find html opening tag
-        const start_index = find_comment(nodes, 'HTML_TAG_START', 0);
-        const end_index = find_comment(nodes, 'HTML_TAG_END', start_index);
-        if (start_index === end_index) {
-            return new HtmlTagHydration();
-        }
-        init_claim_info(nodes);
-        const html_tag_nodes = nodes.splice(start_index, end_index - start_index + 1);
-        detach(html_tag_nodes[0]);
-        detach(html_tag_nodes[html_tag_nodes.length - 1]);
-        const claimed_nodes = html_tag_nodes.slice(1, html_tag_nodes.length - 1);
-        for (const n of claimed_nodes) {
-            n.claim_order = nodes.claim_info.total_claimed;
-            nodes.claim_info.total_claimed += 1;
-        }
-        return new HtmlTagHydration(claimed_nodes);
-    }
     function set_input_value(input, value) {
         input.value = value == null ? '' : value;
     }
@@ -369,59 +339,6 @@ var app = (function () {
     }
     function query_selector_all(selector, parent = document.body) {
         return Array.from(parent.querySelectorAll(selector));
-    }
-    class HtmlTag {
-        constructor() {
-            this.e = this.n = null;
-        }
-        c(html) {
-            this.h(html);
-        }
-        m(html, target, anchor = null) {
-            if (!this.e) {
-                this.e = element(target.nodeName);
-                this.t = target;
-                this.c(html);
-            }
-            this.i(anchor);
-        }
-        h(html) {
-            this.e.innerHTML = html;
-            this.n = Array.from(this.e.childNodes);
-        }
-        i(anchor) {
-            for (let i = 0; i < this.n.length; i += 1) {
-                insert(this.t, this.n[i], anchor);
-            }
-        }
-        p(html) {
-            this.d();
-            this.h(html);
-            this.i(this.a);
-        }
-        d() {
-            this.n.forEach(detach);
-        }
-    }
-    class HtmlTagHydration extends HtmlTag {
-        constructor(claimed_nodes) {
-            super();
-            this.e = this.n = null;
-            this.l = claimed_nodes;
-        }
-        c(html) {
-            if (this.l) {
-                this.n = this.l;
-            }
-            else {
-                super.c(html);
-            }
-        }
-        i(anchor) {
-            for (let i = 0; i < this.n.length; i += 1) {
-                insert_hydration(this.t, this.n[i], anchor);
-            }
-        }
     }
 
     let current_component;
@@ -2815,21 +2732,27 @@ var app = (function () {
 
     function get_each_context$6(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[19] = list[i].id;
-    	child_ctx[20] = list[i].title;
-    	child_ctx[21] = list[i].totalTime;
-    	child_ctx[22] = list[i].artist;
-    	child_ctx[23] = list[i].finished;
+    	child_ctx[16] = list[i].id;
+    	child_ctx[17] = list[i].title;
+    	child_ctx[18] = list[i].totalTime;
+    	child_ctx[19] = list[i].artist;
+    	child_ctx[20] = list[i].finished;
     	return child_ctx;
     }
 
     function get_each_context_1$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
+    	child_ctx[23] = list[i];
+    	return child_ctx;
+    }
+
+    function get_each_context_2$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
     	child_ctx[26] = list[i];
     	return child_ctx;
     }
 
-    // (197:2) {:else}
+    // (187:2) {:else}
     function create_else_block_1$3(ctx) {
     	let div;
     	let t0;
@@ -2861,8 +2784,8 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			add_location(div, file$d, 197, 4, 5389);
-    			add_location(button, file$d, 198, 4, 5419);
+    			add_location(div, file$d, 187, 4, 5275);
+    			add_location(button, file$d, 188, 4, 5305);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, div, anchor);
@@ -2872,7 +2795,7 @@ var app = (function () {
     			append_hydration_dev(button, t2);
 
     			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*click_handler_3*/ ctx[15], false, false, false);
+    				dispose = listen_dev(button, "click", /*click_handler_3*/ ctx[14], false, false, false);
     				mounted = true;
     			}
     		},
@@ -2890,14 +2813,14 @@ var app = (function () {
     		block,
     		id: create_else_block_1$3.name,
     		type: "else",
-    		source: "(197:2) {:else}",
+    		source: "(187:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (147:2) {#if lessons && lessons.length > 0}
+    // (135:2) {#if lessons && lessons.length > 0}
     function create_if_block_1$4(ctx) {
     	let div1;
     	let input;
@@ -2913,7 +2836,7 @@ var app = (function () {
     	let t5;
     	let mounted;
     	let dispose;
-    	let each_value_1 = /*sortOptions*/ ctx[5];
+    	let each_value_1 = /*sortOptions*/ ctx[6];
     	validate_each_argument(each_value_1);
     	let each_blocks_1 = [];
 
@@ -2921,7 +2844,7 @@ var app = (function () {
     		each_blocks_1[i] = create_each_block_1$1(get_each_context_1$1(ctx, each_value_1, i));
     	}
 
-    	let each_value = /*filteredSongs*/ ctx[4];
+    	let each_value = /*filteredSongs*/ ctx[5];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -2992,14 +2915,14 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(input, "placeholder", "Filter Songs");
-    			add_location(input, file$d, 148, 6, 3738);
-    			add_location(span, file$d, 149, 6, 3792);
-    			attr_dev(div0, "class", "sort svelte-1pn6w3t");
-    			add_location(div0, file$d, 150, 6, 3821);
-    			attr_dev(div1, "class", "filter-sort svelte-1pn6w3t");
-    			add_location(div1, file$d, 147, 4, 3706);
-    			add_location(ul, file$d, 165, 4, 4263);
-    			add_location(button, file$d, 195, 4, 5324);
+    			add_location(input, file$d, 136, 6, 3488);
+    			add_location(span, file$d, 137, 6, 3542);
+    			attr_dev(div0, "class", "sort svelte-1suqvvj");
+    			add_location(div0, file$d, 138, 6, 3571);
+    			attr_dev(div1, "class", "filter-sort svelte-1suqvvj");
+    			add_location(div1, file$d, 135, 4, 3456);
+    			add_location(ul, file$d, 155, 4, 4149);
+    			add_location(button, file$d, 185, 4, 5210);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, div1, anchor);
@@ -3028,8 +2951,8 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(input, "input", /*input_input_handler*/ ctx[11]),
-    					listen_dev(button, "click", /*exportData*/ ctx[6], false, false, false)
+    					listen_dev(input, "input", /*input_input_handler*/ ctx[10]),
+    					listen_dev(button, "click", /*exportData*/ ctx[7], false, false, false)
     				];
 
     				mounted = true;
@@ -3040,8 +2963,8 @@ var app = (function () {
     				set_input_value(input, /*value*/ ctx[2]);
     			}
 
-    			if (dirty & /*sortOptions, setSortOption, renderButton*/ 1568) {
-    				each_value_1 = /*sortOptions*/ ctx[5];
+    			if (dirty & /*sortOptions, sortOption*/ 72) {
+    				each_value_1 = /*sortOptions*/ ctx[6];
     				validate_each_argument(each_value_1);
     				let i;
 
@@ -3064,8 +2987,8 @@ var app = (function () {
     				each_blocks_1.length = each_value_1.length;
     			}
 
-    			if (dirty & /*deleteLesson, filteredSongs, computePracticeTime, navigate*/ 273) {
-    				each_value = /*filteredSongs*/ ctx[4];
+    			if (dirty & /*deleteLesson, filteredSongs, computePracticeTime, navigate*/ 545) {
+    				each_value = /*filteredSongs*/ ctx[5];
     				validate_each_argument(each_value);
     				let i;
 
@@ -3105,85 +3028,59 @@ var app = (function () {
     		block,
     		id: create_if_block_1$4.name,
     		type: "if",
-    		source: "(147:2) {#if lessons && lessons.length > 0}",
+    		source: "(135:2) {#if lessons && lessons.length > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (152:8) {#each sortOptions as option}
-    function create_each_block_1$1(ctx) {
-    	let span;
-    	let t0_value = /*option*/ ctx[26] + "";
-    	let t0;
-    	let t1;
-    	let html_tag;
-    	let raw_value = /*renderButton*/ ctx[10](/*option*/ ctx[26]) + "";
-    	let t2;
+    // (142:10) {#each ["down", "up"] as direction}
+    function create_each_block_2$1(ctx) {
     	let button;
     	let i;
-    	let t3;
+    	let t;
     	let mounted;
     	let dispose;
 
     	function click_handler() {
-    		return /*click_handler*/ ctx[12](/*option*/ ctx[26]);
+    		return /*click_handler*/ ctx[11](/*option*/ ctx[23], /*direction*/ ctx[26]);
     	}
 
     	const block = {
     		c: function create() {
-    			span = element("span");
-    			t0 = text(t0_value);
-    			t1 = space();
-    			html_tag = new HtmlTagHydration();
-    			t2 = space();
     			button = element("button");
     			i = element("i");
-    			t3 = space();
+    			t = space();
     			this.h();
     		},
     		l: function claim(nodes) {
-    			span = claim_element(nodes, "SPAN", {});
-    			var span_nodes = children(span);
-    			t0 = claim_text(span_nodes, t0_value);
-    			span_nodes.forEach(detach_dev);
-    			t1 = claim_space(nodes);
-    			html_tag = claim_html_tag(nodes);
-    			t2 = claim_space(nodes);
-
     			button = claim_element(nodes, "BUTTON", {
-    				class: true,
     				"aria-label": true,
-    				title: true
+    				title: true,
+    				class: true
     			});
 
     			var button_nodes = children(button);
     			i = claim_element(button_nodes, "I", { class: true });
     			children(i).forEach(detach_dev);
-    			t3 = claim_space(button_nodes);
+    			t = claim_space(button_nodes);
     			button_nodes.forEach(detach_dev);
     			this.h();
     		},
     		h: function hydrate() {
-    			add_location(span, file$d, 152, 10, 3888);
-    			html_tag.a = t2;
-    			attr_dev(i, "class", "fa-solid fa-arrow-up-a-z");
-    			add_location(i, file$d, 159, 12, 4159);
-    			attr_dev(button, "class", "naked-button svelte-1pn6w3t");
-    			attr_dev(button, "aria-label", `Sort ${/*option*/ ctx[26]} z-a`);
-    			attr_dev(button, "title", `Sort ${/*option*/ ctx[26]} z-a`);
-    			add_location(button, file$d, 154, 10, 3959);
+    			attr_dev(i, "class", "" + (null_to_empty(`fa-solid fa-arrow-${/*direction*/ ctx[26]}-a-z`) + " svelte-1suqvvj"));
+    			add_location(i, file$d, 148, 14, 4013);
+    			attr_dev(button, "aria-label", `Sort ${/*option*/ ctx[23]} a-z`);
+    			attr_dev(button, "title", `Sort ${/*option*/ ctx[23]} a-z`);
+    			attr_dev(button, "class", "naked-button svelte-1suqvvj");
+    			toggle_class(button, "button-active", /*sortOption*/ ctx[3] == `${/*option*/ ctx[23]}-${/*direction*/ ctx[26]}`);
+    			add_location(button, file$d, 142, 12, 3718);
     		},
     		m: function mount(target, anchor) {
-    			insert_hydration_dev(target, span, anchor);
-    			append_hydration_dev(span, t0);
-    			insert_hydration_dev(target, t1, anchor);
-    			html_tag.m(raw_value, target, anchor);
-    			insert_hydration_dev(target, t2, anchor);
     			insert_hydration_dev(target, button, anchor);
     			append_hydration_dev(button, i);
-    			append_hydration_dev(button, t3);
+    			append_hydration_dev(button, t);
 
     			if (!mounted) {
     				dispose = listen_dev(button, "click", click_handler, false, false, false);
@@ -3192,12 +3089,12 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
+
+    			if (dirty & /*sortOption, sortOptions*/ 72) {
+    				toggle_class(button, "button-active", /*sortOption*/ ctx[3] == `${/*option*/ ctx[23]}-${/*direction*/ ctx[26]}`);
+    			}
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(span);
-    			if (detaching) detach_dev(t1);
-    			if (detaching) html_tag.d();
-    			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(button);
     			mounted = false;
     			dispose();
@@ -3206,16 +3103,114 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_each_block_1$1.name,
+    		id: create_each_block_2$1.name,
     		type: "each",
-    		source: "(152:8) {#each sortOptions as option}",
+    		source: "(142:10) {#each [\\\"down\\\", \\\"up\\\"] as direction}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (180:12) {:else}
+    // (140:8) {#each sortOptions as option}
+    function create_each_block_1$1(ctx) {
+    	let span;
+    	let t0_value = /*option*/ ctx[23] + "";
+    	let t0;
+    	let t1;
+    	let each_1_anchor;
+    	let each_value_2 = ["down", "up"];
+    	validate_each_argument(each_value_2);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < 2; i += 1) {
+    		each_blocks[i] = create_each_block_2$1(get_each_context_2$1(ctx, each_value_2, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			span = element("span");
+    			t0 = text(t0_value);
+    			t1 = space();
+
+    			for (let i = 0; i < 2; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			each_1_anchor = empty();
+    			this.h();
+    		},
+    		l: function claim(nodes) {
+    			span = claim_element(nodes, "SPAN", {});
+    			var span_nodes = children(span);
+    			t0 = claim_text(span_nodes, t0_value);
+    			span_nodes.forEach(detach_dev);
+    			t1 = claim_space(nodes);
+
+    			for (let i = 0; i < 2; i += 1) {
+    				each_blocks[i].l(nodes);
+    			}
+
+    			each_1_anchor = empty();
+    			this.h();
+    		},
+    		h: function hydrate() {
+    			add_location(span, file$d, 140, 10, 3638);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_hydration_dev(target, span, anchor);
+    			append_hydration_dev(span, t0);
+    			insert_hydration_dev(target, t1, anchor);
+
+    			for (let i = 0; i < 2; i += 1) {
+    				each_blocks[i].m(target, anchor);
+    			}
+
+    			insert_hydration_dev(target, each_1_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*sortOptions, sortOption*/ 72) {
+    				each_value_2 = ["down", "up"];
+    				validate_each_argument(each_value_2);
+    				let i;
+
+    				for (i = 0; i < 2; i += 1) {
+    					const child_ctx = get_each_context_2$1(ctx, each_value_2, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_2$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
+    					}
+    				}
+
+    				for (; i < 2; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    			if (detaching) detach_dev(t1);
+    			destroy_each(each_blocks, detaching);
+    			if (detaching) detach_dev(each_1_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_1$1.name,
+    		type: "each",
+    		source: "(140:8) {#each sortOptions as option}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (170:12) {:else}
     function create_else_block$4(ctx) {
     	let i;
 
@@ -3232,7 +3227,7 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(i, "title", "Start practicing");
     			attr_dev(i, "class", "fa fa-hourglass-start");
-    			add_location(i, file$d, 180, 14, 4869);
+    			add_location(i, file$d, 170, 14, 4755);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, i, anchor);
@@ -3247,14 +3242,14 @@ var app = (function () {
     		block,
     		id: create_else_block$4.name,
     		type: "else",
-    		source: "(180:12) {:else}",
+    		source: "(170:12) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (176:31) 
+    // (166:31) 
     function create_if_block_4$2(ctx) {
     	let i;
 
@@ -3271,7 +3266,7 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(i, "title", "Keep goin. The way to mastery is long.");
     			attr_dev(i, "class", "fa fa-hourglass-end");
-    			add_location(i, file$d, 176, 14, 4722);
+    			add_location(i, file$d, 166, 14, 4608);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, i, anchor);
@@ -3286,18 +3281,18 @@ var app = (function () {
     		block,
     		id: create_if_block_4$2.name,
     		type: "if",
-    		source: "(176:31) ",
+    		source: "(166:31) ",
     		ctx
     	});
 
     	return block;
     }
 
-    // (173:12) {#if totalTime}
+    // (163:12) {#if totalTime}
     function create_if_block_3$3(ctx) {
     	let i;
     	let t0;
-    	let t1_value = computePracticeTime(/*totalTime*/ ctx[21]) + "";
+    	let t1_value = computePracticeTime(/*totalTime*/ ctx[18]) + "";
     	let t1;
 
     	const block = {
@@ -3317,7 +3312,7 @@ var app = (function () {
     		h: function hydrate() {
     			attr_dev(i, "title", "Keep practicing");
     			attr_dev(i, "class", "fa fa-hourglass-half");
-    			add_location(i, file$d, 173, 14, 4570);
+    			add_location(i, file$d, 163, 14, 4456);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, i, anchor);
@@ -3325,7 +3320,7 @@ var app = (function () {
     			insert_hydration_dev(target, t1, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*filteredSongs*/ 16 && t1_value !== (t1_value = computePracticeTime(/*totalTime*/ ctx[21]) + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*filteredSongs*/ 32 && t1_value !== (t1_value = computePracticeTime(/*totalTime*/ ctx[18]) + "")) set_data_dev(t1, t1_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(i);
@@ -3338,14 +3333,14 @@ var app = (function () {
     		block,
     		id: create_if_block_3$3.name,
     		type: "if",
-    		source: "(173:12) {#if totalTime}",
+    		source: "(163:12) {#if totalTime}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (184:10) {#if finished}
+    // (174:10) {#if finished}
     function create_if_block_2$3(ctx) {
     	let i;
 
@@ -3361,8 +3356,8 @@ var app = (function () {
     		},
     		h: function hydrate() {
     			attr_dev(i, "title", "Congrats, you finished this lesson");
-    			attr_dev(i, "class", "fa fa-trophy svelte-1pn6w3t");
-    			add_location(i, file$d, 184, 12, 5002);
+    			attr_dev(i, "class", "fa fa-trophy svelte-1suqvvj");
+    			add_location(i, file$d, 174, 12, 4888);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, i, anchor);
@@ -3376,21 +3371,21 @@ var app = (function () {
     		block,
     		id: create_if_block_2$3.name,
     		type: "if",
-    		source: "(184:10) {#if finished}",
+    		source: "(174:10) {#if finished}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (167:6) {#each filteredSongs as { id, title, totalTime, artist, finished }}
+    // (157:6) {#each filteredSongs as { id, title, totalTime, artist, finished }}
     function create_each_block$6(ctx) {
     	let li;
     	let button0;
-    	let t0_value = /*title*/ ctx[20] + "";
+    	let t0_value = /*title*/ ctx[17] + "";
     	let t0;
     	let t1;
-    	let t2_value = /*artist*/ ctx[22] + "";
+    	let t2_value = /*artist*/ ctx[19] + "";
     	let t2;
     	let t3;
     	let div;
@@ -3403,21 +3398,21 @@ var app = (function () {
     	let dispose;
 
     	function click_handler_1() {
-    		return /*click_handler_1*/ ctx[13](/*id*/ ctx[19]);
+    		return /*click_handler_1*/ ctx[12](/*id*/ ctx[16]);
     	}
 
     	function select_block_type_1(ctx, dirty) {
-    		if (/*totalTime*/ ctx[21]) return create_if_block_3$3;
-    		if (/*finished*/ ctx[23]) return create_if_block_4$2;
+    		if (/*totalTime*/ ctx[18]) return create_if_block_3$3;
+    		if (/*finished*/ ctx[20]) return create_if_block_4$2;
     		return create_else_block$4;
     	}
 
     	let current_block_type = select_block_type_1(ctx);
     	let if_block0 = current_block_type(ctx);
-    	let if_block1 = /*finished*/ ctx[23] && create_if_block_2$3(ctx);
+    	let if_block1 = /*finished*/ ctx[20] && create_if_block_2$3(ctx);
 
     	function click_handler_2() {
-    		return /*click_handler_2*/ ctx[14](/*id*/ ctx[19]);
+    		return /*click_handler_2*/ ctx[13](/*id*/ ctx[16]);
     	}
 
     	const block = {
@@ -3465,17 +3460,17 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(button0, "class", "fancy-link svelte-1pn6w3t");
-    			add_location(button0, file$d, 168, 10, 4380);
+    			attr_dev(button0, "class", "fancy-link svelte-1suqvvj");
+    			add_location(button0, file$d, 158, 10, 4266);
     			attr_dev(div, "class", "time");
-    			add_location(div, file$d, 171, 10, 4509);
+    			add_location(div, file$d, 161, 10, 4395);
     			attr_dev(i, "class", "fa fa-trash-alt");
-    			add_location(i, file$d, 190, 12, 5232);
+    			add_location(i, file$d, 180, 12, 5118);
     			attr_dev(button1, "title", "Delete Lesson");
-    			attr_dev(button1, "class", "naked-button svelte-1pn6w3t");
-    			add_location(button1, file$d, 186, 10, 5098);
-    			attr_dev(li, "class", "lesson svelte-1pn6w3t");
-    			add_location(li, file$d, 167, 8, 4350);
+    			attr_dev(button1, "class", "naked-button svelte-1suqvvj");
+    			add_location(button1, file$d, 176, 10, 4984);
+    			attr_dev(li, "class", "lesson svelte-1suqvvj");
+    			add_location(li, file$d, 157, 8, 4236);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, li, anchor);
@@ -3504,8 +3499,8 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty & /*filteredSongs*/ 16 && t0_value !== (t0_value = /*title*/ ctx[20] + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*filteredSongs*/ 16 && t2_value !== (t2_value = /*artist*/ ctx[22] + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*filteredSongs*/ 32 && t0_value !== (t0_value = /*title*/ ctx[17] + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*filteredSongs*/ 32 && t2_value !== (t2_value = /*artist*/ ctx[19] + "")) set_data_dev(t2, t2_value);
 
     			if (current_block_type === (current_block_type = select_block_type_1(ctx)) && if_block0) {
     				if_block0.p(ctx, dirty);
@@ -3519,7 +3514,7 @@ var app = (function () {
     				}
     			}
 
-    			if (/*finished*/ ctx[23]) {
+    			if (/*finished*/ ctx[20]) {
     				if (if_block1) ; else {
     					if_block1 = create_if_block_2$3(ctx);
     					if_block1.c();
@@ -3543,14 +3538,14 @@ var app = (function () {
     		block,
     		id: create_each_block$6.name,
     		type: "each",
-    		source: "(167:6) {#each filteredSongs as { id, title, totalTime, artist, finished }}",
+    		source: "(157:6) {#each filteredSongs as { id, title, totalTime, artist, finished }}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (207:2) {#if error}
+    // (197:2) {#if error}
     function create_if_block$7(ctx) {
     	let div;
     	let t;
@@ -3558,26 +3553,26 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			t = text(/*error*/ ctx[3]);
+    			t = text(/*error*/ ctx[4]);
     			this.h();
     		},
     		l: function claim(nodes) {
     			div = claim_element(nodes, "DIV", { class: true });
     			var div_nodes = children(div);
-    			t = claim_text(div_nodes, /*error*/ ctx[3]);
+    			t = claim_text(div_nodes, /*error*/ ctx[4]);
     			div_nodes.forEach(detach_dev);
     			this.h();
     		},
     		h: function hydrate() {
     			attr_dev(div, "class", "error");
-    			add_location(div, file$d, 207, 4, 5644);
+    			add_location(div, file$d, 197, 4, 5530);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, div, anchor);
     			append_hydration_dev(div, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*error*/ 8) set_data_dev(t, /*error*/ ctx[3]);
+    			if (dirty & /*error*/ 16) set_data_dev(t, /*error*/ ctx[4]);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
@@ -3588,7 +3583,7 @@ var app = (function () {
     		block,
     		id: create_if_block$7.name,
     		type: "if",
-    		source: "(207:2) {#if error}",
+    		source: "(197:2) {#if error}",
     		ctx
     	});
 
@@ -3615,7 +3610,7 @@ var app = (function () {
 
     	let current_block_type = select_block_type(ctx);
     	let if_block0 = current_block_type(ctx);
-    	let if_block1 = /*error*/ ctx[3] && create_if_block$7(ctx);
+    	let if_block1 = /*error*/ ctx[4] && create_if_block$7(ctx);
 
     	const block = {
     		c: function create() {
@@ -3653,13 +3648,13 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(h1, "class", "svelte-1pn6w3t");
-    			add_location(h1, file$d, 145, 2, 3620);
+    			attr_dev(h1, "class", "svelte-1suqvvj");
+    			add_location(h1, file$d, 133, 2, 3370);
     			attr_dev(input, "accept", ".json");
     			attr_dev(input, "type", "file");
-    			add_location(input, file$d, 201, 21, 5524);
-    			add_location(label, file$d, 200, 2, 5496);
-    			add_location(section, file$d, 144, 0, 3608);
+    			add_location(input, file$d, 191, 21, 5410);
+    			add_location(label, file$d, 190, 2, 5382);
+    			add_location(section, file$d, 132, 0, 3358);
     		},
     		m: function mount(target, anchor) {
     			insert_hydration_dev(target, section, anchor);
@@ -3675,7 +3670,7 @@ var app = (function () {
     			if (if_block1) if_block1.m(section, null);
 
     			if (!mounted) {
-    				dispose = listen_dev(input, "change", prevent_default(/*importData*/ ctx[7]), false, true, false);
+    				dispose = listen_dev(input, "change", prevent_default(/*importData*/ ctx[8]), false, true, false);
     				mounted = true;
     			}
     		},
@@ -3692,7 +3687,7 @@ var app = (function () {
     				}
     			}
 
-    			if (/*error*/ ctx[3]) {
+    			if (/*error*/ ctx[4]) {
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
@@ -3773,13 +3768,13 @@ var app = (function () {
     			link.dispatchEvent(evt);
     			link.remove();
     		} catch(err) {
-    			$$invalidate(3, error = err.message);
+    			$$invalidate(4, error = err.message);
     		}
     	}
 
     	async function importData(e) {
     		try {
-    			$$invalidate(3, error = null);
+    			$$invalidate(4, error = null);
     			const files = e.target.files;
 
     			if (files.length == 0) {
@@ -3806,7 +3801,7 @@ var app = (function () {
 
     			reader.readAsText(file);
     		} catch(err) {
-    			$$invalidate(3, error = err.message);
+    			$$invalidate(4, error = err.message);
     		}
     	}
 
@@ -3834,18 +3829,6 @@ var app = (function () {
     		localStorage.setItem(LESSONS, JSON.stringify(newLessons));
     	}
 
-    	const setSortOption = option => sortOption = option;
-
-    	function renderButton(option) {
-    		return `<button
-        aria-label="Sort ${option} a-z"
-        title="Sort ${option} a-z"
-        on:click="${() => setSortOption(`${option}-down`)}"
-        class="naked-button">
-        <i class="fa-solid fa-arrow-down-a-z" />
-      </button>`;
-    	}
-
     	onMount(() => {
     		(async function setup() {
     			const stringifiedLessons = await localStorage.getItem(LESSONS);
@@ -3855,21 +3838,6 @@ var app = (function () {
     			}
     		})();
     	});
-
-    	function sortSongs(a, b) {
-    		const itemA = a[sortOption.includes("Song") ? "title" : "artist"].toLowerCase();
-    		const itemB = b[sortOption.includes("Song") ? "title" : "artist"].toLowerCase();
-
-    		if (itemA < itemB) {
-    			return -1;
-    		}
-
-    		if (itemA > itemB) {
-    			return 1;
-    		}
-
-    		return 0;
-    	}
 
     	const writable_props = ['navigate'];
 
@@ -3882,7 +3850,7 @@ var app = (function () {
     		$$invalidate(2, value);
     	}
 
-    	const click_handler = option => setSortOption(`${option}-up`);
+    	const click_handler = (option, direction) => $$invalidate(3, sortOption = `${option}-${direction}`);
     	const click_handler_1 = id => navigate("lesson", id);
     	const click_handler_2 = id => deleteLesson(id);
     	const click_handler_3 = () => navigate("new");
@@ -3905,19 +3873,16 @@ var app = (function () {
     		importData,
     		renderLessons,
     		deleteLesson,
-    		setSortOption,
-    		renderButton,
-    		sortSongs,
     		filteredSongs
     	});
 
     	$$self.$inject_state = $$props => {
     		if ('navigate' in $$props) $$invalidate(0, navigate = $$props.navigate);
     		if ('lessons' in $$props) $$invalidate(1, lessons = $$props.lessons);
-    		if ('error' in $$props) $$invalidate(3, error = $$props.error);
+    		if ('error' in $$props) $$invalidate(4, error = $$props.error);
     		if ('value' in $$props) $$invalidate(2, value = $$props.value);
-    		if ('sortOption' in $$props) sortOption = $$props.sortOption;
-    		if ('filteredSongs' in $$props) $$invalidate(4, filteredSongs = $$props.filteredSongs);
+    		if ('sortOption' in $$props) $$invalidate(3, sortOption = $$props.sortOption);
+    		if ('filteredSongs' in $$props) $$invalidate(5, filteredSongs = $$props.filteredSongs);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -3925,8 +3890,22 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*lessons, value*/ 6) {
-    			$$invalidate(4, filteredSongs = lessons?.sort(sortSongs).filter(lesson => lesson.title?.toLowerCase().includes(value)) || []);
+    		if ($$self.$$.dirty & /*lessons, sortOption, value*/ 14) {
+    			$$invalidate(5, filteredSongs = lessons?.sort((a, b) => {
+    				const [option, direction] = sortOption.split("-");
+    				const itemA = a[option == "Song" ? "title" : "artist"].toLowerCase();
+    				const itemB = b[option == "Song" ? "title" : "artist"].toLowerCase();
+
+    				if (itemA < itemB) {
+    					return direction == "up" ? 1 : -1;
+    				}
+
+    				if (itemA > itemB) {
+    					return direction == "up" ? -1 : 1;
+    				}
+
+    				return 0;
+    			}).filter(lesson => lesson.title?.toLowerCase().includes(value)) || []);
     		}
     	};
 
@@ -3934,14 +3913,13 @@ var app = (function () {
     		navigate,
     		lessons,
     		value,
+    		sortOption,
     		error,
     		filteredSongs,
     		sortOptions,
     		exportData,
     		importData,
     		deleteLesson,
-    		setSortOption,
-    		renderButton,
     		input_input_handler,
     		click_handler,
     		click_handler_1,
