@@ -1,13 +1,26 @@
 <script>
   export let header = false;
   export let close = null;
-  export let navigate;
 
   const links = [
     { name: "Practice", path: "/", icon: "guitar" },
-    { name: "Create new Practice", path: "new", icon: "plus" },
+    { name: "Create new Practice", path: "#/new-lesson", icon: "plus" },
   ];
 </script>
+
+<ul class={header ? "header" : ""}>
+  {#each links as { name, path, icon }}
+    <li>
+      <a
+        href={path}
+        class={`${header ? "" : "fancy-link"} ${close ? "modal-nav" : ""}`}
+        on:click={() => close?.()}>
+        <i class={`fa fa-${icon}`} />
+        {name}
+      </a>
+    </li>
+  {/each}
+</ul>
 
 <style lang="scss">
   ul {
@@ -21,8 +34,9 @@
   .header {
     flex-flow: row;
     justify-content: start;
+    gap: 0.8rem;
 
-    button {
+    a {
       color: black;
       margin-bottom: 0;
     }
@@ -37,21 +51,3 @@
     color: #ffc75f;
   }
 </style>
-
-<ul class={header ? 'header' : ''}>
-  {#each links as { name, path, icon }}
-    <li>
-      <button
-        class={`${header ? '' : 'fancy-link'} ${close ? 'modal-nav' : ''}`}
-        on:click={() => {
-          navigate(path);
-          if (close) {
-            close();
-          }
-        }}>
-        <i class={`fa fa-${icon}`} />
-        {name}
-      </button>
-    </li>
-  {/each}
-</ul>

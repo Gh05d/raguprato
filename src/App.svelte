@@ -1,33 +1,20 @@
 <script>
+  import Router, { push } from "svelte-spa-router";
   import Navigation from "./components/Navigation.svelte";
   import Lessons from "./Lessons/index.svelte";
   import NewLesson from "./NewLesson/index.svelte";
   import Lesson from "./Lesson/index.svelte";
   import NavItems from "./components/NavItems.svelte";
-
-  const socialIcons = [
-    { link: "https://github.com/Gh05d", symbol: "github" },
-    { link: "https://www.freecodecamp.org/gh05d", symbol: "free-code-camp" },
-    {
-      link: "https://www.linkedin.com/in/pascal-clanget-545956ba/",
-      symbol: "linkedin",
-    },
-    {
-      link: "https://stackoverflow.com/users/7490871/gh05d",
-      symbol: "stack-overflow",
-    },
-    { link: "https://www.instagram.com/gh05d/?hl=de", symbol: "instagram" },
-  ];
+  import Footer from "./components/Footer.svelte";
 
   let showNav = false;
   let windowSize;
-  let currentRoute = "/";
-  let lessonID = null;
 
-  function navigate(path, id = null) {
-    currentRoute = path;
-    lessonID = id;
-  }
+  const routes = {
+    "/": Lessons,
+    "/lesson/:id": Lesson,
+    "/new-lesson": NewLesson,
+  };
 </script>
 
 <svelte:window bind:innerWidth={windowSize} />
@@ -36,49 +23,26 @@
   <header>
     <div class="slogan">
       <i class="fa fa-guitar" />
-      <h1 role="button" on:click={() => navigate("/")}>raguprato</h1>
+      <h1 role="button" on:click={() => push("/")}>raguprato</h1>
       {#if windowSize > 830}
         <h2>Rad Guitar Practice Tool</h2>
       {/if}
     </div>
     {#if windowSize > 750}
-      <NavItems {navigate} header={true} />
+      <NavItems header={true} />
     {:else}
       <Navigation show={showNav} toggle={() => (showNav = !showNav)} />
     {/if}
   </header>
 
   <main>
-    {#if currentRoute == "lesson"}
-      <Lesson id={lessonID} />
-    {:else if currentRoute == "new"}
-      <NewLesson {navigate} />
-    {:else}
-      <Lessons {navigate} />
-    {/if}
+    <Router {routes} />
   </main>
 
-  <footer>
-    <div>
-      <span>
-        Created by
-        <a class="fancy-link" href="https://github.com/Gh05d">Gh05d</a>
-      </span>
-      <a href="https://icons8.com/icon/45289/down-arrow">
-        Down Arrow icon by Icons8
-      </a>
-    </div>
-    <ul>
-      {#each socialIcons as { link, symbol }}
-        <a target="_blank" href={link} key={symbol}>
-          <i class={`fab fa-${symbol}`} />
-        </a>
-      {/each}
-    </ul>
-  </footer>
+  <Footer />
 
   <nav class={showNav ? "show" : ""}>
-    <NavItems close={() => (showNav = false)} {navigate} />
+    <NavItems close={() => (showNav = false)} />
   </nav>
 </div>
 
@@ -159,33 +123,6 @@
       background: #f2f7fb;
       position: relative;
       overflow: auto;
-    }
-
-    footer {
-      grid-area: footer;
-      color: black;
-      padding: 0 20px;
-      background-color: var(--main-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      div {
-        display: flex;
-        flex-flow: column;
-
-        & > a {
-          font-size: 0.6rem;
-        }
-      }
-      a {
-        margin-left: 3px;
-
-        &:hover {
-          color: black;
-          transition: all 300ms ease-in-out;
-        }
-      }
     }
   }
 

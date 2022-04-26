@@ -3,6 +3,16 @@
   export let toggle;
 </script>
 
+<button on:click={toggle} class="nav-button">
+  <div class:close={show}>
+    <div class="nav-button-line" />
+    {#if !show}
+      <div class="nav-button-line" />
+    {/if}
+    <div class="nav-button-line" />
+  </div>
+</button>
+
 <style lang="scss">
   .nav-button {
     position: absolute;
@@ -49,13 +59,3 @@
     }
   }
 </style>
-
-<button on:click={toggle} class="nav-button">
-  <div class={show ? 'close' : ''}>
-    <div class="nav-button-line" />
-    {#if !show}
-      <div class="nav-button-line" />
-    {/if}
-    <div class="nav-button-line" />
-  </div>
-</button>

@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { LESSONS } from "../helpers.js";
 
-  export let navigate;
   let lessons;
   let error = null;
   let value = "";
@@ -156,9 +155,9 @@
     <ul>
       {#each filteredSongs as { id, title, totalTime, artist, finished }}
         <li class="lesson">
-          <button class="fancy-link" on:click={() => navigate("lesson", id)}>
+          <a class="fancy-link" href={`#/lesson/${id}`}>
             {title} - {artist}
-          </button>
+          </a>
           <div class="time">
             {#if totalTime}
               <i title="Keep practicing" class="fa fa-hourglass-half" />
@@ -186,7 +185,7 @@
     <button on:click={exportData}>Export Data</button>
   {:else}
     <div>No lessons yet</div>
-    <button on:click={() => navigate("new")}>Create a new One</button>
+    <a href="#/new-lesson">Create a new One</a>
   {/if}
   <label
     >Import lessons: <input

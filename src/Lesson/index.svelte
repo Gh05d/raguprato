@@ -1,12 +1,15 @@
 <script>
   import { onMount } from "svelte";
+  import { location, push } from "svelte-spa-router";
   import { apiCall, LESSONS, ARROW_SRC, debounce, updateLesson } from "../helpers.js";
   //import ChordGrid from "./ChordGrid.svelte";
   import VideoSnippet from "../components/VideoSnippet.svelte";
   import LessonHeader from "./LessonHeader.svelte";
   // import Visualizer from "./Visualizer.svelte";
 
-  export let id;
+  const urlParts = $location.split("/");
+  const id = decodeURIComponent(urlParts[urlParts.length - 1]);
+
   let videoSearch;
   let addVideos;
   let lesson;
@@ -96,7 +99,7 @@
     }
 
     await updateLesson(lesson);
-    navigate("/");
+    push("/");
   }
 
   async function searchYoutube() {
