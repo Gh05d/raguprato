@@ -42,11 +42,6 @@
     }
   }
 
-  button {
-    background: 0;
-    position: relative;
-  }
-
   .modal-nav:hover {
     color: #ffc75f;
   }
