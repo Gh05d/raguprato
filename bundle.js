@@ -11515,10 +11515,10 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(i, "class", "" + (null_to_empty(`fa fa-${/*icon*/ ctx[6]}`) + " svelte-1vaproa"));
+    			attr_dev(i, "class", "" + (null_to_empty(`fa fa-${/*icon*/ ctx[6]}`) + " svelte-xyqsnh"));
     			add_location(i, file$2, 17, 8, 460);
     			attr_dev(a, "href", /*path*/ ctx[5]);
-    			attr_dev(a, "class", a_class_value = "" + (null_to_empty(`${/*header*/ ctx[0] ? "" : "fancy-link"} ${/*close*/ ctx[1] ? "modal-nav" : ""}`) + " svelte-1vaproa"));
+    			attr_dev(a, "class", a_class_value = "" + (null_to_empty(`${/*header*/ ctx[0] ? "" : "fancy-link"} ${/*close*/ ctx[1] ? "modal-nav" : ""}`) + " svelte-xyqsnh"));
     			add_location(a, file$2, 13, 6, 317);
     			add_location(li, file$2, 12, 4, 306);
     		},
@@ -11536,7 +11536,7 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*header, close*/ 3 && a_class_value !== (a_class_value = "" + (null_to_empty(`${/*header*/ ctx[0] ? "" : "fancy-link"} ${/*close*/ ctx[1] ? "modal-nav" : ""}`) + " svelte-1vaproa"))) {
+    			if (dirty & /*header, close*/ 3 && a_class_value !== (a_class_value = "" + (null_to_empty(`${/*header*/ ctx[0] ? "" : "fancy-link"} ${/*close*/ ctx[1] ? "modal-nav" : ""}`) + " svelte-xyqsnh"))) {
     				attr_dev(a, "class", a_class_value);
     			}
     		},
@@ -11591,7 +11591,7 @@ var app = (function () {
     			this.h();
     		},
     		h: function hydrate() {
-    			attr_dev(ul, "class", ul_class_value = "" + (null_to_empty(/*header*/ ctx[0] ? "header" : "") + " svelte-1vaproa"));
+    			attr_dev(ul, "class", ul_class_value = "" + (null_to_empty(/*header*/ ctx[0] ? "header" : "") + " svelte-xyqsnh"));
     			add_location(ul, file$2, 10, 0, 226);
     		},
     		m: function mount(target, anchor) {
@@ -11626,7 +11626,7 @@ var app = (function () {
     				each_blocks.length = each_value.length;
     			}
 
-    			if (dirty & /*header*/ 1 && ul_class_value !== (ul_class_value = "" + (null_to_empty(/*header*/ ctx[0] ? "header" : "") + " svelte-1vaproa"))) {
+    			if (dirty & /*header*/ 1 && ul_class_value !== (ul_class_value = "" + (null_to_empty(/*header*/ ctx[0] ? "header" : "") + " svelte-xyqsnh"))) {
     				attr_dev(ul, "class", ul_class_value);
     			}
     		},
