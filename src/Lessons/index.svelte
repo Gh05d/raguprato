@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { LESSONS } from "../helpers.js";
+  import { LESSONS } from "../common/helpers.js";
 
   let lessons;
   let error = null;
@@ -134,8 +134,9 @@
   {#if lessons && lessons.length > 0}
     <div class="filter-sort">
       <input placeholder="Filter Songs" bind:value />
-      <span>Sort By: </span>
+
       <div class="sort">
+        <span>Sort By: </span>
         {#each sortOptions as option}
           <span>{option}</span>
           {#each ["down", "up"] as direction}
@@ -200,8 +201,8 @@
 
 <style lang="scss">
   h1 {
-    font-size: 1rem;
-    margin-bottom: 20px;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
   }
 
   li {
@@ -232,7 +233,11 @@
     padding: 0;
   }
 
-  .filter-sort,
+  .filter-sort {
+    display: flex;
+    flex-flow: column;
+  }
+
   .sort {
     display: flex;
     align-items: center;
@@ -241,5 +246,12 @@
 
   .button-active {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  }
+
+  @media screen and (min-width: 640px) {
+    .filter-sort {
+      flex-flow: row;
+      gap: 1rem;
+    }
   }
 </style>

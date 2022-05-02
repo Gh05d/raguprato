@@ -5,6 +5,7 @@
     "name": "Gh05d",
     "email": "clap@mailbox.org"
   },
+  "license": "UNLICENSED",
   "type": "module",
   "engines": {
     "node": "14.x",

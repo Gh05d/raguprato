@@ -1,8 +1,8 @@
 <script>
   import { onMount } from "svelte";
   import Stopwatch from "./Stopwatch.svelte";
-  import { authenticateSpotify, updateLesson } from "../helpers.js";
-  import { spotifyToken } from "../stores";
+  import { authenticateSpotify, updateLesson } from "../common/helpers.js";
+  import { spotifyToken } from "../common/stores";
   import axios from "axios";
 
   export let lesson;

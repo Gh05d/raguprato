@@ -6,12 +6,16 @@
   import Lesson from "./Lesson/index.svelte";
   import NavItems from "./components/NavItems.svelte";
   import Footer from "./components/Footer.svelte";
+  import Home from "./Home.svelte";
+  import Links from "./Links.svelte";
 
   let showNav = false;
   let windowSize;
 
   const routes = {
-    "/": Lessons,
+    "/": Home,
+    "/links": Links,
+    "/lessons": Lessons,
     "/lesson/:id": Lesson,
     "/new-lesson": NewLesson,
   };
@@ -23,9 +27,9 @@
   <header>
     <div class="slogan">
       <i class="fa fa-guitar" />
-      <h1 role="button" on:click={() => push("/")}>raguprato</h1>
+      <span role="button" on:click={() => push("/")}>raguprato</span>
       {#if windowSize > 830}
-        <h2>Rad Guitar Practice Tool</h2>
+        <span>Rad Guitar Practice Tool</span>
       {/if}
     </div>
     {#if windowSize > 750}
@@ -59,16 +63,15 @@
       #f9f871
     );
   }
-  body,
-  html {
-    overflow: hidden;
-  }
 
   .wrapper {
+    --header-height: 50px;
+    --main-height: 1fr;
+    --footer-height: 70px;
     height: 100%;
     display: grid;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
-    grid-template-rows: 50px 1fr 40px;
+    grid-template-rows: var(--header-height) var(--main-height) var(--footer-height);
     grid-template-areas:
       "header"
       "main"
@@ -92,7 +95,7 @@
         i {
           font-size: 1.3rem;
         }
-        h1 {
+        span[role="button"] {
           text-transform: uppercase;
           color: black;
           font-weight: 900;
@@ -100,7 +103,7 @@
           cursor: pointer;
         }
 
-        h2 {
+        span + span {
           margin-left: 10px;
           font-size: 0.7rem;
           font-style: italic;
@@ -108,10 +111,10 @@
       }
 
       @keyframes color-change {
-        0% {
+        from {
           background-position: left;
         }
-        100% {
+        to {
           background-position: right;
         }
       }
@@ -145,6 +148,8 @@
 
   @media screen and (min-width: 480px) {
     .wrapper {
+      --footer-height: 40px;
+
       header {
         justify-content: space-between;
       }

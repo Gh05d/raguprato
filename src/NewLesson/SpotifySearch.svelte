@@ -1,12 +1,12 @@
 <script>
-  import { spotifyToken } from "../stores";
+  import { spotifyToken } from "../common/stores";
   import { onMount } from "svelte";
   import axios from "axios";
   import SpotifyResponse from "./SpotifyResponse.svelte";
   import Input from "../components/Input.svelte";
   import Loading from "../components/Loading.svelte";
   import Error from "../components/Error.svelte";
-  import { authenticateSpotify, debounce } from "../helpers.js";
+  import { authenticateSpotify, debounce } from "../common/helpers.js";
 
   export let songName = "";
   let loading = false;

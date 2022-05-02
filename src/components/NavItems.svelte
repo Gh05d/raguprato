@@ -3,8 +3,10 @@
   export let close = null;
 
   const links = [
-    { name: "Practice", path: "/", icon: "guitar" },
-    { name: "Create new Practice", path: "#/new-lesson", icon: "plus" },
+    { name: "Home", path: "/", icon: "home" },
+    { name: "Lessons", path: "#/lessons", icon: "guitar" },
+    { name: "Create new Lesson", path: "#/new-lesson", icon: "plus" },
+    { name: "Links", path: "#/links", icon: "link" },
   ];
 </script>
 
@@ -12,6 +14,7 @@
   {#each links as { name, path, icon }}
     <li>
       <a
+        aria-label={name}
         href={path}
         class={`${header ? "" : "fancy-link"} ${close ? "modal-nav" : ""}`}
         on:click={() => close?.()}>

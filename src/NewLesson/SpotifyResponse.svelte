@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher } from "svelte";
-  import { getArtists } from "../helpers";
+  import { getArtists } from "../common/helpers";
   export let data;
 
   function transformSongLength(ms) {
@@ -24,8 +24,7 @@
     tabindex="0"
     class:show={song}
     on:keydown={() => returnData(song)}
-    on:click={() => returnData(song)}
-  >
+    on:click={() => returnData(song)}>
     <h3>
       <span>{song?.name}</span> by
       <span>{getArtists(song.artists)}</span>
@@ -35,11 +34,7 @@
       <div class="length">
         {transformSongLength(song?.duration_ms)}
       </div>
-      <a
-        on:click|stopPropagation
-        target="_blank"
-        href={song?.external_urls?.spotify}
-      >
+      <a on:click|stopPropagation target="_blank" href={song?.external_urls?.spotify}>
         <i class="fab fa-spotify" />
       </a>
     </div>
@@ -48,8 +43,7 @@
       src={song.album?.images[1]?.url}
       height={song.album?.images[1]?.height}
       width={song.album?.images[1]?.height}
-      alt={`Album cover of ${song.name}`}
-    />
+      alt={`Album cover of ${song.name}`} />
 
     <audio controls="controls">
       <source src={song.preview_url} type="audio/mpeg" />

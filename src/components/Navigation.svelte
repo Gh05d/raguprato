@@ -3,7 +3,7 @@
   export let toggle;
 </script>
 
-<button on:click={toggle} class="nav-button">
+<button aria-label="Navigation Button" on:click={toggle} class="nav-button">
   <div class:close={show}>
     <div class="nav-button-line" />
     {#if !show}

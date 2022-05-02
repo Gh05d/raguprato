@@ -1,5 +1,5 @@
 <script>
-  import { createID } from "../helpers";
+  import { createID } from "../common/helpers";
 
   export let value;
   export let label;

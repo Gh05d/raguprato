@@ -1,7 +1,13 @@
 <script>
   import { onMount } from "svelte";
   import { location, push } from "svelte-spa-router";
-  import { apiCall, LESSONS, ARROW_SRC, debounce, updateLesson } from "../helpers.js";
+  import {
+    apiCall,
+    LESSONS,
+    ARROW_SRC,
+    debounce,
+    updateLesson,
+  } from "../common/helpers.js";
   //import ChordGrid from "./ChordGrid.svelte";
   import VideoSnippet from "../components/VideoSnippet.svelte";
   import LessonHeader from "./LessonHeader.svelte";
@@ -189,6 +195,24 @@
 
   const debouncedSearch = debounce(searchYoutube);
 </script>
+
+<svelte:head>
+  <!-- optional: helpers to preset jtab region heights to avoid rendering jitter -->
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="http://jtab.tardate.com/css/jtab-helper.css" />
+  <!-- mandatory script includes for jtab -->
+  <script
+    src="http://jtab.tardate.com/javascripts/jquery.js"
+    type="text/javascript"></script>
+  <script
+    src="http://jtab.tardate.com/javascripts/raphael.js"
+    type="text/javascript"></script>
+  <script
+    src="http://jtab.tardate.com/javascripts/jtab.js"
+    type="text/javascript"></script>
+</svelte:head>
 
 <section on:dragover|preventDefault on:drop|preventDefault={removeStrum}>
   {#if lesson}

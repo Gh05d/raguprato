@@ -1,12 +1,12 @@
 <script>
-  import { spotifyToken } from "../stores";
+  import { spotifyToken } from "../common/stores";
   import axios from "axios";
   import { push } from "svelte-spa-router";
   import SpotifySearch from "./SpotifySearch.svelte";
   import YoutubeSearch from "./YoutubeSearch.svelte";
   import Input from "../components/Input.svelte";
   import Loading from "../components/Loading.svelte";
-  import { getArtists, createID, LESSONS } from "../helpers.js";
+  import { getArtists, createID, LESSONS } from "../common/helpers.js";
 
   let videoSearch;
   let startSearch = false;

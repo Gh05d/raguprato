@@ -24,9 +24,11 @@
   </div>
   <ul>
     {#each socialIcons as { link, symbol }}
-      <a target="_blank" href={link} key={symbol}>
-        <i class={`fab fa-${symbol}`} />
-      </a>
+      <li>
+        <a aria-label={symbol} target="_blank" href={link} key={symbol}>
+          <i class={`fab fa-${symbol}`} />
+        </a>
+      </li>
     {/each}
   </ul>
 </footer>
@@ -35,11 +37,10 @@
   footer {
     grid-area: footer;
     color: black;
-    padding: 0 20px;
+    padding: 10px;
     background-color: var(--main-color);
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-flow: column;
 
     div {
       display: flex;
@@ -49,13 +50,32 @@
         font-size: 0.6rem;
       }
     }
-    a {
-      margin-left: 3px;
 
-      &:hover {
-        color: black;
-        transition: all 300ms ease-in-out;
+    ul {
+      display: flex;
+      gap: 1rem;
+
+      li {
+        a {
+          font-size: 1.5rem;
+        }
       }
+    }
+
+    a:hover {
+      color: black;
+      transition: all 300ms ease-in-out;
+    }
+  }
+
+  @media screen and (min-width: 400px) {
+    .wrapper {
+      color: red;
+    }
+    footer {
+      flex-flow: row;
+      align-items: center;
+      justify-content: space-between;
     }
   }
 </style>
