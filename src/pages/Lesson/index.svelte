@@ -7,10 +7,10 @@
     ARROW_SRC,
     debounce,
     updateLesson,
-  } from "../common/helpers.js";
-  //import ChordGrid from "./ChordGrid.svelte";
-  import VideoSnippet from "../components/VideoSnippet.svelte";
+  } from "../../common/helpers.js";
+  import VideoSnippet from "../../components/VideoSnippet.svelte";
   import LessonHeader from "./LessonHeader.svelte";
+  //import ChordGrid from "./ChordGrid.svelte";
   // import Visualizer from "./Visualizer.svelte";
 
   const urlParts = $location.split("/");

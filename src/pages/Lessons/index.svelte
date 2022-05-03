@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { LESSONS } from "../common/helpers.js";
+  import { LESSONS } from "../../common/helpers.js";
 
   let lessons;
   let error = null;

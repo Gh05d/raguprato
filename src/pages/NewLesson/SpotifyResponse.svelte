@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher } from "svelte";
-  import { getArtists } from "../common/helpers";
+  import { getArtists } from "../../common/helpers";
   export let data;
 
   function transformSongLength(ms) {

@@ -1,8 +1,8 @@
 <script>
-  import VideoSnippet from "../components/VideoSnippet.svelte";
-  import Input from "../components/Input.svelte";
-  import Error from "../components/Error.svelte";
-  import { debounce, apiCall } from "../common/helpers";
+  import VideoSnippet from "../../components/VideoSnippet.svelte";
+  import Input from "../../components/Input.svelte";
+  import Error from "../../components/Error.svelte";
+  import { debounce, apiCall } from "../../common/helpers";
 
   export let videos;
   export let videoSearch;
@@ -68,7 +68,7 @@
 </ul>
 
 <style lang="scss">
-  @import "../_mixins.scss";
+  @import "../../_mixins.scss";
 
   .search-result {
     @include hide;

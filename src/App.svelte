@@ -1,16 +1,12 @@
 <script>
-  import Router, { push } from "svelte-spa-router";
-  import Navigation from "./components/Navigation.svelte";
-  import Lessons from "./Lessons/index.svelte";
-  import NewLesson from "./NewLesson/index.svelte";
-  import Lesson from "./Lesson/index.svelte";
-  import NavItems from "./components/NavItems.svelte";
+  import Router from "svelte-spa-router";
+  import Lessons from "./pages/Lessons/index.svelte";
+  import NewLesson from "./pages/NewLesson/index.svelte";
+  import Lesson from "./pages/Lesson/index.svelte";
+  import Home from "./pages/Home/index.svelte";
+  import Links from "./pages/Links/index.svelte";
+  import Header from "./components/Header.svelte";
   import Footer from "./components/Footer.svelte";
-  import Home from "./Home.svelte";
-  import Links from "./Links.svelte";
-
-  let showNav = false;
-  let windowSize;
 
   const routes = {
     "/": Home,
@@ -21,33 +17,14 @@
   };
 </script>
 
-<svelte:window bind:innerWidth={windowSize} />
-
 <div class="wrapper">
-  <header>
-    <div class="slogan">
-      <i class="fa fa-guitar" />
-      <span role="button" on:click={() => push("/")}>raguprato</span>
-      {#if windowSize > 830}
-        <span>Rad Guitar Practice Tool</span>
-      {/if}
-    </div>
-    {#if windowSize > 750}
-      <NavItems header={true} />
-    {:else}
-      <Navigation show={showNav} toggle={() => (showNav = !showNav)} />
-    {/if}
-  </header>
+  <Header />
 
   <main>
     <Router {routes} />
   </main>
 
   <Footer />
-
-  <nav class={showNav ? "show" : ""}>
-    <NavItems close={() => (showNav = false)} />
-  </nav>
 </div>
 
 <style type="text/scss">
@@ -77,49 +54,6 @@
       "main"
       "footer";
 
-    header {
-      padding: 0 10px;
-      grid-area: header;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 2px rgba($color: #000000, $alpha: 0.2);
-      background-image: var(--gradient);
-      background-size: 400%;
-      animation: color-change 20s infinite alternate;
-
-      .slogan {
-        display: flex;
-        align-items: center;
-
-        i {
-          font-size: 1.3rem;
-        }
-        span[role="button"] {
-          text-transform: uppercase;
-          color: black;
-          font-weight: 900;
-          font-style: italic;
-          cursor: pointer;
-        }
-
-        span + span {
-          margin-left: 10px;
-          font-size: 0.7rem;
-          font-style: italic;
-        }
-      }
-
-      @keyframes color-change {
-        from {
-          background-position: left;
-        }
-        to {
-          background-position: right;
-        }
-      }
-    }
-
     main {
       grid-area: main;
       padding: 20px;
@@ -129,30 +63,9 @@
     }
   }
 
-  nav {
-    position: fixed;
-    height: 100vh;
-    width: 100vw;
-    visibility: hidden;
-    background: black;
-    opacity: 0.8;
-    transform: translateX(400px);
-    transition: all 300ms ease-in-out;
-    z-index: 2;
-  }
-
-  .show {
-    visibility: visible;
-    transform: translateX(0);
-  }
-
   @media screen and (min-width: 480px) {
     .wrapper {
       --footer-height: 40px;
-
-      header {
-        justify-content: space-between;
-      }
     }
   }
 </style>
