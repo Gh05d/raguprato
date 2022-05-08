@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { location, push } from "svelte-spa-router";
-  import { apiCall, ARROW_SRC, debounce } from "../../common/helpers.js";
+  import { apiCall, ARROW_SRC, debounce, transaction } from "../../common/helpers.js";
   import VideoSnippet from "../../components/VideoSnippet.svelte";
   import LessonHeader from "./LessonHeader.svelte";
   //import ChordGrid from "./ChordGrid.svelte";

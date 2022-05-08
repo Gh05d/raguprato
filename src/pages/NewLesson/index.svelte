@@ -6,7 +6,7 @@
   import YoutubeSearch from "./YoutubeSearch.svelte";
   import Input from "../../components/Input.svelte";
   import Loading from "../../components/Loading.svelte";
-  import { getArtists, createID, LESSONS } from "../../common/helpers.js";
+  import { getArtists, createID, transaction } from "../../common/helpers.js";
 
   let videoSearch;
   let startSearch = false;
@@ -76,17 +76,7 @@
 
     try {
       songData.id = `${songData.title}-${createID()}`;
-      let lessons;
-      const stringifiedLessons = await localStorage.getItem(LESSONS);
-
-      if (stringifiedLessons) {
-        lessons = JSON.parse(stringifiedLessons);
-        lessons.push(songData);
-      } else {
-        lessons = [songData];
-      }
-
-      await localStorage.setItem(LESSONS, JSON.stringify(lessons));
+      await transaction("put", songData, "readwrite");
 
       push(`#/lesson/${encodeURIComponent(songData.id)}`);
     } catch (err) {
