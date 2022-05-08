@@ -94,3 +94,157 @@ export const ARROW_SRC =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAABnUlEQVRoge3ZzUqVQRzH8U/iRbQweiCigjBcJEVBh6QwDILASNy2aNUtdAVeRVfRsstoEUgUKIEW5kvvLR6VGXmac44554wwX5jFMH+e+X2fd2aoVLJwJtNxp/Am6F/INE92GvwJWnYmRjHJKKgipVFFSqOKlEYVKY0qUhpVpDSqSGlUkdKoIqVRRUqjipTGMCKTWMG5TFmm8TLTsQ+ZwCvtYtuq/iuHjeEW6Gbwab925bghB2FeHOw9LibqG4OL3MBmUPsDV/8vbprn+BVMuJaYsDGYyG18Ceq+4fHJxE3zTCyzjmsddY3+InewJZZ4dLJx0yxpL/9BgA3MHqlppEXmsROMb+N+nrhpnuB7EOQzbgbjjX+LLGA3GPuKubxx0zzE3pFAd/fHGt0ii+ITsIXeSNL24YH47G7jnm6Rp+JbclP7xiqGnvih3cMLscgyfgb9DVwfQ9a+9MQyv8UiYT/12i6CW+JvQlf7gEvjCjgMs9rbpkti1SnbFA3/mw7aO5wfZ6jjcgUftRJvtdvVp5bLeI2z4w5SqVQq5fEXMTOSwvhqgGAAAAAASUVORK5CYII=";
 export const DB_NAME = "RagupratoDatabase";
 export const DB_VERSION = 1;
+
+export const chords = {
+  A: {
+    fingers: [
+      [2, 2, "3"],
+      [3, 2, "2"],
+      [4, 2, "1"],
+      [6, "x"],
+    ],
+    barre: null,
+  },
+  Am: {
+    fingers: [
+      [2, 1, "3"],
+      [3, 2, "2"],
+      [4, 2, "1"],
+      [6, "x"],
+    ],
+    barre: null,
+  },
+  B: {
+    fingers: [
+      [2, 4, "3"],
+      [3, 4, "3"],
+      [4, 4, "3"],
+    ],
+    barre: {
+      fromString: 6,
+      toString: 1,
+      fret: 2,
+      text: "1",
+    },
+  },
+  Bm: {
+    fingers: [
+      [2, 3, "2"],
+      [3, 4, "4"],
+      [4, 4, "3"],
+      [6, "x"],
+    ],
+    barre: {
+      fromString: 5,
+      toString: 1,
+      fret: 2,
+      text: "1",
+    },
+  },
+  C: {
+    fingers: [
+      [2, 1, "1"],
+      [4, 2, "2"],
+      [5, 3, "3"],
+      [6, "x"],
+    ],
+    barre: null,
+  },
+  Cm: {
+    fingers: [
+      [2, 2, "2"],
+      [3, 3, "4"],
+      [4, 3, "3"],
+      [6, "x"],
+    ],
+    barre: {
+      fromString: 5,
+      toString: 1,
+      fret: 1,
+      text: "1",
+    },
+    position: 3,
+  },
+  D: {
+    fingers: [
+      [1, 2, "2"],
+      [2, 3, "3"],
+      [3, 2, "1"],
+      [5, "x"],
+      [6, "x"],
+    ],
+    barre: null,
+  },
+  Dm: {
+    fingers: [
+      [1, 1, "1"],
+      [2, 3, "3"],
+      [3, 2, "2"],
+      [5, "x"],
+      [6, "x"],
+    ],
+    barre: null,
+  },
+  E: {
+    fingers: [
+      [3, 1, "3"],
+      [4, 2, "2"],
+      [5, 2, "1"],
+    ],
+    barre: null,
+  },
+  Em: {
+    fingers: [
+      [4, 2, "2"],
+      [5, 2, "1"],
+    ],
+    barre: null,
+  },
+  F: {
+    fingers: [
+      [3, 2, "2"],
+      [4, 3, "3"],
+      [5, 3, "4"],
+    ],
+    barre: {
+      fromString: 6,
+      toString: 1,
+      fret: 1,
+      text: "1",
+    },
+  },
+  Fm: {
+    fingers: [
+      [4, 3, "3"],
+      [5, 3, "4"],
+    ],
+    barre: {
+      fromString: 6,
+      toString: 1,
+      fret: 1,
+      text: "1",
+    },
+  },
+  G: {
+    fingers: [
+      [1, 3, "4"],
+      [2, 3, "3"],
+      [5, 2, "1"],
+      [6, 3, "2"],
+    ],
+    barre: null,
+  },
+  Gm: {
+    fingers: [
+      [4, 3, "3"],
+      [5, 3, "4"],
+    ],
+    barre: {
+      fromString: 6,
+      toString: 1,
+      fret: 1,
+      text: "1",
+    },
+    position: 3,
+  },
+};

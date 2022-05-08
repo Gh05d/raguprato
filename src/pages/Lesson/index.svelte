@@ -1,7 +1,14 @@
 <script>
   import { onMount } from "svelte";
   import { location, push } from "svelte-spa-router";
-  import { apiCall, ARROW_SRC, debounce, transaction } from "../../common/helpers.js";
+  import * as svguitar from "svguitar";
+  import {
+    apiCall,
+    ARROW_SRC,
+    debounce,
+    transaction,
+    chords,
+  } from "../../common/helpers.js";
   import VideoSnippet from "../../components/VideoSnippet.svelte";
   import LessonHeader from "./LessonHeader.svelte";
   //import ChordGrid from "./ChordGrid.svelte";
@@ -17,6 +24,7 @@
   let selectedChord = "";
   let notes = "";
   let tab = "";
+  const chordNames = Object.keys(chords);
 
   async function addChord() {
     if (!selectedChord) {
@@ -48,7 +56,6 @@
       lesson.chords = [...newChords];
 
       await transaction("put", lesson, "readwrite");
-      renderChords();
     } catch (error) {
       console.error(error);
     }
@@ -165,9 +172,23 @@
   // }
 
   function renderChords() {
-    if (lesson.chords?.length > 0) {
-      lesson.chords.forEach((chord, i) => {
-        jtab.render(document.getElementById(`chord-${i}`), chord);
+    if (lesson.chords?.length) {
+      lesson.chords.forEach((chordName, i) => {
+        const chart = new svguitar.SVGuitarChord(`#chord-${i}`);
+        const { fingers, barre, position } = chords[chordName];
+
+        chart
+          .configure({
+            tuning: ["E", "A", "D", "G", "B", "E"],
+            frets: 4,
+            position: position || 1,
+          })
+          .chord({
+            fingers,
+            barres: barre ? [barre] : [],
+            title: chordName,
+          })
+          .draw();
       });
     }
   }
@@ -187,29 +208,6 @@
 
   const debouncedSearch = debounce(searchYoutube);
 </script>
-
-<svelte:head>
-  <!-- optional: helpers to preset jtab region heights to avoid rendering jitter -->
-  <link
-    type="text/css"
-    rel="stylesheet"
-    href="http://jtab.tardate.com/css/jtab-helper.css" />
-  <!-- mandatory script includes for jtab -->
-  <script
-    async
-    src="http://jtab.tardate.com/javascripts/jquery.js"
-    type="text/javascript"></script>
-
-  <script
-    async
-    src="http://jtab.tardate.com/javascripts/raphael.js"
-    type="text/javascript"></script>
-
-  <script
-    async
-    src="http://jtab.tardate.com/javascripts/jtab.js"
-    type="text/javascript"></script>
-</svelte:head>
 
 <section on:dragover|preventDefault on:drop|preventDefault={removeStrum}>
   {#if lesson}
@@ -242,11 +240,13 @@
           <button on:click={() => changeVideo(-1)} class="naked-button">
             <i class="fa fa-caret-left" />
           </button>
+
           <iframe
             title={`Lesson video of ${lesson.title}`}
             allowfullscreen
             class="video"
             src={`https://www.youtube.com/embed/${lesson.videos[showVideo]}`} />
+
           <button on:click={() => changeVideo(1)} class="naked-button">
             <i class="fa fa-caret-right" />
           </button>
@@ -267,18 +267,24 @@
 
     <h2>Chords</h2>
 
-    <form on:submit|preventDefault={addChord}>
-      <input bind:value={selectedChord} placeholder="Am" />
-    </form>
+    <select bind:value={selectedChord} on:change={addChord}>
+      <option value="">Add Chords</option>
+      {#each chordNames as chordName}
+        <option value={chordName}>{chordName}</option>
+      {/each}
+    </select>
 
-    {#if lesson.chords?.length > 0}
+    {#if lesson.chords?.length}
       <div class="chord-wrapper">
-        {#each lesson.chords as chord, i}
+        {#each lesson.chords as _c, i}
           <div class="chord-holder">
-            <button class="naked-button" on:click={() => deleteChord(i)}>
+            <button
+              aria-label="Delete Chord"
+              class="naked-button"
+              on:click={() => deleteChord(i)}>
               <i class="fa fa-times" />
             </button>
-            <div id={`chord-${i}`}>{chord}</div>
+            <div id={`chord-${i}`} />
           </div>
         {/each}
       </div>
@@ -399,6 +405,7 @@
   .chord-holder {
     position: relative;
     display: inline-block;
+    max-width: 19rem;
 
     .naked-button {
       position: absolute;
@@ -460,17 +467,9 @@
       "button1 button2 .";
   }
 
-  #chord-preview-input {
-    margin: 0;
-  }
-
-  .chord-preview-button {
-    background: 0;
-    text-align: left;
-
-    &:hover {
-      box-shadow: unset;
-    }
+  select {
+    max-width: 18rem;
+    background-color: var(--secondary-color);
   }
 
   .iframes-container {

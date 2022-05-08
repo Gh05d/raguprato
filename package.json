@@ -7,10 +7,6 @@
   },
   "license": "UNLICENSED",
   "type": "module",
-  "engines": {
-    "node": "^14.x",
-    "npm": "^7.x"
-  },
   "devDependencies": {
     "@rollup/plugin-json": "^4.1.0",
     "babel-eslint": "^10.1.0",
@@ -39,7 +35,8 @@
     "axios": "^0.21.1",
     "dotenv": "^9.0.0",
     "sirv-cli": "^0.4.4",
-    "svelte-spa-router": "^3.2.0"
+    "svelte-spa-router": "^3.2.0",
+    "svguitar": "^1.14.0"
   },
   "optionalDependencies": {
     "fsevents": "2.1.2"

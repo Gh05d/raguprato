@@ -60,7 +60,6 @@ export default {
     }),
     commonjs(),
     json({ compact: true }),
-
     copy({
       targets: [{ src: "public/chunks/bundle.css", dest: "public" }],
     }),

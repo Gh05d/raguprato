@@ -18,6 +18,8 @@
     You don't need an account or a credit card. We value your privacy and safe your
     lessons only locally in your browser.
   </p>
+
+  <div id="chart" />
 </section>
 
 <style type="text/scss">
