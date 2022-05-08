@@ -16,24 +16,16 @@
     "/links": wrap({ asyncComponent: () => import("./pages/Links/index.svelte") }),
     "/lessons": wrap({
       asyncComponent: () => import("./pages/Lessons/index.svelte"),
-      conditions: [
-        async () => {
-          try {
-            if (!$db.initialized) {
-              await loadFromIndexedDB();
-            }
-
-            return true;
-          } catch (error) {
-            console.error(error.message);
-            return false;
-          }
-        },
-      ],
+      conditions: [initialized],
       loadingComponent: Loading,
       loadingParams: { text: "Loading lessons..." },
     }),
-    "/lesson/:id": wrap({ asyncComponent: () => import("./pages/Lesson/index.svelte") }),
+    "/lesson/:id": wrap({
+      asyncComponent: () => import("./pages/Lesson/index.svelte"),
+      conditions: [initialized],
+      loadingComponent: Loading,
+      loadingParams: { text: "Loading lesson..." },
+    }),
     "/new-lesson": wrap({
       asyncComponent: () => import("./pages/NewLesson/index.svelte"),
     }),
@@ -49,6 +41,19 @@
 
       return d;
     });
+  }
+
+  async function initialized() {
+    try {
+      if (!$db.initialized) {
+        await loadFromIndexedDB();
+      }
+
+      return true;
+    } catch (error) {
+      console.error(error.message);
+      return false;
+    }
   }
 
   function loadFromIndexedDB() {

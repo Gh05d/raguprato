@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import Stopwatch from "./Stopwatch.svelte";
-  import { authenticateSpotify, updateLesson } from "../../common/helpers.js";
+  import { authenticateSpotify, transaction } from "../../common/helpers.js";
   import { spotifyToken } from "../../common/stores";
   import axios from "axios";
 
@@ -37,7 +37,7 @@
     }
 
     lesson.totalTime += seconds;
-    await updateLesson(lesson);
+    await transaction("put", lesson, "readwrite");
   }
 
   async function update({ target: { name } }) {
@@ -66,7 +66,7 @@
           : tuning;
     }
 
-    await updateLesson(lesson);
+    await transaction("put", lesson, "readwrite");
     edit = null;
   }
 
@@ -113,7 +113,7 @@
 
         lesson.audioFeatures.key = key;
         lesson.audioFeatures.tempo = bpm;
-        await updateLesson(lesson);
+        await transaction("put", lesson, "readwrite");
       }
     } catch (error) {
       console.error(error);

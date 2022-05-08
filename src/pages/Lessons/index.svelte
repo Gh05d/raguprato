@@ -1,7 +1,7 @@
 <script>
   import { db } from "../../common/stores";
   import { onMount } from "svelte";
-  import { LESSONS } from "../../common/helpers.js";
+  import { transaction } from "../../common/helpers.js";
   import Error from "../../components/Error.svelte";
 
   let lessons;
@@ -88,33 +88,12 @@
 
   async function deleteLesson(id) {
     try {
-      await transaction("delete", "readwrite", id);
+      await transaction("delete", id, "readwrite");
       lessons = lessons.filter(lesson => lesson.id != id);
     } catch (err) {
       deleteError = err;
       deleteErrorID = id;
     }
-  }
-
-  /**
-   * Creates a promise to update the database
-   * @function
-   * @param {string} query - The operation to perform
-   * @param {string} [type=readonly] - Like readonly (default), readwrite, ...
-   * @param {(string|object)} [params]
-   */
-  function transaction(query, type = "readonly", params = null) {
-    return new Promise((resolve, reject) => {
-      const transaction = $db.transaction(["lessons"], type);
-      const objectStore = transaction.objectStore("lessons");
-      const request = objectStore[query](params);
-
-      request.onerror = event => {
-        reject(Error(event?.target?.error || "Something bad happened"));
-      };
-
-      request.onsuccess = () => resolve(request.result);
-    });
   }
 
   onMount(() => {

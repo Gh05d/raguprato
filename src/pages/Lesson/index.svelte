@@ -1,13 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { location, push } from "svelte-spa-router";
-  import {
-    apiCall,
-    LESSONS,
-    ARROW_SRC,
-    debounce,
-    updateLesson,
-  } from "../../common/helpers.js";
+  import { apiCall, ARROW_SRC, debounce } from "../../common/helpers.js";
   import VideoSnippet from "../../components/VideoSnippet.svelte";
   import LessonHeader from "./LessonHeader.svelte";
   //import ChordGrid from "./ChordGrid.svelte";
@@ -38,7 +32,7 @@
 
       selectedChord = "";
 
-      await updateLesson(lesson);
+      await transaction("put", lesson, "readwrite");
       renderChords();
     } catch (error) {
       console.error(error);
@@ -53,7 +47,7 @@
       ];
       lesson.chords = [...newChords];
 
-      await updateLesson(lesson);
+      await transaction("put", lesson, "readwrite");
       renderChords();
     } catch (error) {
       console.error(error);
@@ -64,7 +58,7 @@
     try {
       lesson.notes = notes;
 
-      await updateLesson(lesson);
+      await transaction("put", lesson, "readwrite");
     } catch (error) {
       console.error(error);
     }
@@ -80,7 +74,7 @@
       lesson.strumming = [direction];
     }
 
-    await updateLesson(lesson);
+    await transaction("put", lesson, "readwrite");
     e.stopPropagation();
   }
 
@@ -94,7 +88,7 @@
       ];
     }
 
-    await updateLesson(lesson);
+    await transaction("put", lesson, "readwrite");
   }
 
   async function finish() {
@@ -104,7 +98,7 @@
       lesson.finished = true;
     }
 
-    await updateLesson(lesson);
+    await transaction("put", lesson, "readwrite");
     push("/");
   }
 
@@ -129,13 +123,13 @@
 
   async function updateTab() {
     lesson.tab = tab;
-    await updateLesson(lesson);
+    await transaction("put", lesson, "readwrite");
   }
 
   async function addVideo(videoID) {
     lesson.videos = [...lesson.videos, videoID];
     addVideos = null;
-    await updateLesson(lesson);
+    await transaction("put", lesson, "readwrite");
   }
 
   function changeVideo(count) {
@@ -159,7 +153,7 @@
   //     }, {}),
   //   ];
 
-  //   await updateLesson(lesson);
+  //         await transaction("put", lesson, "readwrite");
   // }
 
   // async function deleteTab(position) {
@@ -167,7 +161,7 @@
   //     ...lesson.coordinates.slice(0, position),
   //     ...lesson.coordinates.slice(position + 1),
   //   ];
-  //   await updateLesson(lesson);
+  //         await transaction("put", lesson, "readwrite");
   // }
 
   function renderChords() {
@@ -180,14 +174,12 @@
 
   onMount(() => {
     try {
-      const stringifiedLessons = localStorage.getItem(LESSONS);
-      const lessons = JSON.parse(stringifiedLessons);
+      (async function init() {
+        lesson = await transaction("get", id);
+        notes = lesson.notes;
 
-      lesson = lessons.find(lesson => lesson.id == id);
-
-      notes = lesson.notes;
-
-      setTimeout(renderChords, 500);
+        setTimeout(renderChords, 500);
+      })();
     } catch (error) {
       console.error(error);
     }
@@ -204,12 +196,17 @@
     href="http://jtab.tardate.com/css/jtab-helper.css" />
   <!-- mandatory script includes for jtab -->
   <script
+    async
     src="http://jtab.tardate.com/javascripts/jquery.js"
     type="text/javascript"></script>
+
   <script
+    async
     src="http://jtab.tardate.com/javascripts/raphael.js"
     type="text/javascript"></script>
+
   <script
+    async
     src="http://jtab.tardate.com/javascripts/jtab.js"
     type="text/javascript"></script>
 </svelte:head>
