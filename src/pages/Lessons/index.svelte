@@ -1,9 +1,13 @@
 <script>
+  import { db } from "../../common/stores";
   import { onMount } from "svelte";
   import { LESSONS } from "../../common/helpers.js";
+  import Error from "../../components/Error.svelte";
 
   let lessons;
   let error = null;
+  let deleteErrorID = null;
+  let deleteError = null;
   let value = "";
   let sortOption = "Song-down";
   const sortOptions = ["Song", "Artist"];
@@ -23,7 +27,7 @@
 
   async function exportData() {
     try {
-      const stringifiedLessons = localStorage.getItem(LESSONS);
+      const stringifiedLessons = JSON.stringify(lessons);
       const blob = new Blob([stringifiedLessons], { type: "text/json" });
       const link = document.createElement("a");
 
@@ -31,13 +35,13 @@
       link.href = window.URL.createObjectURL(blob);
       link.dataset.downloadurl = `text/json:${link.download}${link.href}`;
 
-      const evt = new MouseEvent("click", {
+      const event = new MouseEvent("click", {
         view: window,
         bubbles: true,
         cancelable: true,
       });
 
-      link.dispatchEvent(evt);
+      link.dispatchEvent(event);
       link.remove();
     } catch (err) {
       error = err.message;
@@ -61,9 +65,15 @@
       let reader = new FileReader();
 
       reader.onload = e => {
-        const importedLessons = e.target.result;
-        localStorage.setItem(LESSONS, importedLessons);
-        renderLessons(importedLessons);
+        const stringifiedLessons = e.target.result;
+        const importedLessons = JSON.parse(stringifiedLessons);
+
+        const lessonStore = $db
+          .transaction("lessons", "readwrite")
+          .objectStore("lessons");
+
+        importedLessons.forEach(lesson => lessonStore.put(lesson));
+        lessons = importedLessons;
       };
 
       reader.onerror = e => {
@@ -76,36 +86,40 @@
     }
   }
 
-  function renderLessons(stringifiedLessons) {
-    lessons = JSON.parse(stringifiedLessons);
-    lessons.sort((a, b) => {
-      const titleA = a.title.toUpperCase(); // ignore upper and lowercase
-      const titleB = b.title.toUpperCase(); // ignore upper and lowercase
-
-      if (titleA < titleB) {
-        return -1;
-      } else if (titleA > titleB) {
-        return 1;
-      }
-      // names must be equal
-      return 0;
-    });
+  async function deleteLesson(id) {
+    try {
+      await transaction("delete", "readwrite", id);
+      lessons = lessons.filter(lesson => lesson.id != id);
+    } catch (err) {
+      deleteError = err;
+      deleteErrorID = id;
+    }
   }
 
-  function deleteLesson(id) {
-    const newLessons = lessons.filter(lesson => lesson.id != id);
+  /**
+   * Creates a promise to update the database
+   * @function
+   * @param {string} query - The operation to perform
+   * @param {string} [type=readonly] - Like readonly (default), readwrite, ...
+   * @param {(string|object)} [params]
+   */
+  function transaction(query, type = "readonly", params = null) {
+    return new Promise((resolve, reject) => {
+      const transaction = $db.transaction(["lessons"], type);
+      const objectStore = transaction.objectStore("lessons");
+      const request = objectStore[query](params);
 
-    lessons = newLessons;
-    localStorage.setItem(LESSONS, JSON.stringify(newLessons));
+      request.onerror = event => {
+        reject(Error(event?.target?.error || "Something bad happened"));
+      };
+
+      request.onsuccess = () => resolve(request.result);
+    });
   }
 
   onMount(() => {
     (async function setup() {
-      const stringifiedLessons = await localStorage.getItem(LESSONS);
-
-      if (stringifiedLessons) {
-        renderLessons(stringifiedLessons);
-      }
+      lessons = (await transaction("getAll")) || null;
     })();
   });
 
@@ -131,6 +145,14 @@
 
 <section>
   <h1>Click a Lesson to start practicing</h1>
+  <button
+    on:click={() => {
+      const lessonStore = $db.transaction("lessons", "readwrite").objectStore("lessons");
+      lessons.forEach(lesson => {
+        lessonStore.put(lesson);
+      });
+    }}>UPDATE</button>
+
   {#if lessons && lessons.length > 0}
     <div class="filter-sort">
       <input placeholder="Filter Songs" bind:value />
@@ -180,6 +202,10 @@
             class="naked-button">
             <i class="fa fa-trash-alt" />
           </button>
+
+          <Error
+            error={deleteErrorID == id ? deleteError : null}
+            errorMessage={`Sorry, couldn't delete ${title}`} />
         </li>
       {/each}
     </ul>

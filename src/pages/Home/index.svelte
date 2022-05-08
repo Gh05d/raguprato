@@ -10,6 +10,7 @@
 
   <p>
     This tool was designed to be as simple as possible. Just head over to the <a
+      class="fancy-link"
       href="#/new-lesson">new lessons page</a> to create a lesson for yourself and start practicing.
   </p>
   <p>You can add videos, chords and strumming patterns to every lesson you create.</p>

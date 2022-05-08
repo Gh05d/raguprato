@@ -3,6 +3,7 @@ import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
 import replace from "rollup-plugin-replace";
+import copy from "rollup-plugin-copy";
 import { terser } from "rollup-plugin-terser";
 import { sass } from "svelte-preprocess-sass";
 import css from "rollup-plugin-css-only";
@@ -17,9 +18,18 @@ export default {
   input: "src/main.js",
   output: {
     sourcemap: true,
-    format: "iife",
+    format: "es",
     name: "app",
-    file: "public/bundle.js",
+    dir: "public/chunks",
+    manualChunks: moduleName => {
+      if (moduleName.includes("node_modules")) {
+        return "vendor";
+      }
+
+      if (moduleName.includes("src/")) {
+        return "main";
+      }
+    },
   },
   plugins: [
     replace({
@@ -46,11 +56,14 @@ export default {
     // https://github.com/rollup/rollup-plugin-commonjs
     resolve({
       browser: true,
-      dedupe: importee =>
-        importee === "svelte" || importee.startsWith("svelte/"),
+      dedupe: importee => importee === "svelte" || importee.startsWith("svelte/"),
     }),
     commonjs(),
     json({ compact: true }),
+
+    copy({
+      targets: [{ src: "public/chunks/bundle.css", dest: "public" }],
+    }),
 
     // Watch the `public` directory and refresh the
     // browser on changes when not in production

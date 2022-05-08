@@ -1,6 +1,24 @@
-* {
+:root {
+  --main-color: #ffc75f;
+  --secondary-color: #ff6f91;
+  --tertiary-color: rgb(46, 46, 223);
+  --gradient: linear-gradient(
+    45deg,
+    #845ec2,
+    #d65db1,
+    var(--secondary-color),
+    #ff9671,
+    var(--main-color),
+    #f9f871
+  );
+}
+
+*,
+*::before,
+*::after {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
 }
 
 html,
@@ -14,13 +32,12 @@ body {
 body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: -apple-system, Roboto, BlinkMacSystemFont, "Segoe UI",
-    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-family: -apple-system, Roboto, BlinkMacSystemFont, "Segoe UI", Oxygen-Sans, Ubuntu,
+    Cantarell, "Helvetica Neue", sans-serif;
 }
 
 a {
-  color: #ff6f91;
+  color: var(--secondary-color);
   text-decoration: none;
   transition: all 300ms ease-in-out;
   outline: none;
@@ -37,7 +54,7 @@ li {
 }
 
 .fancy-link {
-  color: #ff6f91;
+  color: var(--secondary-color);
   text-decoration: none;
   transition: all 300ms ease-in-out;
   position: relative;
@@ -50,7 +67,7 @@ li {
   left: 0;
   bottom: 0;
   width: 100%;
-  background: #ff6f91;
+  background: var(--secondary-color);
   height: 2px;
   transform: scaleX(0);
   transform-origin: left;
@@ -75,7 +92,7 @@ label {
 
 input {
   border: 0;
-  border-bottom: 1px solid #ff6f91;
+  border-bottom: 1px solid var(--secondary-color);
   margin: 20px 0;
   padding: 1.2rem 0.8rem 0.2rem;
 }
@@ -107,7 +124,7 @@ button {
   border: 0;
   text-transform: uppercase;
   padding: 10px 5px;
-  background: #ff6f91;
+  background: var(--secondary-color);
   border-radius: 4px;
 }
 

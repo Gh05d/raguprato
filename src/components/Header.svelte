@@ -10,7 +10,7 @@
 <header>
   <div class="slogan">
     <i class="fa fa-guitar" />
-    <span role="button" on:click={() => push("/")}>raguprato</span>
+    <button class="naked-button" on:click={() => push("/")}>raguprato</button>
     {#if windowSize > 830}
       <span>Rad Guitar Practice Tool</span>
     {/if}
@@ -47,15 +47,22 @@
       i {
         font-size: 1.3rem;
       }
-      span[role="button"] {
+
+      .naked-button {
+        all: unset;
         text-transform: uppercase;
         color: black;
         font-weight: 900;
         font-style: italic;
         cursor: pointer;
+        box-sizing: border-box;
+
+        &:focus {
+          border-bottom: 2px solid var(--tertiary-color);
+        }
       }
 
-      span + span {
+      span {
         margin-left: 10px;
         font-size: 0.7rem;
         font-style: italic;

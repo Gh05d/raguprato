@@ -42,6 +42,11 @@
     a {
       color: black;
       margin-bottom: 0;
+      box-sizing: border-box;
+
+      &:focus {
+        border-bottom: 1px solid var(--tertiary-color);
+      }
     }
   }
 

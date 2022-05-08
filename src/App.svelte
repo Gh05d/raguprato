@@ -1,46 +1,108 @@
 <script>
-  import Router from "svelte-spa-router";
-  import Lessons from "./pages/Lessons/index.svelte";
-  import NewLesson from "./pages/NewLesson/index.svelte";
-  import Lesson from "./pages/Lesson/index.svelte";
+  import { db } from "./common/stores";
+  import { onMount } from "svelte";
+  import Router, { replace } from "svelte-spa-router";
+  import { wrap } from "svelte-spa-router/wrap";
   import Home from "./pages/Home/index.svelte";
-  import Links from "./pages/Links/index.svelte";
+  import NotFound from "./pages/404/index.svelte";
+  import Error from "./pages/Error/index.svelte";
   import Header from "./components/Header.svelte";
   import Footer from "./components/Footer.svelte";
+  import Loading from "./components/Loading.svelte";
+  import { DB_NAME, DB_VERSION } from "./common/helpers";
 
   const routes = {
     "/": Home,
-    "/links": Links,
-    "/lessons": Lessons,
-    "/lesson/:id": Lesson,
-    "/new-lesson": NewLesson,
+    "/links": wrap({ asyncComponent: () => import("./pages/Links/index.svelte") }),
+    "/lessons": wrap({
+      asyncComponent: () => import("./pages/Lessons/index.svelte"),
+      conditions: [
+        async () => {
+          try {
+            if (!$db.initialized) {
+              await loadFromIndexedDB();
+            }
+
+            return true;
+          } catch (error) {
+            console.error(error.message);
+            return false;
+          }
+        },
+      ],
+      loadingComponent: Loading,
+      loadingParams: { text: "Loading lessons..." },
+    }),
+    "/lesson/:id": wrap({ asyncComponent: () => import("./pages/Lesson/index.svelte") }),
+    "/new-lesson": wrap({
+      asyncComponent: () => import("./pages/NewLesson/index.svelte"),
+    }),
+    "/error": Error,
+    "*": NotFound,
   };
+
+  async function initDB(event) {
+    await db.update(d => {
+      d = event.target.result;
+      d.onerror = e => console.error("IndexedDB Error: ", e?.target);
+      d.initialized = true;
+
+      return d;
+    });
+  }
+
+  function loadFromIndexedDB() {
+    return new Promise((resolve, reject) => {
+      const dbRequest = window.indexedDB.open(DB_NAME, DB_VERSION);
+
+      dbRequest.onerror = event =>
+        reject(Error(event?.target?.error || "Something bad happened"));
+
+      dbRequest.onupgradeneeded = event => {
+        const newDB = event.target.result;
+        const objectStore = newDB.createObjectStore("lessons", { keyPath: "id" });
+        objectStore.createIndex("title", "title", { unique: false });
+        objectStore.createIndex("artist", "artist", { unique: false });
+
+        console.info(`Initiated / Upgraded database ${DB_NAME} to version ${DB_VERSION}`);
+      };
+
+      dbRequest.onsuccess = async event => {
+        await initDB(event);
+        resolve();
+      };
+    });
+  }
+
+  function conditionsFailed(event) {
+    console.error("conditionsFailed event", event.detail);
+
+    // Perform any action, for example replacing the current route
+    replace("/error");
+  }
+
+  onMount(() => {
+    (async function init() {
+      try {
+        await loadFromIndexedDB();
+      } catch (error) {
+        console.error(error.message);
+      }
+    })();
+  });
 </script>
 
 <div class="wrapper">
   <Header />
 
   <main>
-    <Router {routes} />
+    <Router {routes} on:conditionsFailed={conditionsFailed} />
   </main>
 
   <Footer />
 </div>
 
 <style type="text/scss">
-  :root {
-    --main-color: #ffc75f;
-    --gradient: linear-gradient(
-      45deg,
-      #845ec2,
-      #d65db1,
-      #ff6f91,
-      #ff9671,
-      var(--main-color),
-      #f9f871
-    );
-  }
-
   .wrapper {
     --header-height: 50px;
     --main-height: 1fr;
