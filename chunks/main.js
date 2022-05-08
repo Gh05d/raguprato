@@ -1,6 +1,6 @@
 
 (function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
-import { w as writable, S as SvelteComponentDev, i as init, s as safe_not_equal, d as dispatch_dev, v as validate_slots, e as element, t as text, a as space, c as claim_element, b as children, f as claim_text, g as detach_dev, h as claim_space, j as add_location, k as attr_dev, l as insert_hydration_dev, m as append_hydration_dev, n as noop, o as toggle_class, p as listen_dev, q as is_function, r as validate_each_argument, u as null_to_empty, x as destroy_each, y as add_render_callback, z as push, A as create_component, B as claim_component, C as mount_component, D as group_outros, E as transition_out, F as check_outros, G as transition_in, H as destroy_component, I as run_all, J as set_data_dev, K as get_store_value, L as axios, R as Router, M as validate_store, N as component_subscribe, O as wrap, P as onMount, Q as replace, T as globals, U as prevent_default, V as empty, W as set_input_value, X as src_url_equal, Y as onDestroy, Z as query_selector_all, _ as prop_dev, $ as to_number, a0 as location, a1 as bubble, a2 as createEventDispatcher, a3 as stop_propagation, a4 as binding_callbacks, a5 as bind, a6 as add_flush_callback } from './vendor-ccb02a19.js';
+import { w as writable, S as SvelteComponentDev, i as init, s as safe_not_equal, d as dispatch_dev, v as validate_slots, e as element, t as text, a as space, c as claim_element, b as children, f as claim_text, g as detach_dev, h as claim_space, j as add_location, k as attr_dev, l as insert_hydration_dev, m as append_hydration_dev, n as noop, o as toggle_class, p as listen_dev, q as is_function, r as validate_each_argument, u as null_to_empty, x as destroy_each, y as add_render_callback, z as push, A as create_component, B as claim_component, C as mount_component, D as group_outros, E as transition_out, F as check_outros, G as transition_in, H as destroy_component, I as run_all, J as set_data_dev, K as get_store_value, L as axios, R as Router, M as validate_store, N as component_subscribe, O as wrap, P as onMount, Q as replace, T as globals, U as prevent_default, V as empty, W as set_input_value, X as src_url_equal, Y as onDestroy, Z as query_selector_all, _ as prop_dev, $ as to_number, a0 as location, a1 as svguitar, a2 as SVGuitarChord, a3 as bubble, a4 as select_value, a5 as select_option, a6 as createEventDispatcher, a7 as stop_propagation, a8 as binding_callbacks, a9 as bind, aa as add_flush_callback } from './vendor-afb041c5.js';
 
 const spotifyToken = writable();
 
@@ -37,6 +37,8 @@ function create_fragment$k(ctx) {
 	let t11;
 	let p3;
 	let t12;
+	let t13;
+	let div;
 
 	const block = {
 		c: function create() {
@@ -61,6 +63,8 @@ function create_fragment$k(ctx) {
 			t11 = space();
 			p3 = element("p");
 			t12 = text("You don't need an account or a credit card. We value your privacy and safe your\n    lessons only locally in your browser.");
+			t13 = space();
+			div = element("div");
 			this.h();
 		},
 		l: function claim(nodes) {
@@ -100,6 +104,9 @@ function create_fragment$k(ctx) {
 			var p3_nodes = children(p3);
 			t12 = claim_text(p3_nodes, "You don't need an account or a credit card. We value your privacy and safe your\n    lessons only locally in your browser.");
 			p3_nodes.forEach(detach_dev);
+			t13 = claim_space(section_nodes);
+			div = claim_element(section_nodes, "DIV", { id: true });
+			children(div).forEach(detach_dev);
 			section_nodes.forEach(detach_dev);
 			this.h();
 		},
@@ -117,6 +124,8 @@ function create_fragment$k(ctx) {
 			add_location(p2, file$k, 15, 2, 398);
 			attr_dev(p3, "class", "svelte-1pfs4fl");
 			add_location(p3, file$k, 16, 2, 485);
+			attr_dev(div, "id", "chart");
+			add_location(div, file$k, 21, 2, 625);
 			add_location(section, file$k, 7, 0, 143);
 		},
 		m: function mount(target, anchor) {
@@ -141,6 +150,8 @@ function create_fragment$k(ctx) {
 			append_hydration_dev(section, t11);
 			append_hydration_dev(section, p3);
 			append_hydration_dev(p3, t12);
+			append_hydration_dev(section, t13);
+			append_hydration_dev(section, div);
 		},
 		p: noop,
 		i: noop,
@@ -1747,6 +1758,160 @@ const ARROW_SRC =
 const DB_NAME = "RagupratoDatabase";
 const DB_VERSION = 1;
 
+const chords = {
+  A: {
+    fingers: [
+      [2, 2, "3"],
+      [3, 2, "2"],
+      [4, 2, "1"],
+      [6, "x"],
+    ],
+    barre: null,
+  },
+  Am: {
+    fingers: [
+      [2, 1, "3"],
+      [3, 2, "2"],
+      [4, 2, "1"],
+      [6, "x"],
+    ],
+    barre: null,
+  },
+  B: {
+    fingers: [
+      [2, 4, "3"],
+      [3, 4, "3"],
+      [4, 4, "3"],
+    ],
+    barre: {
+      fromString: 6,
+      toString: 1,
+      fret: 2,
+      text: "1",
+    },
+  },
+  Bm: {
+    fingers: [
+      [2, 3, "2"],
+      [3, 4, "4"],
+      [4, 4, "3"],
+      [6, "x"],
+    ],
+    barre: {
+      fromString: 5,
+      toString: 1,
+      fret: 2,
+      text: "1",
+    },
+  },
+  C: {
+    fingers: [
+      [2, 1, "1"],
+      [4, 2, "2"],
+      [5, 3, "3"],
+      [6, "x"],
+    ],
+    barre: null,
+  },
+  Cm: {
+    fingers: [
+      [2, 2, "2"],
+      [3, 3, "4"],
+      [4, 3, "3"],
+      [6, "x"],
+    ],
+    barre: {
+      fromString: 5,
+      toString: 1,
+      fret: 1,
+      text: "1",
+    },
+    position: 3,
+  },
+  D: {
+    fingers: [
+      [1, 2, "2"],
+      [2, 3, "3"],
+      [3, 2, "1"],
+      [5, "x"],
+      [6, "x"],
+    ],
+    barre: null,
+  },
+  Dm: {
+    fingers: [
+      [1, 1, "1"],
+      [2, 3, "3"],
+      [3, 2, "2"],
+      [5, "x"],
+      [6, "x"],
+    ],
+    barre: null,
+  },
+  E: {
+    fingers: [
+      [3, 1, "3"],
+      [4, 2, "2"],
+      [5, 2, "1"],
+    ],
+    barre: null,
+  },
+  Em: {
+    fingers: [
+      [4, 2, "2"],
+      [5, 2, "1"],
+    ],
+    barre: null,
+  },
+  F: {
+    fingers: [
+      [3, 2, "2"],
+      [4, 3, "3"],
+      [5, 3, "4"],
+    ],
+    barre: {
+      fromString: 6,
+      toString: 1,
+      fret: 1,
+      text: "1",
+    },
+  },
+  Fm: {
+    fingers: [
+      [4, 3, "3"],
+      [5, 3, "4"],
+    ],
+    barre: {
+      fromString: 6,
+      toString: 1,
+      fret: 1,
+      text: "1",
+    },
+  },
+  G: {
+    fingers: [
+      [1, 3, "4"],
+      [2, 3, "3"],
+      [5, 2, "1"],
+      [6, 3, "2"],
+    ],
+    barre: null,
+  },
+  Gm: {
+    fingers: [
+      [4, 3, "3"],
+      [5, 3, "4"],
+    ],
+    barre: {
+      fromString: 6,
+      toString: 1,
+      fret: 1,
+      text: "1",
+    },
+    position: 3,
+  },
+};
+
 /* src/App.svelte generated by Svelte v3.47.0 */
 
 const { console: console_1$4 } = globals;
@@ -2423,7 +2588,7 @@ class Error$1 extends SvelteComponentDev {
 
 /* src/pages/Lessons/index.svelte generated by Svelte v3.47.0 */
 
-const { Object: Object_1 } = globals;
+const { Object: Object_1$1 } = globals;
 const file$9 = "src/pages/Lessons/index.svelte";
 
 function get_each_context$4(ctx, list, i) {
@@ -3630,7 +3795,7 @@ function instance$9($$self, $$props, $$invalidate) {
 
 	const writable_props = [];
 
-	Object_1.keys($$props).forEach(key => {
+	Object_1$1.keys($$props).forEach(key => {
 		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Lessons> was created with unknown prop '${key}'`);
 	});
 
@@ -3981,7 +4146,7 @@ class VideoSnippet extends SvelteComponentDev {
 
 /* src/pages/Lesson/Stopwatch.svelte generated by Svelte v3.47.0 */
 
-const { document: document_1$1 } = globals;
+const { document: document_1 } = globals;
 const file$7 = "src/pages/Lesson/Stopwatch.svelte";
 
 function get_each_context$3(ctx, list, i) {
@@ -4078,7 +4243,7 @@ function create_fragment$7(ctx) {
 	let t10;
 	let mounted;
 	let dispose;
-	document_1$1.title = title_value = /*title*/ ctx[3];
+	document_1.title = title_value = /*title*/ ctx[3];
 	let each_value = /*buttons*/ ctx[5];
 	validate_each_argument(each_value);
 	let each_blocks = [];
@@ -4116,7 +4281,7 @@ function create_fragment$7(ctx) {
 			this.h();
 		},
 		l: function claim(nodes) {
-			const head_nodes = query_selector_all('[data-svelte=\"svelte-1258swp\"]', document_1$1.head);
+			const head_nodes = query_selector_all('[data-svelte=\"svelte-1258swp\"]', document_1.head);
 			head_nodes.forEach(detach_dev);
 			t0 = claim_space(nodes);
 			section = claim_element(nodes, "SECTION", {});
@@ -4210,7 +4375,7 @@ function create_fragment$7(ctx) {
 		},
 		p: function update(ctx, [dirty]) {
 			if (dirty & /*title*/ 8 && title_value !== (title_value = /*title*/ ctx[3])) {
-				document_1$1.title = title_value;
+				document_1.title = title_value;
 			}
 
 			if (dirty & /*buttons*/ 32) {
@@ -5905,36 +6070,42 @@ class LessonHeader extends SvelteComponentDev {
 
 /* src/pages/Lesson/index.svelte generated by Svelte v3.47.0 */
 
-const { console: console_1$1, document: document_1 } = globals;
+const { Object: Object_1, console: console_1$1 } = globals;
 const file$5 = "src/pages/Lesson/index.svelte";
 
 function get_each_context$2(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[34] = list[i];
-	child_ctx[36] = i;
+	child_ctx[35] = list[i];
+	child_ctx[37] = i;
 	return child_ctx;
 }
 
 function get_each_context_1(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[36] = list[i];
+	child_ctx[37] = list[i];
 	return child_ctx;
 }
 
 function get_each_context_2(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[39] = list[i];
-	child_ctx[36] = i;
+	child_ctx[40] = list[i];
+	child_ctx[37] = i;
 	return child_ctx;
 }
 
 function get_each_context_3(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[41] = list[i];
+	child_ctx[42] = list[i];
 	return child_ctx;
 }
 
-// (340:2) {:else}
+function get_each_context_4(ctx, list, i) {
+	const child_ctx = ctx.slice();
+	child_ctx[45] = list[i];
+	return child_ctx;
+}
+
+// (346:2) {:else}
 function create_else_block_1(ctx) {
 	let div;
 	let t;
@@ -5953,7 +6124,7 @@ function create_else_block_1(ctx) {
 			this.h();
 		},
 		h: function hydrate() {
-			add_location(div, file$5, 340, 4, 9063);
+			add_location(div, file$5, 346, 4, 9072);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, div, anchor);
@@ -5971,14 +6142,14 @@ function create_else_block_1(ctx) {
 		block,
 		id: create_else_block_1.name,
 		type: "else",
-		source: "(340:2) {:else}",
+		source: "(346:2) {:else}",
 		ctx
 	});
 
 	return block;
 }
 
-// (215:2) {#if lesson}
+// (213:2) {#if lesson}
 function create_if_block$3(ctx) {
 	let lessonheader;
 	let t0;
@@ -5995,31 +6166,32 @@ function create_if_block$3(ctx) {
 	let h20;
 	let t6;
 	let t7;
-	let form2;
-	let input2;
+	let select;
+	let option;
 	let t8;
 	let t9;
-	let h21;
 	let t10;
+	let h21;
 	let t11;
-	let div1;
 	let t12;
+	let div1;
 	let t13;
-	let div2;
 	let t14;
+	let div2;
 	let t15;
+	let t16;
 	let div3;
 	let img0;
 	let img0_src_value;
-	let t16;
+	let t17;
 	let img1;
 	let img1_src_value;
-	let t17;
-	let label;
 	let t18;
+	let label;
 	let t19;
-	let textarea;
 	let t20;
+	let textarea;
+	let t21;
 	let button;
 	let button_class_value;
 	let current;
@@ -6034,7 +6206,15 @@ function create_if_block$3(ctx) {
 	let if_block0 = /*addVideos*/ ctx[1] && create_if_block_6(ctx);
 	let if_block1 = /*lesson*/ ctx[2].videos?.length && create_if_block_5(ctx);
 	let if_block2 = /*lesson*/ ctx[2].tab && create_if_block_4(ctx);
-	let if_block3 = /*lesson*/ ctx[2].chords?.length > 0 && create_if_block_3(ctx);
+	let each_value_3 = /*chordNames*/ ctx[7];
+	validate_each_argument(each_value_3);
+	let each_blocks_1 = [];
+
+	for (let i = 0; i < each_value_3.length; i += 1) {
+		each_blocks_1[i] = create_each_block_3(get_each_context_3(ctx, each_value_3, i));
+	}
+
+	let if_block3 = /*lesson*/ ctx[2].chords?.length && create_if_block_3(ctx);
 	let each_value_1 = [...Array(6)];
 	validate_each_argument(each_value_1);
 	let each_blocks = [];
@@ -6073,36 +6253,42 @@ function create_if_block$3(ctx) {
 			h20 = element("h2");
 			t6 = text("Chords");
 			t7 = space();
-			form2 = element("form");
-			input2 = element("input");
-			t8 = space();
-			if (if_block3) if_block3.c();
+			select = element("select");
+			option = element("option");
+			t8 = text("Add Chords");
+
+			for (let i = 0; i < each_blocks_1.length; i += 1) {
+				each_blocks_1[i].c();
+			}
+
 			t9 = space();
+			if (if_block3) if_block3.c();
+			t10 = space();
 			h21 = element("h2");
-			t10 = text("Strumming Pattern");
-			t11 = space();
+			t11 = text("Strumming Pattern");
+			t12 = space();
 			div1 = element("div");
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].c();
 			}
 
-			t12 = space();
-			if (if_block4) if_block4.c();
 			t13 = space();
+			if (if_block4) if_block4.c();
+			t14 = space();
 			div2 = element("div");
-			t14 = text("Drag and Drop the Arrows to create a Strumming Pattern");
-			t15 = space();
+			t15 = text("Drag and Drop the Arrows to create a Strumming Pattern");
+			t16 = space();
 			div3 = element("div");
 			img0 = element("img");
-			t16 = space();
-			img1 = element("img");
 			t17 = space();
+			img1 = element("img");
+			t18 = space();
 			label = element("label");
-			t18 = text("Notes about the Song");
-			t19 = space();
-			textarea = element("textarea");
+			t19 = text("Notes about the Song");
 			t20 = space();
+			textarea = element("textarea");
+			t21 = space();
 			button = element("button");
 			if_block5.c();
 			this.h();
@@ -6134,18 +6320,26 @@ function create_if_block$3(ctx) {
 			t6 = claim_text(h20_nodes, "Chords");
 			h20_nodes.forEach(detach_dev);
 			t7 = claim_space(nodes);
-			form2 = claim_element(nodes, "FORM", { class: true });
-			var form2_nodes = children(form2);
-			input2 = claim_element(form2_nodes, "INPUT", { placeholder: true });
-			form2_nodes.forEach(detach_dev);
-			t8 = claim_space(nodes);
-			if (if_block3) if_block3.l(nodes);
+			select = claim_element(nodes, "SELECT", { class: true });
+			var select_nodes = children(select);
+			option = claim_element(select_nodes, "OPTION", {});
+			var option_nodes = children(option);
+			t8 = claim_text(option_nodes, "Add Chords");
+			option_nodes.forEach(detach_dev);
+
+			for (let i = 0; i < each_blocks_1.length; i += 1) {
+				each_blocks_1[i].l(select_nodes);
+			}
+
+			select_nodes.forEach(detach_dev);
 			t9 = claim_space(nodes);
+			if (if_block3) if_block3.l(nodes);
+			t10 = claim_space(nodes);
 			h21 = claim_element(nodes, "H2", { class: true });
 			var h21_nodes = children(h21);
-			t10 = claim_text(h21_nodes, "Strumming Pattern");
+			t11 = claim_text(h21_nodes, "Strumming Pattern");
 			h21_nodes.forEach(detach_dev);
-			t11 = claim_space(nodes);
+			t12 = claim_space(nodes);
 			div1 = claim_element(nodes, "DIV", { class: true });
 			var div1_nodes = children(div1);
 
@@ -6153,30 +6347,30 @@ function create_if_block$3(ctx) {
 				each_blocks[i].l(div1_nodes);
 			}
 
-			t12 = claim_space(div1_nodes);
+			t13 = claim_space(div1_nodes);
 			if (if_block4) if_block4.l(div1_nodes);
 			div1_nodes.forEach(detach_dev);
-			t13 = claim_space(nodes);
+			t14 = claim_space(nodes);
 			div2 = claim_element(nodes, "DIV", {});
 			var div2_nodes = children(div2);
-			t14 = claim_text(div2_nodes, "Drag and Drop the Arrows to create a Strumming Pattern");
+			t15 = claim_text(div2_nodes, "Drag and Drop the Arrows to create a Strumming Pattern");
 			div2_nodes.forEach(detach_dev);
-			t15 = claim_space(nodes);
+			t16 = claim_space(nodes);
 			div3 = claim_element(nodes, "DIV", {});
 			var div3_nodes = children(div3);
 			img0 = claim_element(div3_nodes, "IMG", { alt: true, class: true, src: true });
-			t16 = claim_space(div3_nodes);
+			t17 = claim_space(div3_nodes);
 			img1 = claim_element(div3_nodes, "IMG", { class: true, alt: true, src: true });
 			div3_nodes.forEach(detach_dev);
-			t17 = claim_space(nodes);
+			t18 = claim_space(nodes);
 			label = claim_element(nodes, "LABEL", { for: true });
 			var label_nodes = children(label);
-			t18 = claim_text(label_nodes, "Notes about the Song");
+			t19 = claim_text(label_nodes, "Notes about the Song");
 			label_nodes.forEach(detach_dev);
-			t19 = claim_space(nodes);
+			t20 = claim_space(nodes);
 			textarea = claim_element(nodes, "TEXTAREA", { id: true, rows: true, placeholder: true });
 			children(textarea).forEach(detach_dev);
-			t20 = claim_space(nodes);
+			t21 = claim_space(nodes);
 			button = claim_element(nodes, "BUTTON", { class: true });
 			var button_nodes = children(button);
 			if_block5.l(button_nodes);
@@ -6185,43 +6379,45 @@ function create_if_block$3(ctx) {
 		},
 		h: function hydrate() {
 			attr_dev(input0, "placeholder", "Search for another Video");
-			add_location(input0, file$5, 229, 8, 5721);
-			attr_dev(form0, "class", "svelte-15tqh3r");
-			add_location(form0, file$5, 228, 6, 5663);
+			add_location(input0, file$5, 227, 8, 5572);
+			attr_dev(form0, "class", "svelte-42339x");
+			add_location(form0, file$5, 226, 6, 5514);
 			attr_dev(input1, "placeholder", "Update Guitar Tab");
-			add_location(input1, file$5, 236, 8, 5925);
-			attr_dev(form1, "class", "svelte-15tqh3r");
-			add_location(form1, file$5, 235, 6, 5873);
-			attr_dev(div0, "class", "media-wrapper svelte-15tqh3r");
-			add_location(div0, file$5, 227, 4, 5629);
-			attr_dev(h20, "class", "svelte-15tqh3r");
-			add_location(h20, file$5, 267, 4, 6886);
-			attr_dev(input2, "placeholder", "Am");
-			add_location(input2, file$5, 270, 6, 6956);
-			attr_dev(form2, "class", "svelte-15tqh3r");
-			add_location(form2, file$5, 269, 4, 6907);
-			attr_dev(h21, "class", "svelte-15tqh3r");
-			add_location(h21, file$5, 292, 4, 7655);
-			attr_dev(div1, "class", "strumming svelte-15tqh3r");
-			add_location(div1, file$5, 293, 4, 7686);
-			add_location(div2, file$5, 314, 4, 8272);
+			add_location(input1, file$5, 234, 8, 5776);
+			attr_dev(form1, "class", "svelte-42339x");
+			add_location(form1, file$5, 233, 6, 5724);
+			attr_dev(div0, "class", "media-wrapper svelte-42339x");
+			add_location(div0, file$5, 225, 4, 5480);
+			attr_dev(h20, "class", "svelte-42339x");
+			add_location(h20, file$5, 267, 4, 6739);
+			option.__value = "";
+			option.value = option.__value;
+			add_location(option, file$5, 270, 6, 6823);
+			attr_dev(select, "class", "svelte-42339x");
+			if (/*selectedChord*/ ctx[4] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[25].call(select));
+			add_location(select, file$5, 269, 4, 6760);
+			attr_dev(h21, "class", "svelte-42339x");
+			add_location(h21, file$5, 298, 4, 7664);
+			attr_dev(div1, "class", "strumming svelte-42339x");
+			add_location(div1, file$5, 299, 4, 7695);
+			add_location(div2, file$5, 320, 4, 8281);
 			attr_dev(img0, "alt", "Arrow down");
 			attr_dev(img0, "class", "arrow-down");
 			if (!src_url_equal(img0.src, img0_src_value = ARROW_SRC)) attr_dev(img0, "src", img0_src_value);
-			add_location(img0, file$5, 316, 6, 8354);
-			attr_dev(img1, "class", "arrow-up svelte-15tqh3r");
+			add_location(img0, file$5, 322, 6, 8363);
+			attr_dev(img1, "class", "arrow-up svelte-42339x");
 			attr_dev(img1, "alt", "Arrow down");
 			if (!src_url_equal(img1.src, img1_src_value = ARROW_SRC)) attr_dev(img1, "src", img1_src_value);
-			add_location(img1, file$5, 321, 6, 8516);
-			add_location(div3, file$5, 315, 4, 8342);
+			add_location(img1, file$5, 327, 6, 8525);
+			add_location(div3, file$5, 321, 4, 8351);
 			attr_dev(label, "for", "notes");
-			add_location(label, file$5, 328, 4, 8684);
+			add_location(label, file$5, 334, 4, 8693);
 			attr_dev(textarea, "id", "notes");
 			attr_dev(textarea, "rows", 5);
 			attr_dev(textarea, "placeholder", "Your notes for the song");
-			add_location(textarea, file$5, 329, 4, 8736);
-			attr_dev(button, "class", button_class_value = "" + (null_to_empty(/*lesson*/ ctx[2].finished ? "re-open" : "") + " svelte-15tqh3r"));
-			add_location(button, file$5, 336, 4, 8903);
+			add_location(textarea, file$5, 335, 4, 8745);
+			attr_dev(button, "class", button_class_value = "" + (null_to_empty(/*lesson*/ ctx[2].finished ? "re-open" : "") + " svelte-42339x"));
+			add_location(button, file$5, 342, 4, 8912);
 		},
 		m: function mount(target, anchor) {
 			mount_component(lessonheader, target, anchor);
@@ -6244,58 +6440,64 @@ function create_if_block$3(ctx) {
 			insert_hydration_dev(target, h20, anchor);
 			append_hydration_dev(h20, t6);
 			insert_hydration_dev(target, t7, anchor);
-			insert_hydration_dev(target, form2, anchor);
-			append_hydration_dev(form2, input2);
-			set_input_value(input2, /*selectedChord*/ ctx[4]);
-			insert_hydration_dev(target, t8, anchor);
-			if (if_block3) if_block3.m(target, anchor);
+			insert_hydration_dev(target, select, anchor);
+			append_hydration_dev(select, option);
+			append_hydration_dev(option, t8);
+
+			for (let i = 0; i < each_blocks_1.length; i += 1) {
+				each_blocks_1[i].m(select, null);
+			}
+
+			select_option(select, /*selectedChord*/ ctx[4]);
 			insert_hydration_dev(target, t9, anchor);
+			if (if_block3) if_block3.m(target, anchor);
+			insert_hydration_dev(target, t10, anchor);
 			insert_hydration_dev(target, h21, anchor);
-			append_hydration_dev(h21, t10);
-			insert_hydration_dev(target, t11, anchor);
+			append_hydration_dev(h21, t11);
+			insert_hydration_dev(target, t12, anchor);
 			insert_hydration_dev(target, div1, anchor);
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].m(div1, null);
 			}
 
-			append_hydration_dev(div1, t12);
+			append_hydration_dev(div1, t13);
 			if (if_block4) if_block4.m(div1, null);
-			insert_hydration_dev(target, t13, anchor);
+			insert_hydration_dev(target, t14, anchor);
 			insert_hydration_dev(target, div2, anchor);
-			append_hydration_dev(div2, t14);
-			insert_hydration_dev(target, t15, anchor);
+			append_hydration_dev(div2, t15);
+			insert_hydration_dev(target, t16, anchor);
 			insert_hydration_dev(target, div3, anchor);
 			append_hydration_dev(div3, img0);
-			append_hydration_dev(div3, t16);
+			append_hydration_dev(div3, t17);
 			append_hydration_dev(div3, img1);
-			insert_hydration_dev(target, t17, anchor);
+			insert_hydration_dev(target, t18, anchor);
 			insert_hydration_dev(target, label, anchor);
-			append_hydration_dev(label, t18);
-			insert_hydration_dev(target, t19, anchor);
+			append_hydration_dev(label, t19);
+			insert_hydration_dev(target, t20, anchor);
 			insert_hydration_dev(target, textarea, anchor);
 			set_input_value(textarea, /*notes*/ ctx[5]);
-			insert_hydration_dev(target, t20, anchor);
+			insert_hydration_dev(target, t21, anchor);
 			insert_hydration_dev(target, button, anchor);
 			if_block5.m(button, null);
 			current = true;
 
 			if (!mounted) {
 				dispose = [
-					listen_dev(input0, "input", /*debouncedSearch*/ ctx[16], false, false, false),
-					listen_dev(input0, "input", /*input0_input_handler*/ ctx[20]),
-					listen_dev(form0, "submit", prevent_default(/*debouncedSearch*/ ctx[16]), false, true, false),
-					listen_dev(input1, "input", /*input1_input_handler*/ ctx[21]),
-					listen_dev(form1, "submit", prevent_default(/*updateTab*/ ctx[13]), false, true, false),
-					listen_dev(input2, "input", /*input2_input_handler*/ ctx[24]),
-					listen_dev(form2, "submit", prevent_default(/*addChord*/ ctx[7]), false, true, false),
-					listen_dev(div1, "dragover", prevent_default(/*dragover_handler_1*/ ctx[18]), false, true, false),
-					listen_dev(div1, "drop", prevent_default(/*handleDrop*/ ctx[10]), false, true, false),
+					listen_dev(input0, "input", /*debouncedSearch*/ ctx[17], false, false, false),
+					listen_dev(input0, "input", /*input0_input_handler*/ ctx[21]),
+					listen_dev(form0, "submit", prevent_default(/*debouncedSearch*/ ctx[17]), false, true, false),
+					listen_dev(input1, "input", /*input1_input_handler*/ ctx[22]),
+					listen_dev(form1, "submit", prevent_default(/*updateTab*/ ctx[14]), false, true, false),
+					listen_dev(select, "change", /*select_change_handler*/ ctx[25]),
+					listen_dev(select, "change", /*addChord*/ ctx[8], false, false, false),
+					listen_dev(div1, "dragover", prevent_default(/*dragover_handler_1*/ ctx[19]), false, true, false),
+					listen_dev(div1, "drop", prevent_default(/*handleDrop*/ ctx[11]), false, true, false),
 					listen_dev(img0, "dragstart", dragstart_handler_1, false, false, false),
 					listen_dev(img1, "dragstart", dragstart_handler_2, false, false, false),
-					listen_dev(textarea, "input", /*textarea_input_handler*/ ctx[27]),
-					listen_dev(textarea, "change", /*change_handler*/ ctx[28], false, false, false),
-					listen_dev(button, "click", /*finish*/ ctx[12], false, false, false)
+					listen_dev(textarea, "input", /*textarea_input_handler*/ ctx[28]),
+					listen_dev(textarea, "change", /*change_handler*/ ctx[29], false, false, false),
+					listen_dev(button, "click", /*finish*/ ctx[13], false, false, false)
 				];
 
 				mounted = true;
@@ -6363,17 +6565,41 @@ function create_if_block$3(ctx) {
 				if_block2 = null;
 			}
 
-			if (dirty[0] & /*selectedChord*/ 16 && input2.value !== /*selectedChord*/ ctx[4]) {
-				set_input_value(input2, /*selectedChord*/ ctx[4]);
+			if (dirty[0] & /*chordNames*/ 128) {
+				each_value_3 = /*chordNames*/ ctx[7];
+				validate_each_argument(each_value_3);
+				let i;
+
+				for (i = 0; i < each_value_3.length; i += 1) {
+					const child_ctx = get_each_context_3(ctx, each_value_3, i);
+
+					if (each_blocks_1[i]) {
+						each_blocks_1[i].p(child_ctx, dirty);
+					} else {
+						each_blocks_1[i] = create_each_block_3(child_ctx);
+						each_blocks_1[i].c();
+						each_blocks_1[i].m(select, null);
+					}
+				}
+
+				for (; i < each_blocks_1.length; i += 1) {
+					each_blocks_1[i].d(1);
+				}
+
+				each_blocks_1.length = each_value_3.length;
 			}
 
-			if (/*lesson*/ ctx[2].chords?.length > 0) {
+			if (dirty[0] & /*selectedChord, chordNames*/ 144) {
+				select_option(select, /*selectedChord*/ ctx[4]);
+			}
+
+			if (/*lesson*/ ctx[2].chords?.length) {
 				if (if_block3) {
 					if_block3.p(ctx, dirty);
 				} else {
 					if_block3 = create_if_block_3(ctx);
 					if_block3.c();
-					if_block3.m(t9.parentNode, t9);
+					if_block3.m(t10.parentNode, t10);
 				}
 			} else if (if_block3) {
 				if_block3.d(1);
@@ -6407,7 +6633,7 @@ function create_if_block$3(ctx) {
 				}
 			}
 
-			if (!current || dirty[0] & /*lesson*/ 4 && button_class_value !== (button_class_value = "" + (null_to_empty(/*lesson*/ ctx[2].finished ? "re-open" : "") + " svelte-15tqh3r"))) {
+			if (!current || dirty[0] & /*lesson*/ 4 && button_class_value !== (button_class_value = "" + (null_to_empty(/*lesson*/ ctx[2].finished ? "re-open" : "") + " svelte-42339x"))) {
 				attr_dev(button, "class", button_class_value);
 			}
 		},
@@ -6433,24 +6659,25 @@ function create_if_block$3(ctx) {
 			if (detaching) detach_dev(t5);
 			if (detaching) detach_dev(h20);
 			if (detaching) detach_dev(t7);
-			if (detaching) detach_dev(form2);
-			if (detaching) detach_dev(t8);
-			if (if_block3) if_block3.d(detaching);
+			if (detaching) detach_dev(select);
+			destroy_each(each_blocks_1, detaching);
 			if (detaching) detach_dev(t9);
+			if (if_block3) if_block3.d(detaching);
+			if (detaching) detach_dev(t10);
 			if (detaching) detach_dev(h21);
-			if (detaching) detach_dev(t11);
+			if (detaching) detach_dev(t12);
 			if (detaching) detach_dev(div1);
 			destroy_each(each_blocks, detaching);
 			if (if_block4) if_block4.d();
-			if (detaching) detach_dev(t13);
+			if (detaching) detach_dev(t14);
 			if (detaching) detach_dev(div2);
-			if (detaching) detach_dev(t15);
+			if (detaching) detach_dev(t16);
 			if (detaching) detach_dev(div3);
-			if (detaching) detach_dev(t17);
+			if (detaching) detach_dev(t18);
 			if (detaching) detach_dev(label);
-			if (detaching) detach_dev(t19);
-			if (detaching) detach_dev(textarea);
 			if (detaching) detach_dev(t20);
+			if (detaching) detach_dev(textarea);
+			if (detaching) detach_dev(t21);
 			if (detaching) detach_dev(button);
 			if_block5.d();
 			mounted = false;
@@ -6462,23 +6689,23 @@ function create_if_block$3(ctx) {
 		block,
 		id: create_if_block$3.name,
 		type: "if",
-		source: "(215:2) {#if lesson}",
+		source: "(213:2) {#if lesson}",
 		ctx
 	});
 
 	return block;
 }
 
-// (218:4) {#if addVideos}
+// (216:4) {#if addVideos}
 function create_if_block_6(ctx) {
 	let ul;
 	let current;
-	let each_value_3 = /*addVideos*/ ctx[1];
-	validate_each_argument(each_value_3);
+	let each_value_4 = /*addVideos*/ ctx[1];
+	validate_each_argument(each_value_4);
 	let each_blocks = [];
 
-	for (let i = 0; i < each_value_3.length; i += 1) {
-		each_blocks[i] = create_each_block_3(get_each_context_3(ctx, each_value_3, i));
+	for (let i = 0; i < each_value_4.length; i += 1) {
+		each_blocks[i] = create_each_block_4(get_each_context_4(ctx, each_value_4, i));
 	}
 
 	const out = i => transition_out(each_blocks[i], 1, 1, () => {
@@ -6507,8 +6734,8 @@ function create_if_block_6(ctx) {
 			this.h();
 		},
 		h: function hydrate() {
-			attr_dev(ul, "class", "video-container svelte-15tqh3r");
-			add_location(ul, file$5, 218, 6, 5380);
+			attr_dev(ul, "class", "video-container svelte-42339x");
+			add_location(ul, file$5, 216, 6, 5231);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, ul, anchor);
@@ -6520,19 +6747,19 @@ function create_if_block_6(ctx) {
 			current = true;
 		},
 		p: function update(ctx, dirty) {
-			if (dirty[0] & /*addVideo, addVideos*/ 16386) {
-				each_value_3 = /*addVideos*/ ctx[1];
-				validate_each_argument(each_value_3);
+			if (dirty[0] & /*addVideo, addVideos*/ 32770) {
+				each_value_4 = /*addVideos*/ ctx[1];
+				validate_each_argument(each_value_4);
 				let i;
 
-				for (i = 0; i < each_value_3.length; i += 1) {
-					const child_ctx = get_each_context_3(ctx, each_value_3, i);
+				for (i = 0; i < each_value_4.length; i += 1) {
+					const child_ctx = get_each_context_4(ctx, each_value_4, i);
 
 					if (each_blocks[i]) {
 						each_blocks[i].p(child_ctx, dirty);
 						transition_in(each_blocks[i], 1);
 					} else {
-						each_blocks[i] = create_each_block_3(child_ctx);
+						each_blocks[i] = create_each_block_4(child_ctx);
 						each_blocks[i].c();
 						transition_in(each_blocks[i], 1);
 						each_blocks[i].m(ul, null);
@@ -6541,7 +6768,7 @@ function create_if_block_6(ctx) {
 
 				group_outros();
 
-				for (i = each_value_3.length; i < each_blocks.length; i += 1) {
+				for (i = each_value_4.length; i < each_blocks.length; i += 1) {
 					out(i);
 				}
 
@@ -6551,7 +6778,7 @@ function create_if_block_6(ctx) {
 		i: function intro(local) {
 			if (current) return;
 
-			for (let i = 0; i < each_value_3.length; i += 1) {
+			for (let i = 0; i < each_value_4.length; i += 1) {
 				transition_in(each_blocks[i]);
 			}
 
@@ -6576,15 +6803,15 @@ function create_if_block_6(ctx) {
 		block,
 		id: create_if_block_6.name,
 		type: "if",
-		source: "(218:4) {#if addVideos}",
+		source: "(216:4) {#if addVideos}",
 		ctx
 	});
 
 	return block;
 }
 
-// (220:8) {#each addVideos as video}
-function create_each_block_3(ctx) {
+// (218:8) {#each addVideos as video}
+function create_each_block_4(ctx) {
 	let li;
 	let videosnippet;
 	let t;
@@ -6593,12 +6820,12 @@ function create_each_block_3(ctx) {
 	let dispose;
 
 	videosnippet = new VideoSnippet({
-			props: { snippet: /*video*/ ctx[41].snippet },
+			props: { snippet: /*video*/ ctx[45].snippet },
 			$$inline: true
 		});
 
 	function click_handler() {
-		return /*click_handler*/ ctx[19](/*video*/ ctx[41]);
+		return /*click_handler*/ ctx[20](/*video*/ ctx[45]);
 	}
 
 	const block = {
@@ -6618,8 +6845,8 @@ function create_each_block_3(ctx) {
 		},
 		h: function hydrate() {
 			attr_dev(li, "role", "button");
-			attr_dev(li, "class", "svelte-15tqh3r");
-			add_location(li, file$5, 220, 10, 5454);
+			attr_dev(li, "class", "svelte-42339x");
+			add_location(li, file$5, 218, 10, 5305);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, li, anchor);
@@ -6635,7 +6862,7 @@ function create_each_block_3(ctx) {
 		p: function update(new_ctx, dirty) {
 			ctx = new_ctx;
 			const videosnippet_changes = {};
-			if (dirty[0] & /*addVideos*/ 2) videosnippet_changes.snippet = /*video*/ ctx[41].snippet;
+			if (dirty[0] & /*addVideos*/ 2) videosnippet_changes.snippet = /*video*/ ctx[45].snippet;
 			videosnippet.$set(videosnippet_changes);
 		},
 		i: function intro(local) {
@@ -6657,16 +6884,16 @@ function create_each_block_3(ctx) {
 
 	dispatch_dev("SvelteRegisterBlock", {
 		block,
-		id: create_each_block_3.name,
+		id: create_each_block_4.name,
 		type: "each",
-		source: "(220:8) {#each addVideos as video}",
+		source: "(218:8) {#each addVideos as video}",
 		ctx
 	});
 
 	return block;
 }
 
-// (240:6) {#if lesson.videos?.length}
+// (238:6) {#if lesson.videos?.length}
 function create_if_block_5(ctx) {
 	let div;
 	let button0;
@@ -6715,20 +6942,20 @@ function create_if_block_5(ctx) {
 		},
 		h: function hydrate() {
 			attr_dev(i0, "class", "fa fa-caret-left");
-			add_location(i0, file$5, 242, 12, 6155);
-			attr_dev(button0, "class", "naked-button svelte-15tqh3r");
-			add_location(button0, file$5, 241, 10, 6080);
+			add_location(i0, file$5, 240, 12, 6006);
+			attr_dev(button0, "class", "naked-button svelte-42339x");
+			add_location(button0, file$5, 239, 10, 5931);
 			attr_dev(iframe, "title", iframe_title_value = `Lesson video of ${/*lesson*/ ctx[2].title}`);
 			iframe.allowFullscreen = true;
-			attr_dev(iframe, "class", "video svelte-15tqh3r");
+			attr_dev(iframe, "class", "video svelte-42339x");
 			if (!src_url_equal(iframe.src, iframe_src_value = `https://www.youtube.com/embed/${/*lesson*/ ctx[2].videos[/*showVideo*/ ctx[3]]}`)) attr_dev(iframe, "src", iframe_src_value);
-			add_location(iframe, file$5, 244, 10, 6216);
+			add_location(iframe, file$5, 243, 10, 6068);
 			attr_dev(i1, "class", "fa fa-caret-right");
-			add_location(i1, file$5, 250, 12, 6497);
-			attr_dev(button1, "class", "naked-button svelte-15tqh3r");
-			add_location(button1, file$5, 249, 10, 6423);
-			attr_dev(div, "class", "iframe-wrapper svelte-15tqh3r");
-			add_location(div, file$5, 240, 8, 6041);
+			add_location(i1, file$5, 250, 12, 6350);
+			attr_dev(button1, "class", "naked-button svelte-42339x");
+			add_location(button1, file$5, 249, 10, 6276);
+			attr_dev(div, "class", "iframe-wrapper svelte-42339x");
+			add_location(div, file$5, 238, 8, 5892);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, div, anchor);
@@ -6742,8 +6969,8 @@ function create_if_block_5(ctx) {
 
 			if (!mounted) {
 				dispose = [
-					listen_dev(button0, "click", /*click_handler_1*/ ctx[22], false, false, false),
-					listen_dev(button1, "click", /*click_handler_2*/ ctx[23], false, false, false)
+					listen_dev(button0, "click", /*click_handler_1*/ ctx[23], false, false, false),
+					listen_dev(button1, "click", /*click_handler_2*/ ctx[24], false, false, false)
 				];
 
 				mounted = true;
@@ -6769,7 +6996,7 @@ function create_if_block_5(ctx) {
 		block,
 		id: create_if_block_5.name,
 		type: "if",
-		source: "(240:6) {#if lesson.videos?.length}",
+		source: "(238:6) {#if lesson.videos?.length}",
 		ctx
 	});
 
@@ -6808,7 +7035,7 @@ function create_if_block_4(ctx) {
 			attr_dev(iframe, "width", "100%");
 			attr_dev(iframe, "title", "Hopefully some lyrics");
 			if (!src_url_equal(iframe.src, iframe_src_value = /*lesson*/ ctx[2].tab || "https://www.guitaretab.com")) attr_dev(iframe, "src", iframe_src_value);
-			add_location(iframe, file$5, 256, 8, 6608);
+			add_location(iframe, file$5, 256, 8, 6461);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, iframe, anchor);
@@ -6834,7 +7061,52 @@ function create_if_block_4(ctx) {
 	return block;
 }
 
-// (274:4) {#if lesson.chords?.length > 0}
+// (272:6) {#each chordNames as chordName}
+function create_each_block_3(ctx) {
+	let option;
+	let t_value = /*chordName*/ ctx[42] + "";
+	let t;
+
+	const block = {
+		c: function create() {
+			option = element("option");
+			t = text(t_value);
+			this.h();
+		},
+		l: function claim(nodes) {
+			option = claim_element(nodes, "OPTION", {});
+			var option_nodes = children(option);
+			t = claim_text(option_nodes, t_value);
+			option_nodes.forEach(detach_dev);
+			this.h();
+		},
+		h: function hydrate() {
+			option.__value = /*chordName*/ ctx[42];
+			option.value = option.__value;
+			add_location(option, file$5, 272, 8, 6906);
+		},
+		m: function mount(target, anchor) {
+			insert_hydration_dev(target, option, anchor);
+			append_hydration_dev(option, t);
+		},
+		p: noop,
+		d: function destroy(detaching) {
+			if (detaching) detach_dev(option);
+		}
+	};
+
+	dispatch_dev("SvelteRegisterBlock", {
+		block,
+		id: create_each_block_3.name,
+		type: "each",
+		source: "(272:6) {#each chordNames as chordName}",
+		ctx
+	});
+
+	return block;
+}
+
+// (277:4) {#if lesson.chords?.length}
 function create_if_block_3(ctx) {
 	let div;
 	let each_value_2 = /*lesson*/ ctx[2].chords;
@@ -6867,8 +7139,8 @@ function create_if_block_3(ctx) {
 			this.h();
 		},
 		h: function hydrate() {
-			attr_dev(div, "class", "chord-wrapper svelte-15tqh3r");
-			add_location(div, file$5, 274, 6, 7065);
+			attr_dev(div, "class", "chord-wrapper svelte-42339x");
+			add_location(div, file$5, 277, 6, 7020);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, div, anchor);
@@ -6878,7 +7150,7 @@ function create_if_block_3(ctx) {
 			}
 		},
 		p: function update(ctx, dirty) {
-			if (dirty[0] & /*lesson, deleteChord*/ 260) {
+			if (dirty[0] & /*deleteChord, lesson*/ 516) {
 				each_value_2 = /*lesson*/ ctx[2].chords;
 				validate_each_argument(each_value_2);
 				let i;
@@ -6912,28 +7184,26 @@ function create_if_block_3(ctx) {
 		block,
 		id: create_if_block_3.name,
 		type: "if",
-		source: "(274:4) {#if lesson.chords?.length > 0}",
+		source: "(277:4) {#if lesson.chords?.length}",
 		ctx
 	});
 
 	return block;
 }
 
-// (276:8) {#each lesson.chords as chord, i}
+// (279:8) {#each lesson.chords as _c, i}
 function create_each_block_2(ctx) {
 	let div1;
 	let button;
 	let i_1;
 	let t0;
 	let div0;
-	let t1_value = /*chord*/ ctx[39] + "";
 	let t1;
-	let t2;
 	let mounted;
 	let dispose;
 
 	function click_handler_3() {
-		return /*click_handler_3*/ ctx[25](/*i*/ ctx[36]);
+		return /*click_handler_3*/ ctx[26](/*i*/ ctx[37]);
 	}
 
 	const block = {
@@ -6943,37 +7213,34 @@ function create_each_block_2(ctx) {
 			i_1 = element("i");
 			t0 = space();
 			div0 = element("div");
-			t1 = text(t1_value);
-			t2 = space();
+			t1 = space();
 			this.h();
 		},
 		l: function claim(nodes) {
 			div1 = claim_element(nodes, "DIV", { class: true });
 			var div1_nodes = children(div1);
-			button = claim_element(div1_nodes, "BUTTON", { class: true });
+			button = claim_element(div1_nodes, "BUTTON", { "aria-label": true, class: true });
 			var button_nodes = children(button);
 			i_1 = claim_element(button_nodes, "I", { class: true });
 			children(i_1).forEach(detach_dev);
 			button_nodes.forEach(detach_dev);
 			t0 = claim_space(div1_nodes);
-			div0 = claim_element(div1_nodes, "DIV", { id: true, class: true });
-			var div0_nodes = children(div0);
-			t1 = claim_text(div0_nodes, t1_value);
-			div0_nodes.forEach(detach_dev);
-			t2 = claim_space(div1_nodes);
+			div0 = claim_element(div1_nodes, "DIV", { id: true });
+			children(div0).forEach(detach_dev);
+			t1 = claim_space(div1_nodes);
 			div1_nodes.forEach(detach_dev);
 			this.h();
 		},
 		h: function hydrate() {
 			attr_dev(i_1, "class", "fa fa-times");
-			add_location(i_1, file$5, 278, 14, 7260);
-			attr_dev(button, "class", "naked-button svelte-15tqh3r");
-			add_location(button, file$5, 277, 12, 7184);
-			attr_dev(div0, "id", `chord-${/*i*/ ctx[36]}`);
-			attr_dev(div0, "class", "svelte-15tqh3r");
-			add_location(div0, file$5, 280, 12, 7320);
-			attr_dev(div1, "class", "chord-holder svelte-15tqh3r");
-			add_location(div1, file$5, 276, 10, 7145);
+			add_location(i_1, file$5, 284, 14, 7280);
+			attr_dev(button, "aria-label", "Delete Chord");
+			attr_dev(button, "class", "naked-button svelte-42339x");
+			add_location(button, file$5, 280, 12, 7136);
+			attr_dev(div0, "id", `chord-${/*i*/ ctx[37]}`);
+			add_location(div0, file$5, 286, 12, 7340);
+			attr_dev(div1, "class", "chord-holder svelte-42339x");
+			add_location(div1, file$5, 279, 10, 7097);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, div1, anchor);
@@ -6981,8 +7248,7 @@ function create_each_block_2(ctx) {
 			append_hydration_dev(button, i_1);
 			append_hydration_dev(div1, t0);
 			append_hydration_dev(div1, div0);
-			append_hydration_dev(div0, t1);
-			append_hydration_dev(div1, t2);
+			append_hydration_dev(div1, t1);
 
 			if (!mounted) {
 				dispose = listen_dev(button, "click", click_handler_3, false, false, false);
@@ -6991,7 +7257,6 @@ function create_each_block_2(ctx) {
 		},
 		p: function update(new_ctx, dirty) {
 			ctx = new_ctx;
-			if (dirty[0] & /*lesson*/ 4 && t1_value !== (t1_value = /*chord*/ ctx[39] + "")) set_data_dev(t1, t1_value);
 		},
 		d: function destroy(detaching) {
 			if (detaching) detach_dev(div1);
@@ -7004,14 +7269,14 @@ function create_each_block_2(ctx) {
 		block,
 		id: create_each_block_2.name,
 		type: "each",
-		source: "(276:8) {#each lesson.chords as chord, i}",
+		source: "(279:8) {#each lesson.chords as _c, i}",
 		ctx
 	});
 
 	return block;
 }
 
-// (295:6) {#each [...Array(6)] as i}
+// (301:6) {#each [...Array(6)] as i}
 function create_each_block_1(ctx) {
 	let hr;
 
@@ -7025,7 +7290,7 @@ function create_each_block_1(ctx) {
 			this.h();
 		},
 		h: function hydrate() {
-			add_location(hr, file$5, 295, 8, 7814);
+			add_location(hr, file$5, 301, 8, 7823);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, hr, anchor);
@@ -7040,14 +7305,14 @@ function create_each_block_1(ctx) {
 		block,
 		id: create_each_block_1.name,
 		type: "each",
-		source: "(295:6) {#each [...Array(6)] as i}",
+		source: "(301:6) {#each [...Array(6)] as i}",
 		ctx
 	});
 
 	return block;
 }
 
-// (299:6) {#if lesson?.strumming}
+// (305:6) {#if lesson?.strumming}
 function create_if_block_2(ctx) {
 	let ul;
 	let each_value = /*lesson*/ ctx[2].strumming;
@@ -7080,8 +7345,8 @@ function create_if_block_2(ctx) {
 			this.h();
 		},
 		h: function hydrate() {
-			attr_dev(ul, "class", "svelte-15tqh3r");
-			add_location(ul, file$5, 299, 8, 7874);
+			attr_dev(ul, "class", "svelte-42339x");
+			add_location(ul, file$5, 305, 8, 7883);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, ul, anchor);
@@ -7125,14 +7390,14 @@ function create_if_block_2(ctx) {
 		block,
 		id: create_if_block_2.name,
 		type: "if",
-		source: "(299:6) {#if lesson?.strumming}",
+		source: "(305:6) {#if lesson?.strumming}",
 		ctx
 	});
 
 	return block;
 }
 
-// (301:10) {#each lesson.strumming as strum, i}
+// (307:10) {#each lesson.strumming as strum, i}
 function create_each_block$2(ctx) {
 	let li;
 	let img;
@@ -7143,7 +7408,7 @@ function create_each_block$2(ctx) {
 	let dispose;
 
 	function dragstart_handler(...args) {
-		return /*dragstart_handler*/ ctx[26](/*i*/ ctx[36], ...args);
+		return /*dragstart_handler*/ ctx[27](/*i*/ ctx[37], ...args);
 	}
 
 	const block = {
@@ -7173,10 +7438,10 @@ function create_each_block$2(ctx) {
 			attr_dev(img, "alt", "Arrow");
 			attr_dev(img, "width", 60);
 			attr_dev(img, "height", 80);
-			attr_dev(img, "class", img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[34]}`) + " svelte-15tqh3r"));
+			attr_dev(img, "class", img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[35]}`) + " svelte-42339x"));
 			if (!src_url_equal(img.src, img_src_value = ARROW_SRC)) attr_dev(img, "src", img_src_value);
-			add_location(img, file$5, 302, 14, 7957);
-			add_location(li, file$5, 301, 12, 7938);
+			add_location(img, file$5, 308, 14, 7966);
+			add_location(li, file$5, 307, 12, 7947);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, li, anchor);
@@ -7191,7 +7456,7 @@ function create_each_block$2(ctx) {
 		p: function update(new_ctx, dirty) {
 			ctx = new_ctx;
 
-			if (dirty[0] & /*lesson*/ 4 && img_class_value !== (img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[34]}`) + " svelte-15tqh3r"))) {
+			if (dirty[0] & /*lesson*/ 4 && img_class_value !== (img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[35]}`) + " svelte-42339x"))) {
 				attr_dev(img, "class", img_class_value);
 			}
 		},
@@ -7206,14 +7471,14 @@ function create_each_block$2(ctx) {
 		block,
 		id: create_each_block$2.name,
 		type: "each",
-		source: "(301:10) {#each lesson.strumming as strum, i}",
+		source: "(307:10) {#each lesson.strumming as strum, i}",
 		ctx
 	});
 
 	return block;
 }
 
-// (338:38) {:else}
+// (344:38) {:else}
 function create_else_block$1(ctx) {
 	let t;
 
@@ -7236,14 +7501,14 @@ function create_else_block$1(ctx) {
 		block,
 		id: create_else_block$1.name,
 		type: "else",
-		source: "(338:38) {:else}",
+		source: "(344:38) {:else}",
 		ctx
 	});
 
 	return block;
 }
 
-// (338:6) {#if lesson.finished}
+// (344:6) {#if lesson.finished}
 function create_if_block_1$1(ctx) {
 	let t;
 
@@ -7266,7 +7531,7 @@ function create_if_block_1$1(ctx) {
 		block,
 		id: create_if_block_1$1.name,
 		type: "if",
-		source: "(338:6) {#if lesson.finished}",
+		source: "(344:6) {#if lesson.finished}",
 		ctx
 	});
 
@@ -7274,14 +7539,6 @@ function create_if_block_1$1(ctx) {
 }
 
 function create_fragment$5(ctx) {
-	let link;
-	let script0;
-	let script0_src_value;
-	let script1;
-	let script1_src_value;
-	let script2;
-	let script2_src_value;
-	let t;
 	let section;
 	let current_block_type_index;
 	let if_block;
@@ -7301,29 +7558,11 @@ function create_fragment$5(ctx) {
 
 	const block = {
 		c: function create() {
-			link = element("link");
-			script0 = element("script");
-			script1 = element("script");
-			script2 = element("script");
-			t = space();
 			section = element("section");
 			if_block.c();
 			this.h();
 		},
 		l: function claim(nodes) {
-			const head_nodes = query_selector_all('[data-svelte=\"svelte-1xwbe1d\"]', document_1.head);
-			link = claim_element(head_nodes, "LINK", { type: true, rel: true, href: true });
-			script0 = claim_element(head_nodes, "SCRIPT", { src: true, type: true });
-			var script0_nodes = children(script0);
-			script0_nodes.forEach(detach_dev);
-			script1 = claim_element(head_nodes, "SCRIPT", { src: true, type: true });
-			var script1_nodes = children(script1);
-			script1_nodes.forEach(detach_dev);
-			script2 = claim_element(head_nodes, "SCRIPT", { src: true, type: true });
-			var script2_nodes = children(script2);
-			script2_nodes.forEach(detach_dev);
-			head_nodes.forEach(detach_dev);
-			t = claim_space(nodes);
 			section = claim_element(nodes, "SECTION", { class: true });
 			var section_nodes = children(section);
 			if_block.l(section_nodes);
@@ -7331,39 +7570,18 @@ function create_fragment$5(ctx) {
 			this.h();
 		},
 		h: function hydrate() {
-			attr_dev(link, "type", "text/css");
-			attr_dev(link, "rel", "stylesheet");
-			attr_dev(link, "href", "http://jtab.tardate.com/css/jtab-helper.css");
-			add_location(link, file$5, 192, 2, 4727);
-			script0.async = true;
-			if (!src_url_equal(script0.src, script0_src_value = "http://jtab.tardate.com/javascripts/jquery.js")) attr_dev(script0, "src", script0_src_value);
-			attr_dev(script0, "type", "text/javascript");
-			add_location(script0, file$5, 197, 2, 4880);
-			script1.async = true;
-			if (!src_url_equal(script1.src, script1_src_value = "http://jtab.tardate.com/javascripts/raphael.js")) attr_dev(script1, "src", script1_src_value);
-			attr_dev(script1, "type", "text/javascript");
-			add_location(script1, file$5, 202, 2, 4994);
-			script2.async = true;
-			if (!src_url_equal(script2.src, script2_src_value = "http://jtab.tardate.com/javascripts/jtab.js")) attr_dev(script2, "src", script2_src_value);
-			attr_dev(script2, "type", "text/javascript");
-			add_location(script2, file$5, 207, 2, 5109);
-			attr_dev(section, "class", "svelte-15tqh3r");
-			add_location(section, file$5, 213, 0, 5234);
+			attr_dev(section, "class", "svelte-42339x");
+			add_location(section, file$5, 211, 0, 5085);
 		},
 		m: function mount(target, anchor) {
-			append_hydration_dev(document_1.head, link);
-			append_hydration_dev(document_1.head, script0);
-			append_hydration_dev(document_1.head, script1);
-			append_hydration_dev(document_1.head, script2);
-			insert_hydration_dev(target, t, anchor);
 			insert_hydration_dev(target, section, anchor);
 			if_blocks[current_block_type_index].m(section, null);
 			current = true;
 
 			if (!mounted) {
 				dispose = [
-					listen_dev(section, "dragover", prevent_default(/*dragover_handler*/ ctx[17]), false, true, false),
-					listen_dev(section, "drop", prevent_default(/*removeStrum*/ ctx[11]), false, true, false)
+					listen_dev(section, "dragover", prevent_default(/*dragover_handler*/ ctx[18]), false, true, false),
+					listen_dev(section, "drop", prevent_default(/*removeStrum*/ ctx[12]), false, true, false)
 				];
 
 				mounted = true;
@@ -7406,11 +7624,6 @@ function create_fragment$5(ctx) {
 			current = false;
 		},
 		d: function destroy(detaching) {
-			detach_dev(link);
-			detach_dev(script0);
-			detach_dev(script1);
-			detach_dev(script2);
-			if (detaching) detach_dev(t);
 			if (detaching) detach_dev(section);
 			if_blocks[current_block_type_index].d();
 			mounted = false;
@@ -7435,7 +7648,7 @@ const dragstart_handler_2 = e => e.dataTransfer.setData("direction", "up");
 function instance$5($$self, $$props, $$invalidate) {
 	let $location;
 	validate_store(location, 'location');
-	component_subscribe($$self, location, $$value => $$invalidate(29, $location = $$value));
+	component_subscribe($$self, location, $$value => $$invalidate(30, $location = $$value));
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots('Lesson', slots, []);
 	const urlParts = $location.split("/");
@@ -7447,6 +7660,7 @@ function instance$5($$self, $$props, $$invalidate) {
 	let selectedChord = "";
 	let notes = "";
 	let tab = "";
+	const chordNames = Object.keys(chords);
 
 	async function addChord() {
 		if (!selectedChord) {
@@ -7477,7 +7691,6 @@ function instance$5($$self, $$props, $$invalidate) {
 
 			$$invalidate(2, lesson.chords = [...newChords], lesson);
 			await transaction("put", lesson, "readwrite");
-			renderChords();
 		} catch(error) {
 			console.error(error);
 		}
@@ -7594,9 +7807,20 @@ function instance$5($$self, $$props, $$invalidate) {
 	//         await transaction("put", lesson, "readwrite");
 	// }
 	function renderChords() {
-		if (lesson.chords?.length > 0) {
-			lesson.chords.forEach((chord, i) => {
-				jtab.render(document.getElementById(`chord-${i}`), chord);
+		if (lesson.chords?.length) {
+			lesson.chords.forEach((chordName, i) => {
+				const chart = new SVGuitarChord(`#chord-${i}`);
+				const { fingers, barre, position } = chords[chordName];
+
+				chart.configure({
+					tuning: ["E", "A", "D", "G", "B", "E"],
+					frets: 4,
+					position: position || 1
+				}).chord({
+					fingers,
+					barres: barre ? [barre] : [],
+					title: chordName
+				}).draw();
 			});
 		}
 	}
@@ -7616,7 +7840,7 @@ function instance$5($$self, $$props, $$invalidate) {
 	const debouncedSearch = debounce(searchYoutube);
 	const writable_props = [];
 
-	Object.keys($$props).forEach(key => {
+	Object_1.keys($$props).forEach(key => {
 		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console_1$1.warn(`<Lesson> was created with unknown prop '${key}'`);
 	});
 
@@ -7643,9 +7867,10 @@ function instance$5($$self, $$props, $$invalidate) {
 	const click_handler_1 = () => changeVideo(-1);
 	const click_handler_2 = () => changeVideo(1);
 
-	function input2_input_handler() {
-		selectedChord = this.value;
+	function select_change_handler() {
+		selectedChord = select_value(this);
 		$$invalidate(4, selectedChord);
+		$$invalidate(7, chordNames);
 	}
 
 	const click_handler_3 = i => deleteChord(i);
@@ -7662,10 +7887,12 @@ function instance$5($$self, $$props, $$invalidate) {
 		onMount,
 		location,
 		push,
+		svguitar,
 		apiCall,
 		ARROW_SRC,
 		debounce,
 		transaction,
+		chords,
 		VideoSnippet,
 		LessonHeader,
 		urlParts,
@@ -7677,6 +7904,7 @@ function instance$5($$self, $$props, $$invalidate) {
 		selectedChord,
 		notes,
 		tab,
+		chordNames,
 		addChord,
 		deleteChord,
 		addNotes,
@@ -7714,6 +7942,7 @@ function instance$5($$self, $$props, $$invalidate) {
 		selectedChord,
 		notes,
 		tab,
+		chordNames,
 		addChord,
 		deleteChord,
 		addNotes,
@@ -7731,7 +7960,7 @@ function instance$5($$self, $$props, $$invalidate) {
 		input1_input_handler,
 		click_handler_1,
 		click_handler_2,
-		input2_input_handler,
+		select_change_handler,
 		click_handler_3,
 		dragstart_handler,
 		textarea_input_handler,
