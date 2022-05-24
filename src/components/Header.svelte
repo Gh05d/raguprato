@@ -10,7 +10,7 @@
 <header>
   <div class="slogan">
     <i class="fa fa-guitar" />
-    <button class="naked-button" on:click={() => push("/")}>raguprato</button>
+    <button class="naked-button" on:click={() => push(ROOT)}>raguprato</button>
     {#if windowSize > 830}
       <span>Rad Guitar Practice Tool</span>
     {/if}

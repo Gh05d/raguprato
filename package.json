@@ -42,10 +42,10 @@
     "fsevents": "2.1.2"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "ROOT=/raguprato/ rollup -c",
     "autobuild": "rollup -c -w",
-    "dev": "run-p start:dev autobuild",
+    "dev": "ROOT=/ run-p start:dev autobuild",
     "start": "sirv public --single",
-    "start:dev": "sirv public --single --dev"
+    "start:dev": "ROOT=/ sirv public --single --dev"
   }
 }

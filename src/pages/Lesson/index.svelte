@@ -173,23 +173,25 @@
 
   function renderChords() {
     if (lesson.chords?.length) {
-      lesson.chords.forEach((chordName, i) => {
-        const chart = new svguitar.SVGuitarChord(`#chord-${i}`);
-        const { fingers, barre, position } = chords[chordName];
+      for (const [i, chordName] of lesson.chords.entries()) {
+        if (chordName in chords) {
+          const chart = new svguitar.SVGuitarChord(`#chord-${i}`);
+          const { fingers, barre, position } = chords[chordName];
 
-        chart
-          .configure({
-            tuning: ["E", "A", "D", "G", "B", "E"],
-            frets: 4,
-            position: position || 1,
-          })
-          .chord({
-            fingers,
-            barres: barre ? [barre] : [],
-            title: chordName,
-          })
-          .draw();
-      });
+          chart
+            .configure({
+              tuning: ["E", "A", "D", "G", "B", "E"],
+              frets: 4,
+              position: position || 1,
+            })
+            .chord({
+              fingers,
+              barres: barre ? [barre] : [],
+              title: chordName,
+            })
+            .draw();
+        }
+      }
     }
   }
 

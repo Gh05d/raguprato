@@ -36,6 +36,7 @@ export default {
       YOUTUBE_API: JSON.stringify(process.env.YOUTUBE_API),
       SPOTIFY_ID: JSON.stringify(process.env.SPOTIFY_ID),
       SPOTIFY_SECRET: JSON.stringify(process.env.SPOTIFY_SECRET),
+      ROOT: JSON.stringify(process.env.ROOT),
     }),
     svelte({
       compilerOptions: {

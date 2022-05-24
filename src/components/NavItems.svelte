@@ -3,7 +3,7 @@
   export let close = null;
 
   const links = [
-    { name: "Home", path: "/", icon: "home" },
+    { name: "Home", path: ROOT, icon: "home" },
     { name: "Lessons", path: "#/lessons", icon: "guitar" },
     { name: "Create new Lesson", path: "#/new-lesson", icon: "plus" },
     { name: "Links", path: "#/links", icon: "link" },
