@@ -6105,7 +6105,7 @@ function get_each_context_4(ctx, list, i) {
 	return child_ctx;
 }
 
-// (346:2) {:else}
+// (348:2) {:else}
 function create_else_block_1(ctx) {
 	let div;
 	let t;
@@ -6124,7 +6124,7 @@ function create_else_block_1(ctx) {
 			this.h();
 		},
 		h: function hydrate() {
-			add_location(div, file$5, 346, 4, 9072);
+			add_location(div, file$5, 348, 4, 9157);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, div, anchor);
@@ -6142,14 +6142,14 @@ function create_else_block_1(ctx) {
 		block,
 		id: create_else_block_1.name,
 		type: "else",
-		source: "(346:2) {:else}",
+		source: "(348:2) {:else}",
 		ctx
 	});
 
 	return block;
 }
 
-// (213:2) {#if lesson}
+// (215:2) {#if lesson}
 function create_if_block$3(ctx) {
 	let lessonheader;
 	let t0;
@@ -6379,45 +6379,45 @@ function create_if_block$3(ctx) {
 		},
 		h: function hydrate() {
 			attr_dev(input0, "placeholder", "Search for another Video");
-			add_location(input0, file$5, 227, 8, 5572);
+			add_location(input0, file$5, 229, 8, 5657);
 			attr_dev(form0, "class", "svelte-42339x");
-			add_location(form0, file$5, 226, 6, 5514);
+			add_location(form0, file$5, 228, 6, 5599);
 			attr_dev(input1, "placeholder", "Update Guitar Tab");
-			add_location(input1, file$5, 234, 8, 5776);
+			add_location(input1, file$5, 236, 8, 5861);
 			attr_dev(form1, "class", "svelte-42339x");
-			add_location(form1, file$5, 233, 6, 5724);
+			add_location(form1, file$5, 235, 6, 5809);
 			attr_dev(div0, "class", "media-wrapper svelte-42339x");
-			add_location(div0, file$5, 225, 4, 5480);
+			add_location(div0, file$5, 227, 4, 5565);
 			attr_dev(h20, "class", "svelte-42339x");
-			add_location(h20, file$5, 267, 4, 6739);
+			add_location(h20, file$5, 269, 4, 6824);
 			option.__value = "";
 			option.value = option.__value;
-			add_location(option, file$5, 270, 6, 6823);
+			add_location(option, file$5, 272, 6, 6908);
 			attr_dev(select, "class", "svelte-42339x");
 			if (/*selectedChord*/ ctx[4] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[25].call(select));
-			add_location(select, file$5, 269, 4, 6760);
+			add_location(select, file$5, 271, 4, 6845);
 			attr_dev(h21, "class", "svelte-42339x");
-			add_location(h21, file$5, 298, 4, 7664);
+			add_location(h21, file$5, 300, 4, 7749);
 			attr_dev(div1, "class", "strumming svelte-42339x");
-			add_location(div1, file$5, 299, 4, 7695);
-			add_location(div2, file$5, 320, 4, 8281);
+			add_location(div1, file$5, 301, 4, 7780);
+			add_location(div2, file$5, 322, 4, 8366);
 			attr_dev(img0, "alt", "Arrow down");
 			attr_dev(img0, "class", "arrow-down");
 			if (!src_url_equal(img0.src, img0_src_value = ARROW_SRC)) attr_dev(img0, "src", img0_src_value);
-			add_location(img0, file$5, 322, 6, 8363);
+			add_location(img0, file$5, 324, 6, 8448);
 			attr_dev(img1, "class", "arrow-up svelte-42339x");
 			attr_dev(img1, "alt", "Arrow down");
 			if (!src_url_equal(img1.src, img1_src_value = ARROW_SRC)) attr_dev(img1, "src", img1_src_value);
-			add_location(img1, file$5, 327, 6, 8525);
-			add_location(div3, file$5, 321, 4, 8351);
+			add_location(img1, file$5, 329, 6, 8610);
+			add_location(div3, file$5, 323, 4, 8436);
 			attr_dev(label, "for", "notes");
-			add_location(label, file$5, 334, 4, 8693);
+			add_location(label, file$5, 336, 4, 8778);
 			attr_dev(textarea, "id", "notes");
 			attr_dev(textarea, "rows", 5);
 			attr_dev(textarea, "placeholder", "Your notes for the song");
-			add_location(textarea, file$5, 335, 4, 8745);
+			add_location(textarea, file$5, 337, 4, 8830);
 			attr_dev(button, "class", button_class_value = "" + (null_to_empty(/*lesson*/ ctx[2].finished ? "re-open" : "") + " svelte-42339x"));
-			add_location(button, file$5, 342, 4, 8912);
+			add_location(button, file$5, 344, 4, 8997);
 		},
 		m: function mount(target, anchor) {
 			mount_component(lessonheader, target, anchor);
@@ -6689,14 +6689,14 @@ function create_if_block$3(ctx) {
 		block,
 		id: create_if_block$3.name,
 		type: "if",
-		source: "(213:2) {#if lesson}",
+		source: "(215:2) {#if lesson}",
 		ctx
 	});
 
 	return block;
 }
 
-// (216:4) {#if addVideos}
+// (218:4) {#if addVideos}
 function create_if_block_6(ctx) {
 	let ul;
 	let current;
@@ -6735,7 +6735,7 @@ function create_if_block_6(ctx) {
 		},
 		h: function hydrate() {
 			attr_dev(ul, "class", "video-container svelte-42339x");
-			add_location(ul, file$5, 216, 6, 5231);
+			add_location(ul, file$5, 218, 6, 5316);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, ul, anchor);
@@ -6803,14 +6803,14 @@ function create_if_block_6(ctx) {
 		block,
 		id: create_if_block_6.name,
 		type: "if",
-		source: "(216:4) {#if addVideos}",
+		source: "(218:4) {#if addVideos}",
 		ctx
 	});
 
 	return block;
 }
 
-// (218:8) {#each addVideos as video}
+// (220:8) {#each addVideos as video}
 function create_each_block_4(ctx) {
 	let li;
 	let videosnippet;
@@ -6846,7 +6846,7 @@ function create_each_block_4(ctx) {
 		h: function hydrate() {
 			attr_dev(li, "role", "button");
 			attr_dev(li, "class", "svelte-42339x");
-			add_location(li, file$5, 218, 10, 5305);
+			add_location(li, file$5, 220, 10, 5390);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, li, anchor);
@@ -6886,14 +6886,14 @@ function create_each_block_4(ctx) {
 		block,
 		id: create_each_block_4.name,
 		type: "each",
-		source: "(218:8) {#each addVideos as video}",
+		source: "(220:8) {#each addVideos as video}",
 		ctx
 	});
 
 	return block;
 }
 
-// (238:6) {#if lesson.videos?.length}
+// (240:6) {#if lesson.videos?.length}
 function create_if_block_5(ctx) {
 	let div;
 	let button0;
@@ -6942,20 +6942,20 @@ function create_if_block_5(ctx) {
 		},
 		h: function hydrate() {
 			attr_dev(i0, "class", "fa fa-caret-left");
-			add_location(i0, file$5, 240, 12, 6006);
+			add_location(i0, file$5, 242, 12, 6091);
 			attr_dev(button0, "class", "naked-button svelte-42339x");
-			add_location(button0, file$5, 239, 10, 5931);
+			add_location(button0, file$5, 241, 10, 6016);
 			attr_dev(iframe, "title", iframe_title_value = `Lesson video of ${/*lesson*/ ctx[2].title}`);
 			iframe.allowFullscreen = true;
 			attr_dev(iframe, "class", "video svelte-42339x");
 			if (!src_url_equal(iframe.src, iframe_src_value = `https://www.youtube.com/embed/${/*lesson*/ ctx[2].videos[/*showVideo*/ ctx[3]]}`)) attr_dev(iframe, "src", iframe_src_value);
-			add_location(iframe, file$5, 243, 10, 6068);
+			add_location(iframe, file$5, 245, 10, 6153);
 			attr_dev(i1, "class", "fa fa-caret-right");
-			add_location(i1, file$5, 250, 12, 6350);
+			add_location(i1, file$5, 252, 12, 6435);
 			attr_dev(button1, "class", "naked-button svelte-42339x");
-			add_location(button1, file$5, 249, 10, 6276);
+			add_location(button1, file$5, 251, 10, 6361);
 			attr_dev(div, "class", "iframe-wrapper svelte-42339x");
-			add_location(div, file$5, 238, 8, 5892);
+			add_location(div, file$5, 240, 8, 5977);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, div, anchor);
@@ -6996,14 +6996,14 @@ function create_if_block_5(ctx) {
 		block,
 		id: create_if_block_5.name,
 		type: "if",
-		source: "(238:6) {#if lesson.videos?.length}",
+		source: "(240:6) {#if lesson.videos?.length}",
 		ctx
 	});
 
 	return block;
 }
 
-// (256:6) {#if lesson.tab}
+// (258:6) {#if lesson.tab}
 function create_if_block_4(ctx) {
 	let iframe;
 	let iframe_src_value;
@@ -7035,7 +7035,7 @@ function create_if_block_4(ctx) {
 			attr_dev(iframe, "width", "100%");
 			attr_dev(iframe, "title", "Hopefully some lyrics");
 			if (!src_url_equal(iframe.src, iframe_src_value = /*lesson*/ ctx[2].tab || "https://www.guitaretab.com")) attr_dev(iframe, "src", iframe_src_value);
-			add_location(iframe, file$5, 256, 8, 6461);
+			add_location(iframe, file$5, 258, 8, 6546);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, iframe, anchor);
@@ -7054,14 +7054,14 @@ function create_if_block_4(ctx) {
 		block,
 		id: create_if_block_4.name,
 		type: "if",
-		source: "(256:6) {#if lesson.tab}",
+		source: "(258:6) {#if lesson.tab}",
 		ctx
 	});
 
 	return block;
 }
 
-// (272:6) {#each chordNames as chordName}
+// (274:6) {#each chordNames as chordName}
 function create_each_block_3(ctx) {
 	let option;
 	let t_value = /*chordName*/ ctx[42] + "";
@@ -7083,7 +7083,7 @@ function create_each_block_3(ctx) {
 		h: function hydrate() {
 			option.__value = /*chordName*/ ctx[42];
 			option.value = option.__value;
-			add_location(option, file$5, 272, 8, 6906);
+			add_location(option, file$5, 274, 8, 6991);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, option, anchor);
@@ -7099,14 +7099,14 @@ function create_each_block_3(ctx) {
 		block,
 		id: create_each_block_3.name,
 		type: "each",
-		source: "(272:6) {#each chordNames as chordName}",
+		source: "(274:6) {#each chordNames as chordName}",
 		ctx
 	});
 
 	return block;
 }
 
-// (277:4) {#if lesson.chords?.length}
+// (279:4) {#if lesson.chords?.length}
 function create_if_block_3(ctx) {
 	let div;
 	let each_value_2 = /*lesson*/ ctx[2].chords;
@@ -7140,7 +7140,7 @@ function create_if_block_3(ctx) {
 		},
 		h: function hydrate() {
 			attr_dev(div, "class", "chord-wrapper svelte-42339x");
-			add_location(div, file$5, 277, 6, 7020);
+			add_location(div, file$5, 279, 6, 7105);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, div, anchor);
@@ -7184,14 +7184,14 @@ function create_if_block_3(ctx) {
 		block,
 		id: create_if_block_3.name,
 		type: "if",
-		source: "(277:4) {#if lesson.chords?.length}",
+		source: "(279:4) {#if lesson.chords?.length}",
 		ctx
 	});
 
 	return block;
 }
 
-// (279:8) {#each lesson.chords as _c, i}
+// (281:8) {#each lesson.chords as _c, i}
 function create_each_block_2(ctx) {
 	let div1;
 	let button;
@@ -7233,14 +7233,14 @@ function create_each_block_2(ctx) {
 		},
 		h: function hydrate() {
 			attr_dev(i_1, "class", "fa fa-times");
-			add_location(i_1, file$5, 284, 14, 7280);
+			add_location(i_1, file$5, 286, 14, 7365);
 			attr_dev(button, "aria-label", "Delete Chord");
 			attr_dev(button, "class", "naked-button svelte-42339x");
-			add_location(button, file$5, 280, 12, 7136);
+			add_location(button, file$5, 282, 12, 7221);
 			attr_dev(div0, "id", `chord-${/*i*/ ctx[37]}`);
-			add_location(div0, file$5, 286, 12, 7340);
+			add_location(div0, file$5, 288, 12, 7425);
 			attr_dev(div1, "class", "chord-holder svelte-42339x");
-			add_location(div1, file$5, 279, 10, 7097);
+			add_location(div1, file$5, 281, 10, 7182);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, div1, anchor);
@@ -7269,14 +7269,14 @@ function create_each_block_2(ctx) {
 		block,
 		id: create_each_block_2.name,
 		type: "each",
-		source: "(279:8) {#each lesson.chords as _c, i}",
+		source: "(281:8) {#each lesson.chords as _c, i}",
 		ctx
 	});
 
 	return block;
 }
 
-// (301:6) {#each [...Array(6)] as i}
+// (303:6) {#each [...Array(6)] as i}
 function create_each_block_1(ctx) {
 	let hr;
 
@@ -7290,7 +7290,7 @@ function create_each_block_1(ctx) {
 			this.h();
 		},
 		h: function hydrate() {
-			add_location(hr, file$5, 301, 8, 7823);
+			add_location(hr, file$5, 303, 8, 7908);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, hr, anchor);
@@ -7305,14 +7305,14 @@ function create_each_block_1(ctx) {
 		block,
 		id: create_each_block_1.name,
 		type: "each",
-		source: "(301:6) {#each [...Array(6)] as i}",
+		source: "(303:6) {#each [...Array(6)] as i}",
 		ctx
 	});
 
 	return block;
 }
 
-// (305:6) {#if lesson?.strumming}
+// (307:6) {#if lesson?.strumming}
 function create_if_block_2(ctx) {
 	let ul;
 	let each_value = /*lesson*/ ctx[2].strumming;
@@ -7346,7 +7346,7 @@ function create_if_block_2(ctx) {
 		},
 		h: function hydrate() {
 			attr_dev(ul, "class", "svelte-42339x");
-			add_location(ul, file$5, 305, 8, 7883);
+			add_location(ul, file$5, 307, 8, 7968);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, ul, anchor);
@@ -7390,14 +7390,14 @@ function create_if_block_2(ctx) {
 		block,
 		id: create_if_block_2.name,
 		type: "if",
-		source: "(305:6) {#if lesson?.strumming}",
+		source: "(307:6) {#if lesson?.strumming}",
 		ctx
 	});
 
 	return block;
 }
 
-// (307:10) {#each lesson.strumming as strum, i}
+// (309:10) {#each lesson.strumming as strum, i}
 function create_each_block$2(ctx) {
 	let li;
 	let img;
@@ -7440,8 +7440,8 @@ function create_each_block$2(ctx) {
 			attr_dev(img, "height", 80);
 			attr_dev(img, "class", img_class_value = "" + (null_to_empty(`arrow-${/*strum*/ ctx[35]}`) + " svelte-42339x"));
 			if (!src_url_equal(img.src, img_src_value = ARROW_SRC)) attr_dev(img, "src", img_src_value);
-			add_location(img, file$5, 308, 14, 7966);
-			add_location(li, file$5, 307, 12, 7947);
+			add_location(img, file$5, 310, 14, 8051);
+			add_location(li, file$5, 309, 12, 8032);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, li, anchor);
@@ -7471,14 +7471,14 @@ function create_each_block$2(ctx) {
 		block,
 		id: create_each_block$2.name,
 		type: "each",
-		source: "(307:10) {#each lesson.strumming as strum, i}",
+		source: "(309:10) {#each lesson.strumming as strum, i}",
 		ctx
 	});
 
 	return block;
 }
 
-// (344:38) {:else}
+// (346:38) {:else}
 function create_else_block$1(ctx) {
 	let t;
 
@@ -7501,14 +7501,14 @@ function create_else_block$1(ctx) {
 		block,
 		id: create_else_block$1.name,
 		type: "else",
-		source: "(344:38) {:else}",
+		source: "(346:38) {:else}",
 		ctx
 	});
 
 	return block;
 }
 
-// (344:6) {#if lesson.finished}
+// (346:6) {#if lesson.finished}
 function create_if_block_1$1(ctx) {
 	let t;
 
@@ -7531,7 +7531,7 @@ function create_if_block_1$1(ctx) {
 		block,
 		id: create_if_block_1$1.name,
 		type: "if",
-		source: "(344:6) {#if lesson.finished}",
+		source: "(346:6) {#if lesson.finished}",
 		ctx
 	});
 
@@ -7571,7 +7571,7 @@ function create_fragment$5(ctx) {
 		},
 		h: function hydrate() {
 			attr_dev(section, "class", "svelte-42339x");
-			add_location(section, file$5, 211, 0, 5085);
+			add_location(section, file$5, 213, 0, 5170);
 		},
 		m: function mount(target, anchor) {
 			insert_hydration_dev(target, section, anchor);
@@ -7808,20 +7808,22 @@ function instance$5($$self, $$props, $$invalidate) {
 	// }
 	function renderChords() {
 		if (lesson.chords?.length) {
-			lesson.chords.forEach((chordName, i) => {
-				const chart = new SVGuitarChord(`#chord-${i}`);
-				const { fingers, barre, position } = chords[chordName];
+			for (const [i, chordName] of lesson.chords.entries()) {
+				if (chordName in chords) {
+					const chart = new SVGuitarChord(`#chord-${i}`);
+					const { fingers, barre, position } = chords[chordName];
 
-				chart.configure({
-					tuning: ["E", "A", "D", "G", "B", "E"],
-					frets: 4,
-					position: position || 1
-				}).chord({
-					fingers,
-					barres: barre ? [barre] : [],
-					title: chordName
-				}).draw();
-			});
+					chart.configure({
+						tuning: ["E", "A", "D", "G", "B", "E"],
+						frets: 4,
+						position: position || 1
+					}).chord({
+						fingers,
+						barres: barre ? [barre] : [],
+						title: chordName
+					}).draw();
+				}
+			}
 		}
 	}
 
