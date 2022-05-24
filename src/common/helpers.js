@@ -53,7 +53,9 @@ export async function authenticateSpotify() {
       {
         headers: {
           "Content-type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${btoa(SPOTIFY_ID + ":" + SPOTIFY_SECRET)}`,
+          Authorization: `Basic ${btoa(
+            `${process.env.SPOTIFY_ID}:${process.env.SPOTIFY_SECRET}`
+          )}`,
         },
       }
     );

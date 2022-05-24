@@ -115,7 +115,7 @@
         const res = await apiCall("https://www.googleapis.com/youtube/v3/search", {
           q: videoSearch,
           type: "video",
-          key: YOUTUBE_API,
+          key: process.env.YOUTUBE_API,
           part: "snippet",
           maxResults: 7,
           topicId: "/m/04rlf",
